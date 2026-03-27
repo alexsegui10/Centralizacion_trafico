@@ -141,6 +141,12 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    const shouldLogHeaders = Deno.env.get("LOG_API_TRACK_HEADERS") === "true";
+    if (shouldLogHeaders) {
+      const allHeaders = Object.fromEntries(req.headers.entries());
+      console.log("[api-track] incoming_headers", JSON.stringify(allHeaders));
+    }
+
     const rawBody = await req.text();
 
     const hmacSecret = getRequiredEnv("EDGE_HMAC_SECRET");
@@ -178,6 +184,9 @@ Deno.serve(async (req: Request) => {
     });
 
     const clientIp = getClientIp(req);
+    if (shouldLogHeaders) {
+      console.log("[api-track] resolved_client_ip", clientIp);
+    }
     const ipHash = await sha256Hex(clientIp);
     const geo = await lookupGeo(clientIp);
 

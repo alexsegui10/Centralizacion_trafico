@@ -32,9 +32,9 @@ export function getRequiredEnv(name: string): string {
 }
 
 export function getClientIp(req: Request): string {
-  const cfIp = req.headers.get("cf-connecting-ip");
-  if (cfIp) {
-    return cfIp.trim();
+  const xRealIp = req.headers.get("x-real-ip");
+  if (xRealIp) {
+    return xRealIp.trim();
   }
 
   const xForwardedFor = req.headers.get("x-forwarded-for");
@@ -42,9 +42,9 @@ export function getClientIp(req: Request): string {
     return xForwardedFor.split(",")[0].trim();
   }
 
-  const realIp = req.headers.get("x-real-ip");
-  if (realIp) {
-    return realIp.trim();
+  const cfIp = req.headers.get("cf-connecting-ip");
+  if (cfIp) {
+    return cfIp.trim();
   }
 
   const forwarded = req.headers.get("forwarded");
