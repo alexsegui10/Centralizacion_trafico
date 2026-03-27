@@ -32,30 +32,12 @@ export function getRequiredEnv(name: string): string {
 }
 
 export function getClientIp(req: Request): string {
-  const xRealIp = req.headers.get("x-real-ip");
-  if (xRealIp) {
-    return xRealIp.trim();
-  }
-
-  const xForwardedFor = req.headers.get("x-forwarded-for");
-  if (xForwardedFor) {
-    return xForwardedFor.split(",")[0].trim();
-  }
-
-  const cfIp = req.headers.get("cf-connecting-ip");
-  if (cfIp) {
-    return cfIp.trim();
-  }
-
-  const forwarded = req.headers.get("forwarded");
-  if (forwarded) {
-    const match = forwarded.match(/for=(?:\"?\[?)([^\];,\"\s]+)/i);
-    if (match?.[1]) {
-      return match[1].trim();
-    }
-  }
-
-  return "0.0.0.0";
+  return (
+    req.headers.get("cf-connecting-ip")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip")?.split(",")[0]?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "0.0.0.0"
+  );
 }
 
 function toHex(buffer: ArrayBuffer): string {

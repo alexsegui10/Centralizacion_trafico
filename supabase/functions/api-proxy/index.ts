@@ -56,12 +56,29 @@ async function proxyTrack(req: Request, hmacSecret: string): Promise<Response> {
     return jsonResponse(400, { ok: false, error: "missing_body" });
   }
 
-  const cfConnectingIp = req.headers.get("cf-connecting-ip")?.trim();
-  const xForwardedFor = req.headers.get("x-forwarded-for")?.trim();
-  const xRealIp = req.headers.get("x-real-ip")?.trim();
+  const clientIp =
+    req.headers.get("cf-connecting-ip")?.split(",")[0]?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "0.0.0.0";
+
+  let parsedBody: Record<string, unknown>;
+  try {
+    const parsed = JSON.parse(rawBody);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return jsonResponse(400, { ok: false, error: "invalid_json_body" });
+    }
+    parsedBody = parsed as Record<string, unknown>;
+  } catch {
+    return jsonResponse(400, { ok: false, error: "invalid_json_body" });
+  }
+
+  const modifiedBody = JSON.stringify({
+    ...parsedBody,
+    client_ip: clientIp
+  });
 
   const timestamp = Math.floor(Date.now() / 1000).toString();
-  const canonical = `POST\n/api/track\n${timestamp}\n${rawBody}`;
+  const canonical = `POST\n/api/track\n${timestamp}\n${modifiedBody}`;
   const signature = await createHmacSignature(hmacSecret, canonical);
 
   const upstreamUrl = `${getFunctionsBaseUrl()}/api-track`;
@@ -73,12 +90,9 @@ async function proxyTrack(req: Request, hmacSecret: string): Promise<Response> {
       "Content-Type": "application/json",
       "x-timestamp": timestamp,
       "x-signature": signature,
-      ...(cfConnectingIp ? { "cf-connecting-ip": cfConnectingIp } : {}),
-      ...(xForwardedFor ? { "x-forwarded-for": xForwardedFor } : {}),
-      ...(xRealIp ? { "x-real-ip": xRealIp } : {}),
       ...(anonKey ? { apikey: anonKey, Authorization: `Bearer ${anonKey}` } : {})
     },
-    body: rawBody
+    body: modifiedBody
   });
 
   const text = await upstreamResponse.text();
@@ -158,9 +172,16 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const hmacSecret = getRequiredEnv("EDGE_HMAC_SECRET");
     const url = new URL(req.url);
     const target = url.searchParams.get("target")?.trim();
+
+  if (target === 'debug') {
+    const headers: Record<string, string> = {};
+    req.headers.forEach((value, key) => { headers[key] = value; });
+    return jsonResponse(200, { headers });
+  }
+
+    const hmacSecret = getRequiredEnv("EDGE_HMAC_SECRET");
 
     if (req.method === "GET" && target === "visitor") {
       return await proxyVisitor(req, url, hmacSecret);

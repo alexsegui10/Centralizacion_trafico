@@ -2,7 +2,6 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
-  getClientIp,
   getRequiredEnv,
   handleOptions,
   jsonResponse,
@@ -19,6 +18,7 @@ type TrackPayload = {
   dispositivo: string | null;
   user_agent: string | null;
   ip_hash: null;
+  client_ip: string;
   boton_clickado: "onlyfans" | "telegram";
   modelo_id: string;
   timestamp: string;
@@ -45,6 +45,7 @@ function validateTrackPayload(input: unknown): { ok: true; payload: TrackPayload
   const modeloId = typeof payload.modelo_id === "string" ? payload.modelo_id.trim() : "";
   const button = payload.boton_clickado;
   const timestamp = typeof payload.timestamp === "string" ? payload.timestamp.trim() : "";
+  const clientIp = typeof payload.client_ip === "string" ? payload.client_ip.split(",")[0].trim() : "0.0.0.0";
 
   if (!requestId || !isValidUuid(requestId)) {
     return { ok: false, error: "invalid_request_id" };
@@ -87,6 +88,7 @@ function validateTrackPayload(input: unknown): { ok: true; payload: TrackPayload
       dispositivo: typeof payload.dispositivo === "string" ? payload.dispositivo : null,
       user_agent: typeof payload.user_agent === "string" ? payload.user_agent : null,
       ip_hash: null,
+      client_ip: clientIp || "0.0.0.0",
       boton_clickado: button,
       modelo_id: modeloId,
       timestamp
@@ -103,25 +105,14 @@ async function lookupGeo(ip: string): Promise<GeoLookup> {
   const timeout = setTimeout(() => controller.abort(), 1000);
 
   try {
-    const url = `https://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,city,countryCode`;
-    const response = await fetch(url, {
-      method: "GET",
-      signal: controller.signal,
-      headers: { "accept": "application/json" }
+    const response = await fetch(`https://ipinfo.io/${encodeURIComponent(ip)}/json`, {
+      signal: controller.signal
     });
-
-    if (!response.ok) {
-      return { country: null, city: null };
-    }
-
-    const payload = await response.json();
-    if (!payload || payload.status !== "success") {
-      return { country: null, city: null };
-    }
-
+    if (!response.ok) return { country: null, city: null };
+    const data = await response.json();
     return {
-      country: typeof payload.country === "string" ? payload.country : null,
-      city: typeof payload.city === "string" ? payload.city : null
+      country: data.country || null,
+      city: data.city || null
     };
   } catch {
     return { country: null, city: null };
@@ -183,7 +174,7 @@ Deno.serve(async (req: Request) => {
       auth: { persistSession: false }
     });
 
-    const clientIp = getClientIp(req);
+    const clientIp = payload.client_ip;
     if (shouldLogHeaders) {
       console.log("[api-track] resolved_client_ip", clientIp);
     }
