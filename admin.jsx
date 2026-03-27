@@ -15,9 +15,9 @@ const {
 
 const runtimeConfig = typeof window !== "undefined" && window.__ADMIN_CONFIG ? window.__ADMIN_CONFIG : {};
 
-const SUPABASE_URL = runtimeConfig.SUPABASE_URL || "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "YOUR_ANON_KEY";
-const ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "YOUR_PASSWORD";
+const SUPABASE_URL = runtimeConfig.SUPABASE_URL || "https://krnabtkugfzfinwvfuzm.supabase.co";
+const SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM";
+const ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "123456";
 
 const SESSION_KEY = "ofm_admin_session_v1";
 
