@@ -23,11 +23,12 @@
       };
     </script>
 
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-is@18.3.1/umd/react-is.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
 
     <style>
       html,
@@ -49,8 +50,39 @@
   <body>
     <div id="root"></div>
 
+    <pre id="runtime-error" style="display:none; position:fixed; left:12px; right:12px; bottom:12px; z-index:99999; max-height:40vh; overflow:auto; margin:0; padding:12px; border:1px solid #5a1f1f; border-radius:8px; background:#1a0f10; color:#ffb4b4; font-size:12px; line-height:1.4; white-space:pre-wrap;"></pre>
+
+    <script>
+      (function () {
+        var box = document.getElementById("runtime-error");
+        function show(msg) {
+          if (!box) return;
+          box.style.display = "block";
+          box.textContent = String(msg || "Unknown runtime error");
+        }
+
+        window.addEventListener("error", function (ev) {
+          var src = ev && ev.filename ? "\nFile: " + ev.filename + ":" + (ev.lineno || 0) + ":" + (ev.colno || 0) : "";
+          var stack = ev && ev.error && ev.error.stack ? "\n\n" + ev.error.stack : "";
+          show("Runtime error: " + (ev && ev.message ? ev.message : "unknown") + src + stack);
+        });
+
+        window.addEventListener("unhandledrejection", function (ev) {
+          var reason = ev && ev.reason;
+          var text = reason && reason.stack ? reason.stack : String(reason || "Unhandled promise rejection");
+          show("Unhandled rejection:\n" + text);
+        });
+      })();
+    </script>
+
     <script type="text/babel" src="admin.jsx"></script>
     <script type="text/babel">
+      if (!window.React || !window.ReactDOM || !window.Recharts || !window.supabase || !window.Babel) {
+        throw new Error("Missing one or more required global libraries (React, ReactDOM, Recharts, supabase, Babel)");
+      }
+      if (!window.AdminApp) {
+        throw new Error("AdminApp is not defined. Check admin.jsx transpilation/runtime errors.");
+      }
       const root = ReactDOM.createRoot(document.getElementById("root"));
       root.render(React.createElement(window.AdminApp));
     </script>
