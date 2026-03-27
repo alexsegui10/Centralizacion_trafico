@@ -12,6 +12,7 @@
   var realtimeChannel = null;
   var CACHE_KEY = "ofm_admin_runtime_cache_v1";
   var CACHE_MAX_AGE_MS = 90 * 1000;
+  var NAV_LOADING_KEY = "ofm_nav_loading_v1";
   var firstPaintDone = false;
   var bootOverlay = null;
 
@@ -149,6 +150,7 @@
   function initBootLoading() {
     if (!document.body) return;
     if (bootOverlay) return;
+    document.documentElement.setAttribute("data-panel-preload", "1");
 
     var style = document.getElementById("panel-boot-style");
     if (!style) {
@@ -185,6 +187,12 @@
 
   function endBootLoading() {
     firstPaintDone = true;
+    document.documentElement.removeAttribute("data-panel-preload");
+    try {
+      sessionStorage.removeItem(NAV_LOADING_KEY);
+    } catch (_err) {
+      // Ignore storage access issues.
+    }
     if (document.body) {
       document.body.removeAttribute("data-panel-booting");
     }
