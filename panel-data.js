@@ -17,6 +17,15 @@
   var firstPaintDone = false;
   var bootOverlay = null;
 
+  function truthy(v) {
+    if (v === true || v === 1) return true;
+    if (typeof v === "string") {
+      var s = v.toLowerCase().trim();
+      return s === "true" || s === "1" || s === "t" || s === "yes";
+    }
+    return false;
+  }
+
   var FLOW_NAMES = {
     "1": "MGO Directo",
     "2": "MGO Canal",
@@ -75,14 +84,14 @@
 
   function inferFlow(lead) {
     if (String(lead.active_flow || "") === "6") return "6";
-    if (lead.of_activo) return "4";
-    if (lead.mgo_directo) return "1";
-    if (lead.mgo_en_canal && !lead.mgo_directo) return "2";
-    if (lead.telegram_activo && !lead.mgo_directo && !lead.mgo_en_canal && !lead.of_activo) return "3";
+    if (truthy(lead.of_activo)) return "4";
+    if (truthy(lead.mgo_directo)) return "1";
+    if (truthy(lead.mgo_en_canal) && !truthy(lead.mgo_directo)) return "2";
+    if (truthy(lead.telegram_activo) && !truthy(lead.mgo_directo) && !truthy(lead.mgo_en_canal) && !truthy(lead.of_activo)) return "3";
 
     var updated = new Date(lead.updated_at || lead.created_at || Date.now()).getTime();
     var days = (Date.now() - updated) / (1000 * 60 * 60 * 24);
-    if (!lead.winback_sent && (lead.mgo_directo || lead.mgo_en_canal) && days > 14) return "5";
+    if (!truthy(lead.winback_sent) && (truthy(lead.mgo_directo) || truthy(lead.mgo_en_canal)) && days > 14) return "5";
     return "3";
   }
 
@@ -407,8 +416,26 @@
     var columns = Array.from(document.querySelectorAll(".kanban-column-scroll"));
     if (!columns.length) return;
 
+    var flowTitles = {
+      "1": "F1: MGO Directo",
+      "2": "F2: MGO Canal",
+      "3": "F3: Tráfico Frío",
+      "4": "F4: VIP OnlyFans",
+      "5": "F5: Winback MGO",
+      "6": "F6: Conflicto"
+    };
+
     var byFlow = { "1": [], "2": [], "3": [], "4": [], "5": [], "6": [] };
     leads.forEach(function (l) { byFlow[inferFlow(l)].push(l); });
+
+    var flowContainers = Array.from(document.querySelectorAll(".flex-shrink-0.w-80.flex.flex-col"));
+    flowContainers.forEach(function (box, idx) {
+      var flow = String(idx + 1);
+      var title = box.querySelector("h3");
+      var badge = box.querySelector("span.text-xs.font-medium");
+      if (title) title.textContent = flowTitles[flow];
+      if (badge) badge.textContent = String(byFlow[flow].length);
+    });
 
     columns.forEach(function (col, idx) {
       var flow = String(idx + 1);
@@ -422,13 +449,18 @@
         card.innerHTML = "<div class='flex justify-between items-start mb-3'>"
           + "<div class='w-10 h-10 rounded-full flex items-center justify-center text-black font-black text-sm' style='background:" + color + "'>" + String(l.visitor_id || "??").slice(0, 2).toUpperCase() + "</div>"
           + "<div class='flex flex-col items-end'><span class='text-[10px] text-on-surface-variant font-mono'>ID: " + String(l.visitor_id || "").slice(0, 8) + "</span><div class='mt-1 px-2 py-0.5 text-[9px] rounded uppercase font-bold' style='background:" + color + "33;color:" + color + "'>" + src + "</div></div></div>"
-          + "<div class='space-y-2'><div class='flex items-center space-x-2 text-on-surface text-xs font-semibold'><span class='material-symbols-outlined text-sm text-secondary'>location_on</span><span>" + countryToFlag(l.pais) + " " + (l.ciudad || "-") + ", " + (l.pais || "-") + "</span></div>"
+          + "<div class='space-y-2'><div class='flex items-center space-x-2 text-on-surface text-xs font-semibold'><span class='material-symbols-outlined text-sm text-secondary'>location_on</span><span>" + countryToFlag(l.pais) + " " + (l.ciudad || "Desconocido") + ", " + (l.pais || "Desconocido") + "</span></div>"
           + "<div class='flex items-center justify-between mt-4'><div class='flex items-center space-x-1 text-on-surface-variant text-[10px]'><span class='material-symbols-outlined text-xs'>schedule</span><span>" + fmtSince(l.created_at) + "</span></div><div class='flex space-x-1'>"
-          + (l.cupidbot_activo ? "<span class='text-secondary text-lg'>🤖</span>" : "")
+          + (truthy(l.cupidbot_activo) ? "<span class='text-secondary text-lg'>🤖</span>" : "")
           + (String(l.active_flow || "") === "6" ? "<span class='text-tertiary text-lg'>⚠️</span>" : "")
           + "</div></div></div>";
         card.addEventListener("click", function () {
-          location.href = "user_profile.html?visitor_id=" + encodeURIComponent(l.visitor_id || "");
+          try {
+            sessionStorage.setItem(NAV_LOADING_KEY, "1");
+          } catch (_err) {
+            // Ignore storage access issues.
+          }
+          location.href = "user_profile.html?visitor_id=" + encodeURIComponent(String(l.visitor_id || ""));
         });
         col.appendChild(card);
       });
@@ -537,12 +569,18 @@
       var root = idCore.parentElement;
       var rows = root.querySelectorAll(".space-y-4 > div");
       if (rows.length >= 6) {
-        rows[0].querySelector("span:last-child").textContent = String(lead.visitor_id || "-");
-        rows[1].querySelector("span.text-sm").textContent = (lead.pais || "-");
-        rows[2].querySelector("span.text-sm").textContent = sourceOf(lead);
-        rows[3].querySelector("span.text-sm").textContent = String(lead.dispositivo || "-") + " / " + String(lead.user_agent || "-").slice(0, 22);
-        rows[4].querySelector("span.text-sm").textContent = fmtDate(lead.created_at);
-        rows[5].querySelector("span.text-lg").textContent = fmtSince(lead.created_at);
+        var r0 = rows[0].querySelector("span:last-child");
+        var r1 = rows[1].querySelector("span.text-sm");
+        var r2 = rows[2].querySelector("span.text-sm");
+        var r3 = rows[3].querySelector("span.text-sm");
+        var r4 = rows[4].querySelector("span.text-sm");
+        var r5 = rows[5].querySelector("span.text-lg");
+        if (r0) r0.textContent = String(lead.visitor_id || "-");
+        if (r1) r1.textContent = (lead.pais || "Desconocido");
+        if (r2) r2.textContent = sourceOf(lead);
+        if (r3) r3.textContent = String(lead.dispositivo || "-") + " / " + String(lead.user_agent || "-").slice(0, 22);
+        if (r4) r4.textContent = fmtDate(lead.created_at);
+        if (r5) r5.textContent = fmtSince(lead.created_at);
       }
 
       var verifiedBadge = root.querySelector("span.px-2.py-0\.5");
@@ -1095,7 +1133,11 @@
       cache.leads = warm.leads;
       cache.events = warm.events;
       exactCounts = warm.counts || exactCounts;
-      renderCurrentPage();
+      try {
+        renderCurrentPage();
+      } catch (_err) {
+        // If warm render fails, continue with fresh load path.
+      }
       endBootLoading();
     }
 
