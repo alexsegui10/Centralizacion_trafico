@@ -4,12 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "field": "minutes",
-              "minutesInterval": 5
-            }
-          ]
+          "interval": [{ "field": "minutes", "minutesInterval": 5 }]
         }
       },
       "id": "sched-5min",
@@ -32,7 +27,7 @@
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            { "name": "select", "value": "visitor_id,mgo_directo,mgo_en_canal,of_activo,active_flow,telegram_user_id,utm_source" },
+            { "name": "select", "value": "visitor_id,mgo_directo,mgo_en_canal,of_activo,active_flow,telegram_user_id,utm_source,pais,ciudad,idioma,dispositivo,created_at,updated_at,telegram_activo,cupidbot_activo,winback_sent" },
             { "name": "mgo_directo", "value": "is.true" },
             { "name": "of_activo", "value": "is.false" },
             { "name": "active_flow", "value": "is.null" },
@@ -83,6 +78,21 @@
     },
     {
       "parameters": {
+        "method": "POST",
+        "url": "={{$env.BOT_VENTAS_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  action: 'iniciar_conversacion',\n  flow: '1',\n  bot_type: 'bot_ventas',\n  context: 'mgo_directo',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
+      },
+      "id": "webhook-flow1",
+      "name": "Webhook Bot Ventas Flow 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 120],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
         "method": "GET",
         "url": "={{$env.SUPABASE_URL + '/rest/v1/leads'}}",
         "sendHeaders": true,
@@ -95,7 +105,7 @@
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            { "name": "select", "value": "visitor_id,mgo_directo,mgo_en_canal,of_activo,active_flow,telegram_user_id,utm_source" },
+            { "name": "select", "value": "visitor_id,mgo_directo,mgo_en_canal,of_activo,active_flow,telegram_user_id,utm_source,pais,ciudad,idioma,dispositivo,created_at,updated_at,telegram_activo,cupidbot_activo,winback_sent" },
             { "name": "mgo_directo", "value": "is.false" },
             { "name": "mgo_en_canal", "value": "is.true" },
             { "name": "of_activo", "value": "is.false" },
@@ -124,23 +134,8 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'Flujo 2 MGO: Â¿buscas algo? visitor_id=' + $json.visitor_id } }}"
-      },
-      "id": "send-flow2",
-      "name": "Send Telegram Flow 2",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [910, 280],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Array to Items Flow 2'].json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -155,6 +150,21 @@
       },
       "id": "update-flow2",
       "name": "Update Lead Flow 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [910, 320],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.BOT_VENTAS_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  action: 'iniciar_conversacion',\n  flow: '2',\n  bot_type: 'bot_ventas',\n  context: 'mgo_en_canal',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
+      },
+      "id": "webhook-flow2",
+      "name": "Webhook Bot Ventas Flow 2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [1140, 320],
@@ -174,7 +184,7 @@
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            { "name": "select", "value": "visitor_id,of_activo,active_flow,utm_source,pais,ciudad" },
+            { "name": "select", "value": "visitor_id,of_activo,active_flow,utm_source,pais,ciudad,idioma,dispositivo,telegram_user_id,created_at,updated_at" },
             { "name": "of_activo", "value": "is.true" },
             { "name": "or", "value": "(active_flow.is.null,active_flow.neq.4)" },
             { "name": "updated_at", "value": "={{'gt.' + new Date(Date.now() - 5 * 60 * 1000).toISOString()}}" }
@@ -228,7 +238,7 @@
         "url": "={{$env.ALERTA_CONFLICTO_WEBHOOK}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { type: 'vip_flow_4', visitor_id: $json.visitor_id, utm_source: $json.utm_source, pais: $json.pais, ciudad: $json.ciudad, message: 'Lead VIP con OF=true. Bots desactivados.', detected_at: new Date().toISOString() } }}"
+        "jsonBody": "={{ { type: 'vip_flow_4', flow: '4', visitor_id: $json.visitor_id, utm_source: $json.utm_source, pais: $json.pais, ciudad: $json.ciudad, message: 'Lead VIP con OF=true. Bots desactivados. Atención manual requerida.', detected_at: new Date().toISOString() } }}"
       },
       "id": "alert-flow4",
       "name": "Alert VIP Flow 4",
@@ -248,14 +258,15 @@
     },
     "Fetch Flow 1": { "main": [[{ "node": "Array to Items Flow 1", "type": "main", "index": 0 }]] },
     "Array to Items Flow 1": { "main": [[{ "node": "Update Lead Flow 1", "type": "main", "index": 0 }]] },
+    "Update Lead Flow 1": { "main": [[{ "node": "Webhook Bot Ventas Flow 1", "type": "main", "index": 0 }]] },
     "Fetch Flow 2": { "main": [[{ "node": "Array to Items Flow 2", "type": "main", "index": 0 }]] },
-    "Array to Items Flow 2": { "main": [[{ "node": "Send Telegram Flow 2", "type": "main", "index": 0 }]] },
-    "Send Telegram Flow 2": { "main": [[{ "node": "Update Lead Flow 2", "type": "main", "index": 0 }]] },
+    "Array to Items Flow 2": { "main": [[{ "node": "Update Lead Flow 2", "type": "main", "index": 0 }]] },
+    "Update Lead Flow 2": { "main": [[{ "node": "Webhook Bot Ventas Flow 2", "type": "main", "index": 0 }]] },
     "Fetch VIP Flow 4": { "main": [[{ "node": "Array to Items Flow 4", "type": "main", "index": 0 }]] },
     "Array to Items Flow 4": { "main": [[{ "node": "Update Lead Flow 4", "type": "main", "index": 0 }]] },
     "Update Lead Flow 4": { "main": [[{ "node": "Alert VIP Flow 4", "type": "main", "index": 0 }]] }
   },
   "active": false,
   "settings": {},
-  "versionId": "1"
+  "versionId": "2"
 }

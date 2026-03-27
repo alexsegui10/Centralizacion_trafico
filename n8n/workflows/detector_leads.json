@@ -4,12 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "field": "minutes",
-              "minutesInterval": 5
-            }
-          ]
+          "interval": [{ "field": "minutes", "minutesInterval": 5 }]
         }
       },
       "id": "sched-5min",
@@ -42,7 +37,7 @@
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            { "name": "select", "value": "visitor_id,utm_source,telegram_activo,of_activo,mgo_directo,mgo_en_canal,updated_at,active_flow,telegram_user_id" },
+            { "name": "select", "value": "visitor_id,utm_source,telegram_activo,of_activo,mgo_directo,mgo_en_canal,updated_at,active_flow,telegram_user_id,pais,ciudad,idioma,dispositivo,created_at,cupidbot_activo,winback_sent" },
             { "name": "updated_at", "value": "={{'gt.' + $json.cutoff}}" },
             { "name": "active_flow", "value": "is.null" }
           ]
@@ -58,7 +53,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const all = $input.all().map((item) => item.json);\n\nconst rows = all.flatMap((payload) => {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.body)) return payload.body;\n  if (payload && typeof payload === 'object') return [payload];\n  return [];\n});\n\nreturn rows.map((lead) => {\n  const source = String(lead.utm_source || '').toLowerCase();\n  const of = !!lead.of_activo;\n  const tg = !!lead.telegram_activo;\n  const mgoDirect = !!lead.mgo_directo;\n  const mgoCanal = !!lead.mgo_en_canal;\n\n  let route = 'ignore';\n\n  if (tg && mgoDirect) {\n    route = 'flow6_conflict';\n  } else if (!of && tg && source === 'direct' && !mgoDirect && !mgoCanal && lead.telegram_user_id) {\n    route = 'flow2_direct';\n  } else if (!of && tg && !mgoDirect && !mgoCanal && lead.telegram_user_id) {\n    route = 'flow3';\n  }\n\n  return {\n    json: {\n      ...lead,\n      source,\n      route,\n      conflict_flags: { telegram_activo: tg, mgo_directo: mgoDirect, mgo_en_canal: mgoCanal }\n    }\n  };\n});"
+        "jsCode": "const all = $input.all().map((item) => item.json);\n\nconst rows = all.flatMap((payload) => {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.body)) return payload.body;\n  if (payload && typeof payload === 'object') return [payload];\n  return [];\n});\n\nreturn rows.map((lead) => {\n  const source = String(lead.utm_source || '').toLowerCase();\n  const of = !!lead.of_activo;\n  const tg = !!lead.telegram_activo;\n  const mgoDirect = !!lead.mgo_directo;\n  const mgoCanal = !!lead.mgo_en_canal;\n\n  let route = 'ignore';\n\n  if (tg && mgoDirect) {\n    route = 'flow6_conflict';\n  } else if (!of && tg && !mgoDirect && !mgoCanal && lead.telegram_user_id) {\n    route = 'flow3';\n  }\n\n  return {\n    json: {\n      ...lead,\n      source,\n      route,\n      conflict_flags: { telegram_activo: tg, mgo_directo: mgoDirect, mgo_en_canal: mgoCanal }\n    }\n  };\n});"
       },
       "id": "classify",
       "name": "Classify Leads",
@@ -92,7 +87,7 @@
         "url": "={{$env.ALERTA_CONFLICTO_WEBHOOK}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { type: 'flow6_conflict', visitor_id: $json.visitor_id, utm_source: $json.utm_source, conflict_flags: $json.conflict_flags, detected_at: new Date().toISOString() } }}",
+        "jsonBody": "={{ { type: 'flow6_conflict', flow: '6', visitor_id: $json.visitor_id, utm_source: $json.utm_source, pais: $json.pais, ciudad: $json.ciudad, conflict_flags: $json.conflict_flags, detected_at: new Date().toISOString() } }}",
         "options": { "response": { "response": { "responseFormat": "json" } } }
       },
       "id": "alert-conflict",
@@ -105,7 +100,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Is Flow 6 Conflict'].json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -147,23 +142,8 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'Flujo 3: te ayudo a reclamar tu free trial. visitor_id=' + $json.visitor_id } }}"
-      },
-      "id": "send-flow3",
-      "name": "Send Telegram Flow 3",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [1360, 260],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Is Flow 3'].json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -180,65 +160,22 @@
       "name": "Update Lead Flow 3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1590, 260],
+      "position": [1360, 300],
       "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
-          "conditions": [
-            {
-              "leftValue": "={{$json.route}}",
-              "rightValue": "flow2_direct",
-              "operator": { "type": "string", "operation": "equals" }
-            }
-          ],
-          "combinator": "and"
-        }
-      },
-      "id": "if-direct",
-      "name": "Is Flow 2 Direct",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [1130, 520]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
+        "url": "={{$env.CUPIDBOT_WEBHOOK_URL}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'Flujo 2: ¿buscas algo? visitor_id=' + $json.visitor_id } }}"
+        "jsonBody": "={{ {\n  action: 'iniciar_seduccion',\n  flow: '3',\n  bot_type: 'cupidbot',\n  context: 'trafico_frio',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
       },
-      "id": "send-flow2-direct",
-      "name": "Send Telegram Flow 2 Direct",
+      "id": "webhook-flow3",
+      "name": "Webhook CupidBot Flow 3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1360, 520],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            { "name": "apikey", "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
-            { "name": "Authorization", "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}" },
-            { "name": "Prefer", "value": "return=minimal" }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { active_flow: '2', last_bot_action: new Date().toISOString() } }}"
-      },
-      "id": "update-flow2-direct",
-      "name": "Update Lead Flow 2 Direct",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [1590, 520],
+      "position": [1590, 300],
       "continueOnFail": true
     }
   ],
@@ -248,17 +185,14 @@
     "Fetch Recent Leads": { "main": [[{ "node": "Classify Leads", "type": "main", "index": 0 }]] },
     "Classify Leads": { "main": [[
       { "node": "Is Flow 6 Conflict", "type": "main", "index": 0 },
-      { "node": "Is Flow 3", "type": "main", "index": 0 },
-      { "node": "Is Flow 2 Direct", "type": "main", "index": 0 }
+      { "node": "Is Flow 3", "type": "main", "index": 0 }
     ]] },
     "Is Flow 6 Conflict": { "main": [[{ "node": "Trigger Conflict Alert", "type": "main", "index": 0 }], []] },
     "Trigger Conflict Alert": { "main": [[{ "node": "Update Lead Flow 6", "type": "main", "index": 0 }]] },
-    "Is Flow 3": { "main": [[{ "node": "Send Telegram Flow 3", "type": "main", "index": 0 }], []] },
-    "Send Telegram Flow 3": { "main": [[{ "node": "Update Lead Flow 3", "type": "main", "index": 0 }]] },
-    "Is Flow 2 Direct": { "main": [[{ "node": "Send Telegram Flow 2 Direct", "type": "main", "index": 0 }], []] },
-    "Send Telegram Flow 2 Direct": { "main": [[{ "node": "Update Lead Flow 2 Direct", "type": "main", "index": 0 }]] }
+    "Is Flow 3": { "main": [[{ "node": "Update Lead Flow 3", "type": "main", "index": 0 }], []] },
+    "Update Lead Flow 3": { "main": [[{ "node": "Webhook CupidBot Flow 3", "type": "main", "index": 0 }]] }
   },
   "active": false,
   "settings": {},
-  "versionId": "2"
+  "versionId": "3"
 }

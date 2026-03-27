@@ -4,12 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 1
-            }
-          ]
+          "interval": [{ "field": "hours", "hoursInterval": 1 }]
         }
       },
       "id": "sched-hourly",
@@ -42,7 +37,7 @@
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            { "name": "select", "value": "visitor_id,utm_source,updated_at,telegram_user_id,active_flow,pais,mgo_directo,mgo_en_canal" },
+            { "name": "select", "value": "visitor_id,utm_source,updated_at,created_at,telegram_user_id,active_flow,pais,ciudad,idioma,dispositivo,mgo_directo,mgo_en_canal,telegram_activo,of_activo,cupidbot_activo,winback_sent" },
             { "name": "telegram_activo", "value": "is.true" },
             { "name": "of_activo", "value": "is.false" },
             { "name": "mgo_directo", "value": "is.false" },
@@ -73,21 +68,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'Flujo 3 Winback: te guardamos algo especial. visitor_id=' + $json.visitor_id } }}"
-      },
-      "id": "send-social",
-      "name": "Send Winback Flow 3",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [1150, 180],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
         "method": "PATCH",
         "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
         "sendHeaders": true,
@@ -104,6 +84,21 @@
       },
       "id": "update-social",
       "name": "Mark Winback Flow 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1150, 180],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.CUPIDBOT_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  action: 'winback_seduccion',\n  flow: '3',\n  bot_type: 'cupidbot',\n  context: 'winback_social_14d',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
+      },
+      "id": "webhook-social",
+      "name": "Webhook CupidBot Winback F3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [1380, 180],
@@ -123,7 +118,7 @@
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            { "name": "select", "value": "visitor_id,utm_source,updated_at,telegram_user_id,active_flow,pais,mgo_directo,mgo_en_canal" },
+            { "name": "select", "value": "visitor_id,utm_source,updated_at,created_at,telegram_user_id,active_flow,pais,ciudad,idioma,dispositivo,mgo_directo,mgo_en_canal,telegram_activo,of_activo,cupidbot_activo,winback_sent" },
             { "name": "of_activo", "value": "is.false" },
             { "name": "winback_sent", "value": "is.false" },
             { "name": "updated_at", "value": "={{'lt.' + $json.cutoff}}" },
@@ -152,23 +147,8 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'Flujo 5 Winback MGO: te escribo con tu historial de compras [placeholder]. visitor_id=' + $json.visitor_id } }}"
-      },
-      "id": "send-mgo",
-      "name": "Send Winback Flow 5",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [1150, 470],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Array to Items MGO'].json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -185,6 +165,21 @@
       "name": "Mark Winback Flow 5",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
+      "position": [1150, 470],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.CUPIDBOT_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  action: 'winback_con_historial',\n  flow: '5',\n  bot_type: 'cupidbot',\n  context: 'winback_mgo_14d',\n  instructions: 'Inyectar historial de compras MGO en el prompt. El usuario conoce la modelo desde MGO.',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
+      },
+      "id": "webhook-mgo",
+      "name": "Webhook CupidBot Winback F5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [1380, 470],
       "continueOnFail": true
     }
@@ -196,13 +191,13 @@
       { "node": "Fetch Winback Flow 5", "type": "main", "index": 0 }
     ]] },
     "Fetch Winback Flow 3": { "main": [[{ "node": "Array to Items Social", "type": "main", "index": 0 }]] },
-    "Array to Items Social": { "main": [[{ "node": "Send Winback Flow 3", "type": "main", "index": 0 }]] },
-    "Send Winback Flow 3": { "main": [[{ "node": "Mark Winback Flow 3", "type": "main", "index": 0 }]] },
+    "Array to Items Social": { "main": [[{ "node": "Mark Winback Flow 3", "type": "main", "index": 0 }]] },
+    "Mark Winback Flow 3": { "main": [[{ "node": "Webhook CupidBot Winback F3", "type": "main", "index": 0 }]] },
     "Fetch Winback Flow 5": { "main": [[{ "node": "Array to Items MGO", "type": "main", "index": 0 }]] },
-    "Array to Items MGO": { "main": [[{ "node": "Send Winback Flow 5", "type": "main", "index": 0 }]] },
-    "Send Winback Flow 5": { "main": [[{ "node": "Mark Winback Flow 5", "type": "main", "index": 0 }]] }
+    "Array to Items MGO": { "main": [[{ "node": "Mark Winback Flow 5", "type": "main", "index": 0 }]] },
+    "Mark Winback Flow 5": { "main": [[{ "node": "Webhook CupidBot Winback F5", "type": "main", "index": 0 }]] }
   },
   "active": false,
   "settings": {},
-  "versionId": "2"
+  "versionId": "3"
 }

@@ -11,79 +11,46 @@
       "name": "Webhook /alerta",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [
-        260,
-        300
-      ]
+      "position": [260, 300]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.WEBHOOK_URL}}",
+        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { source: 'n8n-alerta-conflicto', received_at: new Date().toISOString(), payload: $json } }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
-        }
+        "jsonBody": "={{ {\n  chat_id: $env.ALERTA_TELEGRAM_CHAT_ID,\n  parse_mode: 'HTML',\n  text: (\n    '🚨 <b>ALERTA — ' + ($json.body?.type ?? $json.type ?? 'evento').toUpperCase().replace(/_/g, ' ') + '</b>\\n\\n' +\n    '👤 Lead: <code>' + ($json.body?.visitor_id ?? $json.visitor_id ?? '-') + '</code>\\n' +\n    '📌 Flujo: F' + ($json.body?.flow ?? $json.flow ?? '?') + '\\n' +\n    '🌐 Origen: ' + ($json.body?.utm_source ?? $json.utm_source ?? 'desconocido') + '\\n' +\n    '📍 País: ' + ($json.body?.pais ?? $json.pais ?? '-') + '\\n' +\n    '🕐 ' + new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })\n  )\n} }}",
+        "options": {}
       },
-      "id": "send-whatsapp-alert",
-      "name": "Send WhatsApp Alert",
+      "id": "send-telegram-alert",
+      "name": "Send Telegram Alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        520,
-        300
-      ],
+      "position": [520, 300],
       "continueOnFail": true
     },
     {
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ { ok: true } }}",
-        "options": {
-          "responseCode": 200
-        }
+        "options": { "responseCode": 200 }
       },
       "id": "respond-ok",
       "name": "Respond 200",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [
-        760,
-        300
-      ]
+      "position": [760, 300]
     }
   ],
   "connections": {
     "Webhook /alerta": {
-      "main": [
-        [
-          {
-            "node": "Send WhatsApp Alert",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Send Telegram Alert", "type": "main", "index": 0 }]]
     },
-    "Send WhatsApp Alert": {
-      "main": [
-        [
-          {
-            "node": "Respond 200",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "Send Telegram Alert": {
+      "main": [[{ "node": "Respond 200", "type": "main", "index": 0 }]]
     }
   },
   "active": false,
   "settings": {},
-  "versionId": "1"
+  "versionId": "2"
 }
