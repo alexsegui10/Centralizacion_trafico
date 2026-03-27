@@ -2,9 +2,9 @@
   var runtimeConfig = (typeof window !== "undefined" && window.__ADMIN_CONFIG) ? window.__ADMIN_CONFIG : {};
 
   var SUPABASE_URL = runtimeConfig.SUPABASE_URL || "https://krnabtkugfzfinwvfuzm.supabase.co";
-  var SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "CHANGE_ME_ANON";
-  var SUPABASE_SERVICE_ROLE_KEY = runtimeConfig.SUPABASE_SERVICE_ROLE_KEY || "CHANGE_ME_SERVICE_ROLE";
-  var ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "CHANGE_ME";
+  var SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM";
+  var SUPABASE_SERVICE_ROLE_KEY = runtimeConfig.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDQ1MjM4OCwiZXhwIjoyMDkwMDI4Mzg4fQ.9WZ6RuQ6wpXhVHy2vpDIun9-9xMVDBsysCOGTBuDyEU";
+  var ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "123456";
 
   var page = (location.pathname.split("/").pop() || "admin.html").toLowerCase();
   var cache = { leads: [], events: [], messages: [] };
