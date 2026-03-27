@@ -1,6 +1,7 @@
 (function () {
   var SESSION_KEY = "ofm_admin_session_v1";
-  var ADMIN_PASSWORD = "123456";
+  var runtimeConfig = (typeof window !== "undefined" && window.__ADMIN_CONFIG) ? window.__ADMIN_CONFIG : {};
+  var ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || window.__ADMIN_PASSWORD || "CHANGE_ME";
 
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
     location.replace("admin.html");
