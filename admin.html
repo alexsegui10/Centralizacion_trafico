@@ -1,1056 +1,518 @@
 <!DOCTYPE html>
-<html class="dark" lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel Admin OFM</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <script>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Panel - Executive Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              primary: "#b6a0ff",
-              secondary: "#00e3fd",
-              tertiary: "#ff6c95",
-              background: "#0e0e13",
-              surface: "#19191f",
-              card: "#1f1f26",
-              muted: "#acaab1"
-            }
-          }
-        }
-      };
+              "primary-container": "#a98fff",
+              "on-tertiary-fixed": "#380014",
+              "surface-container-lowest": "#000000",
+              "error-container": "#a70138",
+              "surface-bright": "#2c2b33",
+              "on-error": "#490013",
+              "on-tertiary": "#48001c",
+              "on-primary": "#340090",
+              "on-tertiary-container": "#100003",
+              "primary-fixed": "#a98fff",
+              "tertiary-fixed-dim": "#ff769b",
+              "primary": "#b6a0ff",
+              "inverse-surface": "#fbf8ff",
+              "on-secondary": "#004d57",
+              "secondary-fixed-dim": "#00d7f0",
+              "on-background": "#f8f5fd",
+              "secondary-fixed": "#26e6ff",
+              "inverse-primary": "#6834eb",
+              "on-primary-container": "#280072",
+              "surface-dim": "#0e0e13",
+              "surface-container-highest": "#25252c",
+              "tertiary-fixed": "#ff8fa9",
+              "surface": "#0e0e13",
+              "tertiary-container": "#fd3e80",
+              "surface-variant": "#25252c",
+              "outline-variant": "#48474d",
+              "secondary-dim": "#00d4ec",
+              "surface-container": "#19191f",
+              "on-primary-fixed": "#000000",
+              "on-secondary-fixed-variant": "#005964",
+              "on-tertiary-fixed-variant": "#770033",
+              "on-surface-variant": "#acaab1",
+              "outline": "#76747b",
+              "inverse-on-surface": "#55545a",
+              "surface-container-high": "#1f1f26",
+              "on-primary-fixed-variant": "#32008a",
+              "secondary-container": "#006875",
+              "on-surface": "#f8f5fd",
+              "tertiary": "#ff6c95",
+              "primary-fixed-dim": "#9c7eff",
+              "error": "#ff6e84",
+              "background": "#0e0e13",
+              "tertiary-dim": "#ff6c95",
+              "surface-container-low": "#131318",
+              "on-secondary-container": "#e8fbff",
+              "secondary": "#00e3fd",
+              "error-dim": "#d73357",
+              "primary-dim": "#7e51ff",
+              "on-error-container": "#ffb2b9",
+              "on-secondary-fixed": "#003a42",
+              "surface-tint": "#b6a0ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
     </script>
-    <style>
-      body {
-        font-family: Inter, sans-serif;
-      }
-      .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      }
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0e0e13;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #2c2b33;
-      }
-      .spinner {
-        width: 14px;
-        height: 14px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-top-color: #fff;
-        border-radius: 9999px;
-        animation: spin 0.8s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-      }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0e0e13;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f1f26;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b6a0ff;
+        }
     </style>
-  </head>
-  <body class="bg-background text-white antialiased">
-    <div id="root"></div>
-
-    <script type="text/babel">
-      const { useCallback, useEffect, useMemo, useRef, useState } = React;
-      const { createClient } = supabase;
-
-      const BASE_CONFIG = {
-        SUPABASE_URL: "https://krnabtkugfzfinwvfuzm.supabase.co",
-        SUPABASE_ANON_KEY:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM",
-        ADMIN_PASSWORD: "123456"
-      };
-
-      const runtimeConfig = typeof window !== "undefined" && window.__ADMIN_CONFIG ? window.__ADMIN_CONFIG : {};
-      const SUPABASE_URL = runtimeConfig.SUPABASE_URL || BASE_CONFIG.SUPABASE_URL;
-      const SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || BASE_CONFIG.SUPABASE_ANON_KEY;
-      const ADMIN_PASSWORD = String(runtimeConfig.ADMIN_PASSWORD || BASE_CONFIG.ADMIN_PASSWORD);
-      const SESSION_KEY = "ofm_admin_session_v1";
-
-      const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-      const FLOW_NAMES = {
-        "1": "MGO Directo",
-        "2": "MGO Canal",
-        "3": "Trafico Frio Redes",
-        "4": "VIP OnlyFans",
-        "5": "Winback MGO",
-        "6": "Conflicto"
-      };
-
-      const sourceColors = {
-        instagram: "#b6a0ff",
-        tiktok: "#ff6c95",
-        twitter: "#4cc9f0",
-        x: "#4cc9f0",
-        reddit: "#f97316",
-        mgo: "#22c55e",
-        direct: "#9ca3af"
-      };
-
-      class SectionErrorBoundary extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = { hasError: false };
-        }
-        static getDerivedStateFromError() {
-          return { hasError: true };
-        }
-        render() {
-          if (this.state.hasError) {
-            return <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm">Error en esta seccion</div>;
-          }
-          return this.props.children;
-        }
-      }
-
-      function toFlag(country) {
-        const map = {
-          "united states": "US",
-          usa: "US",
-          us: "US",
-          spain: "ES",
-          espana: "ES",
-          es: "ES",
-          mexico: "MX",
-          mx: "MX",
-          argentina: "AR",
-          ar: "AR",
-          colombia: "CO",
-          co: "CO",
-          chile: "CL",
-          cl: "CL",
-          uk: "GB",
-          gb: "GB",
-          france: "FR",
-          fr: "FR",
-          germany: "DE",
-          de: "DE",
-          italy: "IT",
-          it: "IT",
-          brazil: "BR",
-          br: "BR",
-          canada: "CA",
-          ca: "CA"
-        };
-        const raw = String(country || "").toLowerCase().trim();
-        const code = map[raw] || raw.toUpperCase();
-        if (code.length !== 2) return "🌍";
-        return String.fromCodePoint(...[...code].map((c) => 127397 + c.charCodeAt()));
-      }
-
-      function sourceOf(lead) {
-        if (lead.mgo_directo || lead.mgo_en_canal) return "mgo";
-        const s = String(lead.utm_source || "direct").toLowerCase();
-        if (s.includes("insta")) return "instagram";
-        if (s.includes("tiktok")) return "tiktok";
-        if (s.includes("twitter") || s === "x") return "x";
-        if (s.includes("reddit")) return "reddit";
-        if (s.includes("mgo")) return "mgo";
-        return s || "direct";
-      }
-
-      function formatSince(dateLike) {
-        const t = new Date(dateLike || Date.now()).getTime();
-        if (Number.isNaN(t)) return "-";
-        const sec = Math.floor((Date.now() - t) / 1000);
-        if (sec < 60) return sec + "s active";
-        const min = Math.floor(sec / 60);
-        if (min < 60) return min + "m active";
-        const h = Math.floor(min / 60);
-        if (h < 24) return h + "h " + (min % 60) + "m active";
-        return Math.floor(h / 24) + "d active";
-      }
-
-      function fmtDate(v) {
-        if (!v) return "-";
-        const d = new Date(v);
-        if (Number.isNaN(d.getTime())) return "-";
-        return d.toLocaleString("es-ES");
-      }
-
-      function inferFlow(lead) {
-        if (String(lead.active_flow || "") === "6") return "6";
-        if (lead.of_activo) return "4";
-        if (lead.mgo_directo) return "1";
-        if (lead.mgo_en_canal && !lead.mgo_directo) return "2";
-        if (lead.telegram_activo && !lead.mgo_directo && !lead.mgo_en_canal && !lead.of_activo) return "3";
-        const updated = new Date(lead.updated_at || lead.created_at || Date.now()).getTime();
-        const days = (Date.now() - updated) / (1000 * 60 * 60 * 24);
-        if (!lead.winback_sent && (lead.mgo_directo || lead.mgo_en_canal) && days > 14) return "5";
-        return "3";
-      }
-
-      function flowRows(leads) {
-        const now = Date.now();
-        const f = {
-          "1": leads.filter((l) => !!l.mgo_directo),
-          "2": leads.filter((l) => !!l.mgo_en_canal && !l.mgo_directo),
-          "3": leads.filter((l) => !!l.telegram_activo && !l.mgo_directo && !l.mgo_en_canal && !l.of_activo),
-          "4": leads.filter((l) => !!l.of_activo),
-          "5": leads.filter((l) => !l.winback_sent && (l.mgo_directo || l.mgo_en_canal) && (now - new Date(l.updated_at || l.created_at || now).getTime()) > 14 * 24 * 3600 * 1000),
-          "6": leads.filter((l) => String(l.active_flow || "") === "6")
-        };
-
-        return Object.keys(f).map((id) => {
-          const rows = f[id];
-          const avgMs = rows.length
-            ? rows.reduce((acc, l) => acc + Math.max(0, new Date(l.updated_at || Date.now()).getTime() - new Date(l.created_at || Date.now()).getTime()), 0) / rows.length
-            : 0;
-          const latest = rows.length
-            ? Math.max(...rows.map((l) => new Date(l.updated_at || l.created_at || Date.now()).getTime()))
-            : 0;
-          const stale = rows.length > 0 && Date.now() - latest > 24 * 3600 * 1000;
-          return {
-            id,
-            name: FLOW_NAMES[id],
-            total: rows.length,
-            avg: rows.length ? Math.round(avgMs / (1000 * 60)) + " min" : "-",
-            health: rows.length === 0 || stale ? "WARNING" : "OPERATIONAL"
-          };
-        });
-      }
-
-      function downloadCsv(filename, rows) {
-        if (!rows.length) return;
-        const keys = Object.keys(rows[0]);
-        const csv = [keys.join(",")]
-          .concat(rows.map((r) => keys.map((k) => JSON.stringify(r[k] ?? "")).join(",")))
-          .join("\n");
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-
-      function StackedSourceChart({ leads }) {
-        const ref = useRef(null);
-        const instance = useRef(null);
-
-        useEffect(() => {
-          if (!ref.current || !window.Chart) return;
-          const sources = ["instagram", "tiktok", "x", "reddit", "mgo", "direct"];
-          const tg = sources.map((s) => leads.filter((l) => sourceOf(l) === s && l.telegram_activo).length);
-          const of = sources.map((s) => leads.filter((l) => sourceOf(l) === s && l.of_activo).length);
-
-          if (instance.current) instance.current.destroy();
-          instance.current = new window.Chart(ref.current, {
-            type: "bar",
-            data: {
-              labels: ["INSTA", "TIKTOK", "X", "REDDIT", "MGO", "DIRECT"],
-              datasets: [
-                { label: "Telegram", data: tg, backgroundColor: "#00e3fd" },
-                { label: "OnlyFans", data: of, backgroundColor: "#b6a0ff" }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { labels: { color: "#f8f5fd" } } },
-              scales: {
-                x: { stacked: true, ticks: { color: "#acaab1" }, grid: { color: "#2c2b33" } },
-                y: { stacked: true, ticks: { color: "#acaab1" }, grid: { color: "#2c2b33" } }
-              }
-            }
-          });
-          return () => instance.current && instance.current.destroy();
-        }, [leads]);
-
-        return <canvas ref={ref}></canvas>;
-      }
-
-      function DailyChart({ leads, events, range }) {
-        const ref = useRef(null);
-        const instance = useRef(null);
-
-        useEffect(() => {
-          if (!ref.current || !window.Chart) return;
-          const days = [];
-          for (let i = range - 1; i >= 0; i -= 1) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const key = d.toISOString().slice(0, 10);
-            days.push({ key, label: key.slice(5), newUsers: 0, tg: 0, of: 0 });
-          }
-          const map = Object.fromEntries(days.map((d) => [d.key, d]));
-
-          leads.forEach((l) => {
-            const k = String(l.created_at || "").slice(0, 10);
-            if (!map[k]) return;
-            map[k].newUsers += 1;
-            if (l.telegram_activo) map[k].tg += 1;
-          });
-          events.forEach((e) => {
-            if (String(e.boton_clickado || "").toLowerCase() !== "onlyfans") return;
-            const k = String(e.created_at || "").slice(0, 10);
-            if (map[k]) map[k].of += 1;
-          });
-
-          const rows = days.map((d) => map[d.key]);
-
-          if (instance.current) instance.current.destroy();
-          instance.current = new window.Chart(ref.current, {
-            type: "bar",
-            data: {
-              labels: rows.map((r) => r.label),
-              datasets: [
-                { label: "Nuevos", data: rows.map((r) => r.newUsers), backgroundColor: "#b6a0ff" },
-                { label: "Telegram", data: rows.map((r) => r.tg), backgroundColor: "#00e3fd" },
-                { label: "OnlyFans", data: rows.map((r) => r.of), backgroundColor: "#ff6c95" }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { labels: { color: "#f8f5fd" } } },
-              scales: {
-                x: { ticks: { color: "#acaab1" }, grid: { color: "#2c2b33" } },
-                y: { ticks: { color: "#acaab1" }, grid: { color: "#2c2b33" } }
-              }
-            }
-          });
-          return () => instance.current && instance.current.destroy();
-        }, [leads, events, range]);
-
-        return <canvas ref={ref}></canvas>;
-      }
-
-      function WorldMap({ topCountries }) {
-        const points = {
-          US: [38, -97], ES: [40, -4], MX: [23, -102], AR: [-34, -64], CO: [4, -74], CL: [-30, -71],
-          GB: [54, -2], FR: [46, 2], DE: [51, 10], IT: [42, 12], BR: [-14, -51], CA: [56, -106]
-        };
-
-        function project(lat, lon) {
-          const x = ((lon + 180) / 360) * 640;
-          const y = ((90 - lat) / 180) * 300;
-          return [x, y];
-        }
-
-        return (
-          <div className="rounded-xl border border-white/10 bg-card p-4">
-            <svg viewBox="0 0 640 300" className="h-44 w-full rounded bg-surface">
-              <rect x="0" y="0" width="640" height="300" fill="#131318" />
-              {topCountries.map((c, idx) => {
-                const code = String(c.code || "").toUpperCase();
-                const p = points[code] || null;
-                if (!p) return null;
-                const [x, y] = project(p[0], p[1]);
-                return <circle key={code + idx} cx={x} cy={y} r={5} fill="#00e3fd" opacity="0.9" />;
-              })}
-            </svg>
-            <div className="mt-3 space-y-2 text-xs text-muted">
-              {topCountries.slice(0, 5).map((c) => (
-                <div key={c.code} className="flex items-center justify-between">
-                  <span>{toFlag(c.country)} {c.country}</span>
-                  <span className="font-bold text-white">{c.perc}%</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      }
-
-      function Login({ onAuth }) {
-        const [password, setPassword] = useState("");
-        const [error, setError] = useState("");
-
-        const submit = (e) => {
-          e.preventDefault();
-          if (String(password).trim() !== String(ADMIN_PASSWORD).trim()) {
-            setError("Contrasena invalida");
-            return;
-          }
-          sessionStorage.setItem(SESSION_KEY, "1");
-          onAuth(true);
-        };
-
-        return (
-          <div className="min-h-screen bg-background flex items-center justify-center p-6">
-            <main className="w-full max-w-md rounded-2xl border border-white/10 bg-card p-8 shadow-2xl">
-              <h1 className="text-2xl font-black tracking-tight">Panel Admin</h1>
-              <p className="mt-1 text-xs uppercase tracking-widest text-muted">Acceso seguro</p>
-              <form className="mt-8 space-y-4" onSubmit={submit}>
-                <div>
-                  <label className="mb-2 block text-[11px] font-bold uppercase tracking-widest text-muted">Contrasena</label>
-                  <input
-                    type="password"
-                    className="w-full rounded-lg border border-white/20 bg-surface px-4 py-3 text-sm"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="******"
-                  />
-                </div>
-                {error ? <p className="text-xs text-red-300">{error}</p> : null}
-                <button className="w-full rounded-lg bg-gradient-to-r from-primary to-secondary px-4 py-3 text-sm font-black text-black">
-                  Entrar
-                </button>
-              </form>
-            </main>
-          </div>
-        );
-      }
-
-      function App() {
-        const [authed, setAuthed] = useState(sessionStorage.getItem(SESSION_KEY) === "1");
-        const [active, setActive] = useState("dashboard");
-        const [leads, setLeads] = useState([]);
-        const [events, setEvents] = useState([]);
-        const [messages, setMessages] = useState([]);
-        const [selectedLeadId, setSelectedLeadId] = useState(null);
-        const [loading, setLoading] = useState(true);
-        const [actionLoading, setActionLoading] = useState({});
-        const [feedback, setFeedback] = useState("");
-        const [search, setSearch] = useState("");
-        const [filtersOpen, setFiltersOpen] = useState(false);
-        const [range, setRange] = useState(30);
-        const [filters, setFilters] = useState({ utm: "all", country: "all", cupid: "all" });
-        const [botInput, setBotInput] = useState("");
-        const [changeFlow, setChangeFlow] = useState("3");
-
-        const selectedLead = useMemo(() => leads.find((l) => l.visitor_id === selectedLeadId) || null, [leads, selectedLeadId]);
-
-        const loadLeads = useCallback(async () => {
-          const { data, error } = await client.from("leads").select("*").order("updated_at", { ascending: false }).limit(5000);
-          if (!error) setLeads(data || []);
-        }, []);
-
-        const loadEvents = useCallback(async () => {
-          const { data, error } = await client.from("eventos").select("*").order("created_at", { ascending: false }).limit(5000);
-          if (!error) setEvents(data || []);
-        }, []);
-
-        const loadMessages = useCallback(async (visitorId) => {
-          if (!visitorId) return;
-          const { data, error } = await client.from("mensajes").select("*").eq("visitor_id", visitorId).order("created_at", { ascending: true }).limit(1000);
-          if (!error) setMessages(data || []);
-        }, []);
-
-        const reloadAll = useCallback(async () => {
-          setLoading(true);
-          await Promise.all([loadLeads(), loadEvents()]);
-          setLoading(false);
-        }, [loadLeads, loadEvents]);
-
-        useEffect(() => {
-          if (!authed) return;
-          reloadAll();
-        }, [authed, reloadAll]);
-
-        useEffect(() => {
-          if (selectedLeadId) loadMessages(selectedLeadId);
-        }, [selectedLeadId, loadMessages]);
-
-        useEffect(() => {
-          if (!authed) return;
-          const ch = client
-            .channel("admin-live")
-            .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => loadLeads())
-            .on("postgres_changes", { event: "*", schema: "public", table: "eventos" }, () => loadEvents())
-            .on("postgres_changes", { event: "*", schema: "public", table: "mensajes" }, () => selectedLeadId && loadMessages(selectedLeadId))
-            .subscribe();
-
-          const timer = setInterval(() => {
-            loadLeads();
-            loadEvents();
-            if (selectedLeadId) loadMessages(selectedLeadId);
-          }, 30000);
-
-          return () => {
-            client.removeChannel(ch);
-            clearInterval(timer);
-          };
-        }, [authed, loadLeads, loadEvents, loadMessages, selectedLeadId]);
-
-        const metrics = useMemo(() => {
-          return {
-            total: leads.length,
-            telegram: leads.filter((l) => l.telegram_activo).length,
-            of: leads.filter((l) => l.of_activo).length,
-            cupid: leads.filter((l) => l.cupidbot_activo).length
-          };
-        }, [leads]);
-
-        const funnels = useMemo(() => flowRows(leads), [leads]);
-
-        const topCountries = useMemo(() => {
-          const m = new Map();
-          leads.forEach((l) => {
-            const c = String(l.pais || "").trim();
-            if (!c) return;
-            m.set(c, (m.get(c) || 0) + 1);
-          });
-          const total = Math.max(1, leads.length);
-          return Array.from(m.entries())
-            .map(([country, count]) => ({ country, code: country.slice(0, 2).toUpperCase(), count, perc: ((count / total) * 100).toFixed(1) }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 10);
-        }, [leads]);
-
-        const statsBySource = useMemo(() => {
-          const m = new Map();
-          leads.forEach((l) => {
-            const s = sourceOf(l);
-            const row = m.get(s) || { source: s, total: 0, tg: 0, of: 0, convMs: 0, convCount: 0 };
-            row.total += 1;
-            if (l.telegram_activo) row.tg += 1;
-            if (l.of_activo) {
-              row.of += 1;
-              row.convMs += Math.max(0, new Date(l.updated_at || Date.now()) - new Date(l.created_at || Date.now()));
-              row.convCount += 1;
-            }
-            m.set(s, row);
-          });
-          return Array.from(m.values()).map((r) => ({
-            ...r,
-            tgPct: r.total ? ((r.tg / r.total) * 100).toFixed(1) : "0.0",
-            ofPct: r.total ? ((r.of / r.total) * 100).toFixed(1) : "0.0",
-            avgDays: r.convCount ? (r.convMs / r.convCount / (1000 * 60 * 60 * 24)).toFixed(1) : "-"
-          }));
-        }, [leads]);
-
-        const filteredLeads = useMemo(() => {
-          return leads.filter((l) => {
-            const src = sourceOf(l);
-            const flow = inferFlow(l);
-            const q = search.toLowerCase().trim();
-            const byQ = !q || String(l.visitor_id || "").toLowerCase().includes(q) || String(l.ciudad || "").toLowerCase().includes(q) || flow.includes(q);
-            const byUtm = filters.utm === "all" || src === filters.utm;
-            const byCountry = filters.country === "all" || String(l.pais || "").toLowerCase() === filters.country;
-            const byCupid = filters.cupid === "all" || (filters.cupid === "on" ? !!l.cupidbot_activo : !l.cupidbot_activo);
-            return byQ && byUtm && byCountry && byCupid;
-          });
-        }, [leads, search, filters]);
-
-        const leadsByFlow = useMemo(() => {
-          const g = { "1": [], "2": [], "3": [], "4": [], "5": [], "6": [] };
-          filteredLeads.forEach((l) => {
-            g[inferFlow(l)].push(l);
-          });
-          return g;
-        }, [filteredLeads]);
-
-        const conflicts = useMemo(() => leads.filter((l) => String(l.active_flow || "") === "6"), [leads]);
-
-        const resolvedHistory = useMemo(() => {
-          return events
-            .filter((e) => String(e.boton_clickado || "").toLowerCase().includes("resolve") || String(e.boton_clickado || "").toLowerCase().includes("resuelto"))
-            .slice(0, 50);
-        }, [events]);
-
-        const countriesFilter = useMemo(() => Array.from(new Set(leads.map((l) => String(l.pais || "").toLowerCase()).filter(Boolean))).sort(), [leads]);
-
-        const runAction = useCallback(async (key, fn, okMessage) => {
-          setActionLoading((s) => ({ ...s, [key]: true }));
-          setFeedback("");
-          try {
-            await fn();
-            if (okMessage) setFeedback(okMessage);
-            await reloadAll();
-            if (selectedLeadId) await loadMessages(selectedLeadId);
-          } catch (e) {
-            setFeedback("Error: " + (e?.message || "accion fallida"));
-          } finally {
-            setActionLoading((s) => ({ ...s, [key]: false }));
-          }
-        }, [reloadAll, selectedLeadId, loadMessages]);
-
-        const exportLeadsCsv = () => downloadCsv("reporte_leads.csv", leads);
-
-        if (!authed) return <Login onAuth={setAuthed} />;
-
-        const navItems = [
-          { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-          { id: "users", label: "Users", icon: "group" },
-          { id: "stats", label: "Statistics", icon: "leaderboard" },
-          { id: "alerts", label: "Alerts", icon: "notifications_active" },
-          { id: "profile", label: "User Profile", icon: "person" }
-        ];
-
-        return (
-          <div className="min-h-screen bg-background text-white">
-            <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col bg-[#131318] py-6">
-              <div className="mb-10 px-6">
-                <div className="mb-1 flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-primary to-secondary text-black">
-                    <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-                  </div>
-                  <span className="text-lg font-black">Neon Noir</span>
-                </div>
-                <p className="text-[10px] uppercase tracking-widest text-muted">Executive Suite</p>
-              </div>
-              <nav className="flex-1 space-y-1">
-                {navItems.map((n) => (
-                  <button
-                    key={n.id}
-                    onClick={() => setActive(n.id)}
-                    className={"flex w-full items-center gap-3 px-6 py-3 text-left text-sm transition " + (active === n.id ? "border-l-2 border-primary bg-primary/20 text-white" : "text-muted hover:bg-surface")}
-                  >
-                    <span className="material-symbols-outlined text-base">{n.icon}</span>
-                    {n.label}
-                  </button>
-                ))}
-              </nav>
-              <div className="px-6">
-                <button
-                  className="w-full rounded-lg bg-gradient-to-r from-primary to-secondary py-3 text-xs font-black text-black"
-                  onClick={() => runAction("bulkCupid", async () => {
-                    const ids = leads
-                      .filter((l) => inferFlow(l) === "3" && !l.cupidbot_activo)
-                      .map((l) => l.visitor_id);
-                    if (!ids.length) return;
-                    const { error } = await client.from("leads").update({ cupidbot_activo: true }).in("visitor_id", ids);
-                    if (error) throw error;
-                  }, "CupidBot activado para Flujo 3")}
-                >
-                  {actionLoading.bulkCupid ? "Activando..." : "Activate CupidBot"}
-                </button>
-                <button
-                  className="mt-3 w-full rounded-lg border border-white/20 bg-surface py-2 text-xs"
-                  onClick={() => {
-                    sessionStorage.removeItem(SESSION_KEY);
-                    setAuthed(false);
-                  }}
-                >
-                  Cerrar sesion
-                </button>
-              </div>
-            </aside>
-
-            <header className="fixed left-64 right-0 top-0 z-40 flex h-16 items-center justify-between bg-[#0e0e13] px-8 shadow-[0_24px_48px_rgba(0,0,0,0.5)]">
-              <div>
-                <h2 className="text-lg font-black tracking-tight">Panel Admin OFM</h2>
-                <p className="text-[11px] text-muted">Proyecto: krnabtkugfzfinwvfuzm</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button className="rounded-lg border border-white/20 bg-surface px-3 py-2 text-xs" onClick={reloadAll}>
-                  {loading ? "Recargando..." : "Refresh Data"}
-                </button>
-                <button className="rounded-lg bg-primary px-3 py-2 text-xs font-black text-black" onClick={exportLeadsCsv}>
-                  Export Report
-                </button>
-              </div>
-            </header>
-
-            <main className="ml-64 min-h-screen bg-background px-8 pb-10 pt-24">
-              {feedback ? <div className="mb-4 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm">{feedback}</div> : null}
-
-              {active === "dashboard" && (
-                <div className="space-y-8">
-                  <SectionErrorBoundary>
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-                      <div className="rounded-xl border border-white/10 bg-card p-6"><p className="text-xs text-muted">TOTAL USERS</p><p className="mt-1 text-3xl font-black">{metrics.total}</p></div>
-                      <div className="rounded-xl border border-white/10 bg-card p-6"><p className="text-xs text-muted">ACTIVE IN TELEGRAM</p><p className="mt-1 text-3xl font-black">{metrics.telegram}</p></div>
-                      <div className="rounded-xl border border-white/10 bg-card p-6"><p className="text-xs text-muted">OF CONVERSIONS</p><p className="mt-1 text-3xl font-black">{metrics.of}</p></div>
-                      <div className="rounded-xl border border-white/10 bg-card p-6"><p className="text-xs text-muted">CUPIDBOT ACTIVE</p><p className="mt-1 text-3xl font-black">{metrics.cupid}</p></div>
-                    </div>
-                  </SectionErrorBoundary>
-
-                  <SectionErrorBoundary>
-                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                      <div className="rounded-xl border border-white/10 bg-card p-6 xl:col-span-2">
-                        <h3 className="mb-4 text-lg font-bold">Distribucion por Fuente</h3>
-                        <div className="h-72"><StackedSourceChart leads={leads} /></div>
-                      </div>
-                      <WorldMap topCountries={topCountries} />
-                    </div>
-                  </SectionErrorBoundary>
-
-                  <SectionErrorBoundary>
-                    <div className="overflow-hidden rounded-xl border border-white/10 bg-card">
-                      <div className="border-b border-white/10 px-6 py-4"><h3 className="text-sm font-black uppercase">Estado de Flujos</h3></div>
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm">
-                          <thead className="bg-surface text-xs uppercase text-muted">
-                            <tr>
-                              <th className="px-6 py-3">Flow</th>
-                              <th className="px-6 py-3">Nombre</th>
-                              <th className="px-6 py-3">Usuarios</th>
-                              <th className="px-6 py-3">Avg Tiempo</th>
-                              <th className="px-6 py-3">Health</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {funnels.map((f) => (
-                              <tr key={f.id} className="border-t border-white/5">
-                                <td className="px-6 py-3 font-bold">F{f.id}</td>
-                                <td className="px-6 py-3">{f.name}</td>
-                                <td className="px-6 py-3">{f.total}</td>
-                                <td className="px-6 py-3">{f.avg}</td>
-                                <td className="px-6 py-3">
-                                  <span className={"rounded px-2 py-1 text-[10px] font-black " + (f.health === "OPERATIONAL" ? "bg-green-500/15 text-green-300" : "bg-yellow-500/15 text-yellow-300")}>{f.health}</span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </SectionErrorBoundary>
-                </div>
-              )}
-
-              {active === "users" && (
-                <SectionErrorBoundary>
-                  <div className="space-y-6">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <input className="w-full max-w-sm rounded-lg border border-white/20 bg-surface px-4 py-2 text-sm" placeholder="Buscar visitor_id, ciudad, flujo" value={search} onChange={(e) => setSearch(e.target.value)} />
-                      <button className="rounded-lg border border-white/20 bg-surface px-4 py-2 text-xs" onClick={() => setFiltersOpen((v) => !v)}>Filters</button>
-                      {filtersOpen && (
-                        <div className="flex flex-wrap gap-2 rounded-lg border border-white/20 bg-card p-2 text-xs">
-                          <select className="rounded bg-surface" value={filters.utm} onChange={(e) => setFilters((f) => ({ ...f, utm: e.target.value }))}>
-                            <option value="all">utm: all</option>
-                            <option value="instagram">instagram</option><option value="tiktok">tiktok</option><option value="x">x</option><option value="reddit">reddit</option><option value="mgo">mgo</option><option value="direct">direct</option>
-                          </select>
-                          <select className="rounded bg-surface" value={filters.country} onChange={(e) => setFilters((f) => ({ ...f, country: e.target.value }))}>
-                            <option value="all">pais: all</option>
-                            {countriesFilter.map((c) => <option key={c} value={c}>{c}</option>)}
-                          </select>
-                          <select className="rounded bg-surface" value={filters.cupid} onChange={(e) => setFilters((f) => ({ ...f, cupid: e.target.value }))}>
-                            <option value="all">cupid: all</option>
-                            <option value="on">activo</option>
-                            <option value="off">inactivo</option>
-                          </select>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex gap-4 overflow-x-auto pb-2">
-                      {Object.keys(leadsByFlow).map((id) => (
-                        <div key={id} className="w-80 shrink-0">
-                          <div className="mb-3 flex items-center justify-between px-1">
-                            <h3 className="text-sm font-black">F{id}: {FLOW_NAMES[id]}</h3>
-                            <span className="rounded bg-surface px-2 py-0.5 text-xs text-muted">{leadsByFlow[id].length}</span>
-                          </div>
-                          <div className="max-h-[70vh] space-y-3 overflow-y-auto rounded-xl border border-white/10 bg-surface p-3">
-                            {leadsByFlow[id].map((l) => {
-                              const src = sourceOf(l);
-                              const color = sourceColors[src] || "#9ca3af";
-                              return (
-                                <button
-                                  key={l.id || l.visitor_id}
-                                  onClick={() => {
-                                    setSelectedLeadId(l.visitor_id);
-                                    setActive("profile");
-                                  }}
-                                  className="w-full rounded-xl border border-white/10 bg-card p-3 text-left"
-                                >
-                                  <div className="mb-2 flex items-start justify-between">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full text-xs font-black text-black" style={{ background: color }}>
-                                      {String(l.visitor_id || "??").slice(0, 2).toUpperCase()}
-                                    </div>
-                                    <div className="text-right">
-                                      <p className="font-mono text-[10px] text-muted">ID: {String(l.visitor_id || "").slice(0, 8)}</p>
-                                      <span className="rounded px-2 py-0.5 text-[9px] font-bold uppercase" style={{ background: color + "33", color }}>
-                                        {src}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <p className="text-xs">{toFlag(l.pais)} {l.ciudad || "-"}, {l.pais || "-"}</p>
-                                  <div className="mt-2 flex items-center justify-between text-[10px] text-muted">
-                                    <span>{formatSince(l.created_at)}</span>
-                                    <span>{l.cupidbot_activo ? "🤖" : ""} {String(l.active_flow || "") === "6" ? "⚠️" : ""}</span>
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </SectionErrorBoundary>
-              )}
-
-              {active === "profile" && selectedLead && (
-                <SectionErrorBoundary>
-                  <div className="space-y-6">
-                    <div>
-                      <p className="text-xs text-muted">Users &gt; User Profile</p>
-                      <h2 className="mt-1 text-2xl font-black">{selectedLead.visitor_id}</h2>
-                      <p className="text-sm text-muted">Lead Gen Strategy: {FLOW_NAMES[inferFlow(selectedLead)]}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                      <div className="space-y-6 xl:col-span-1">
-                        <div className="rounded-xl border border-white/10 bg-card p-5 text-sm">
-                          <div className="mb-3 flex items-center justify-between"><h3 className="font-black">IDENTITY CORE</h3><span className="rounded bg-primary/15 px-2 py-0.5 text-[10px] text-primary">{selectedLead.telegram_user_id ? "VERIFIED" : "UNVERIFIED"}</span></div>
-                          <div className="space-y-2">
-                            <p>User ID: <span className="font-mono">{selectedLead.visitor_id}</span></p>
-                            <p>Origin: {toFlag(selectedLead.pais)} {selectedLead.pais || "-"}</p>
-                            <p>Acquisition Source: {sourceOf(selectedLead)}</p>
-                            <p>Primary Device: {selectedLead.dispositivo || "-"} / {String(selectedLead.user_agent || "").slice(0, 28) || "-"}</p>
-                            <p>Joined Date: {fmtDate(selectedLead.created_at)}</p>
-                            <p>Total Active Time: {formatSince(selectedLead.created_at)}</p>
-                          </div>
-                          <button
-                            className="mt-4 w-full rounded border border-white/20 bg-surface py-2 text-xs"
-                            onClick={() => {
-                              const own = events.filter((e) => e.visitor_id === selectedLead.visitor_id);
-                              const blob = new Blob([JSON.stringify(own, null, 2)], { type: "application/json" });
-                              const u = URL.createObjectURL(blob);
-                              const a = document.createElement("a");
-                              a.href = u;
-                              a.download = "logs_" + selectedLead.visitor_id + ".json";
-                              a.click();
-                              URL.revokeObjectURL(u);
-                            }}
-                          >
-                            Export Logs
-                          </button>
-                        </div>
-
-                        <div className="rounded-xl border border-white/10 bg-card p-5">
-                          <h3 className="mb-3 text-sm font-black">STRATEGIC ACTIONS</h3>
-                          <div className="grid grid-cols-2 gap-2 text-xs">
-                            <button className="rounded bg-surface px-2 py-2" onClick={() => runAction("actBot", async () => {
-                              const { error } = await client.from("leads").update({ cupidbot_activo: true, cupidbot_pausado: false }).eq("visitor_id", selectedLead.visitor_id);
-                              if (error) throw error;
-                            }, "Bot activated")}>{actionLoading.actBot ? "..." : "ACTIVATE BOT"}</button>
-                            <button className="rounded bg-surface px-2 py-2" onClick={() => runAction("pause", async () => {
-                              const { error } = await client.from("leads").update({ cupidbot_pausado: true, cupidbot_activo: false }).eq("visitor_id", selectedLead.visitor_id);
-                              if (error) throw error;
-                            }, "Session paused")}>{actionLoading.pause ? "..." : "PAUSE SESSION"}</button>
-                            <select className="rounded bg-surface px-2 py-2" value={changeFlow} onChange={(e) => setChangeFlow(e.target.value)}>
-                              <option value="1">F1</option><option value="2">F2</option><option value="3">F3</option><option value="4">F4</option><option value="5">F5</option><option value="6">F6</option>
-                            </select>
-                            <button className="rounded bg-surface px-2 py-2" onClick={() => runAction("chgFlow", async () => {
-                              const { error } = await client.from("leads").update({ active_flow: changeFlow }).eq("visitor_id", selectedLead.visitor_id);
-                              if (error) throw error;
-                            }, "Flow updated")}>{actionLoading.chgFlow ? "..." : "CHANGE FLOW"}</button>
-                            <button className="col-span-2 rounded bg-primary px-2 py-2 font-black text-black" onClick={() => runAction("vip", async () => {
-                              const { error } = await client.from("leads").update({ of_activo: true, cupidbot_activo: false, cupidbot_pausado: false, active_flow: "4" }).eq("visitor_id", selectedLead.visitor_id);
-                              if (error) throw error;
-                            }, "Upgraded to VIP")}>{actionLoading.vip ? "..." : "UPGRADE VIP"}</button>
-                            <button className="col-span-2 rounded border border-red-400/40 bg-red-500/10 px-2 py-2 text-red-300" onClick={() => runAction("conflict", async () => {
-                              const { error } = await client.from("leads").update({ active_flow: "6" }).eq("visitor_id", selectedLead.visitor_id);
-                              if (error) throw error;
-                            }, "Flagged for conflict")}>{actionLoading.conflict ? "..." : "FLAG FOR CONFLICT RESOLUTION"}</button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-6 xl:col-span-2">
-                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                          <div className="rounded-xl border border-white/10 bg-card p-4 text-center"><p className="text-[10px] text-muted">TELEGRAM</p><p className="mt-1 text-sm font-bold">{selectedLead.telegram_activo ? "@" + (selectedLead.telegram_user_id || "activo") : "Not Connected"}</p></div>
-                          <div className="rounded-xl border border-white/10 bg-card p-4 text-center"><p className="text-[10px] text-muted">OF ACCOUNT</p><p className="mt-1 text-sm font-bold">{selectedLead.of_activo ? "Connected" : "Not Connected"}</p></div>
-                          <div className="rounded-xl border border-white/10 bg-card p-4 text-center"><p className="text-[10px] text-muted">MGO DIRECT</p><p className="mt-1 text-sm font-bold">{selectedLead.mgo_directo ? "Active Link" : "No Link"}</p></div>
-                          <div className="rounded-xl border border-white/10 bg-card p-4 text-center"><p className="text-[10px] text-muted">MGO CHANNEL</p><p className="mt-1 text-sm font-bold">{selectedLead.mgo_en_canal ? "#" + (selectedLead.canal || "main") : "Not Joined"}</p></div>
-                          <div className="rounded-xl border border-white/10 bg-card p-4 text-center"><p className="text-[10px] text-muted">FLOW BADGE</p><p className="mt-1 text-sm font-bold">{FLOW_NAMES[inferFlow(selectedLead)]}</p></div>
-                          <div className="rounded-xl border border-white/10 bg-card p-4 text-center"><p className="text-[10px] text-muted">CUPIDBOT STATUS</p><p className="mt-1 text-sm font-bold">{selectedLead.cupidbot_activo ? "RUNNING" : selectedLead.cupidbot_pausado ? "PAUSED" : "INACTIVE"}</p></div>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                          <div className="rounded-xl border border-white/10 bg-card p-4">
-                            <h3 className="mb-4 text-sm font-black">ACTIVITY TIMELINE</h3>
-                            <div className="max-h-80 space-y-3 overflow-y-auto text-xs">
-                              <div className="rounded border border-white/10 bg-surface p-3">
-                                <p className="font-bold">Arrived on Landing Page</p>
-                                <p className="text-muted">Referral: {sourceOf(selectedLead)}</p>
-                              </div>
-                              {selectedLead.telegram_activo ? <div className="rounded border border-white/10 bg-surface p-3"><p className="font-bold">Joined Telegram Channel</p></div> : null}
-                              {selectedLead.of_activo ? <div className="rounded border border-white/10 bg-surface p-3"><p className="font-bold">OF Conversion Completed</p></div> : null}
-                              {events
-                                .filter((e) => e.visitor_id === selectedLead.visitor_id)
-                                .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-                                .map((e) => {
-                                  const click = String(e.boton_clickado || "").toLowerCase();
-                                  const title = click === "telegram" ? "Telegram Handshake" : click === "onlyfans" ? "OF Click Detected" : "Evento";
-                                  const desc = click === "telegram" ? "User clicked Telegram link" : click === "onlyfans" ? "User visited OnlyFans profile" : String(e.boton_clickado || "Sin detalle");
-                                  return (
-                                    <div key={e.id} className="rounded border border-white/10 bg-surface p-3">
-                                      <p className="text-[10px] text-muted">{fmtDate(e.created_at)}</p>
-                                      <p className="font-bold">{title}</p>
-                                      <p className="text-muted">{desc}</p>
-                                    </div>
-                                  );
-                                })}
-                            </div>
-                          </div>
-
-                          <div className="rounded-xl border border-white/10 bg-card p-4">
-                            <h3 className="mb-4 text-sm font-black">LIVE BOT SESSION</h3>
-                            <div className="max-h-72 space-y-3 overflow-y-auto">
-                              {messages.length === 0 ? <p className="text-xs text-muted">No bot session initiated yet</p> : null}
-                              {messages.map((m) => {
-                                const isBot = String(m.tipo || "").toLowerCase() === "bot";
-                                return (
-                                  <div key={m.id} className={"flex " + (isBot ? "justify-start" : "justify-end")}>
-                                    <div className={"max-w-[85%] rounded-lg px-3 py-2 text-xs " + (isBot ? "bg-surface text-white" : "bg-secondary/20 text-secondary")}>
-                                      <p className="mb-1 text-[10px] font-bold opacity-80">{isBot ? "BOT (" + (m.bot_tipo || "CupidBot") + ")" : "USUARIO"}</p>
-                                      <p>{m.contenido}</p>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div className="mt-3 flex gap-2">
-                              <input className="flex-1 rounded border border-white/20 bg-surface px-3 py-2 text-xs" value={botInput} onChange={(e) => setBotInput(e.target.value)} placeholder="Force bot response..." />
-                              <button
-                                className="rounded bg-primary px-3 py-2 text-xs font-black text-black"
-                                onClick={() => runAction("forceMsg", async () => {
-                                  if (!botInput.trim()) return;
-                                  const { error } = await client.from("mensajes").insert({ visitor_id: selectedLead.visitor_id, tipo: "bot", bot_tipo: "cupidbot", contenido: botInput.trim() });
-                                  if (error) throw error;
-                                  setBotInput("");
-                                }, "Respuesta enviada")}
-                              >
-                                {actionLoading.forceMsg ? "..." : "Enviar"}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SectionErrorBoundary>
-              )}
-
-              {active === "stats" && (
-                <SectionErrorBoundary>
-                  <div className="space-y-6">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <h3 className="text-xl font-black">Estadisticas</h3>
-                      <div className="flex items-center gap-2">
-                        <select className="rounded border border-white/20 bg-surface px-2 py-1 text-xs" value={range} onChange={(e) => setRange(Number(e.target.value))}>
-                          <option value={7}>Last 7 Days</option>
-                          <option value={30}>Last 30 Days</option>
-                          <option value={90}>Last 90 Days</option>
-                        </select>
-                        <button className="rounded bg-primary px-3 py-2 text-xs font-black text-black" onClick={() => downloadCsv("estadisticas_por_fuente.csv", statsBySource)}>Export Report</button>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      <div className="rounded-xl border border-white/10 bg-card p-4"><p className="text-xs text-muted">Total Conversions</p><p className="text-2xl font-black">{leads.filter((l) => l.of_activo).length}</p></div>
-                      <div className="rounded-xl border border-white/10 bg-card p-4"><p className="text-xs text-muted">Telegram Reach</p><p className="text-2xl font-black">{leads.filter((l) => l.telegram_activo).length}</p></div>
-                      <div className="rounded-xl border border-white/10 bg-card p-4"><p className="text-xs text-muted">OF Click-through</p><p className="text-2xl font-black">{events.filter((e) => String(e.boton_clickado || "").toLowerCase() === "onlyfans").length}</p></div>
-                      <div className="rounded-xl border border-white/10 bg-card p-4"><p className="text-xs text-muted">Avg Conversion Time</p><p className="text-2xl font-black">{statsBySource.filter((r) => r.avgDays !== "-").length ? (statsBySource.filter((r) => r.avgDays !== "-").reduce((a, b) => a + Number(b.avgDays), 0) / statsBySource.filter((r) => r.avgDays !== "-").length).toFixed(1) + "d" : "-"}</p></div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                      <div className="rounded-xl border border-white/10 bg-card p-4">
-                        <h4 className="mb-3 font-bold">New Users Velocity / Channel Conversions</h4>
-                        <div className="h-72"><DailyChart leads={leads} events={events} range={range} /></div>
-                      </div>
-                      <div className="rounded-xl border border-white/10 bg-card p-4">
-                        <h4 className="mb-3 font-bold">CupidBot Status</h4>
-                        <div className="space-y-2 text-sm">
-                          <p>Sessions started: <strong>{leads.filter((l) => l.cupidbot_activo || l.last_bot_action).length}</strong></p>
-                          <p>Conversion rate: <strong>{(() => {
-                            const withCupid = leads.filter((l) => l.cupidbot_activo || l.last_bot_action);
-                            if (!withCupid.length) return "0.0%";
-                            const conv = withCupid.filter((l) => l.of_activo).length;
-                            return ((conv / withCupid.length) * 100).toFixed(1) + "%";
-                          })()}</strong></p>
-                          <p>Avg interaction: <strong>{(() => {
-                            if (!leads.length) return "0s";
-                            const avg = leads.reduce((acc, l) => acc + Math.max(0, (new Date(l.updated_at || Date.now()) - new Date(l.created_at || Date.now())) / 1000), 0) / leads.length;
-                            return avg.toFixed(1) + "s";
-                          })()}</strong></p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                      <div className="rounded-xl border border-white/10 bg-card p-4 xl:col-span-2">
-                        <h4 className="mb-3 font-bold">Performance by Source</h4>
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-left text-xs">
-                            <thead className="text-muted">
-                              <tr><th className="py-2">Source</th><th>Total</th><th>% TG</th><th>% OF</th><th>Avg dias</th></tr>
-                            </thead>
-                            <tbody>
-                              {statsBySource.map((r) => (
-                                <tr key={r.source} className="border-t border-white/10"><td className="py-2 font-bold uppercase">{r.source}</td><td>{r.total}</td><td>{r.tgPct}%</td><td>{r.ofPct}%</td><td>{r.avgDays}</td></tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <WorldMap topCountries={topCountries} />
-                    </div>
-                  </div>
-                </SectionErrorBoundary>
-              )}
-
-              {active === "alerts" && (
-                <SectionErrorBoundary>
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-2xl font-black">System Alerts</h2>
-                      <p className="text-sm text-muted">Conflictos activos y resoluciones</p>
-                    </div>
-
-                    <div className="rounded-xl border border-white/10 bg-card">
-                      <div className="border-b border-white/10 px-6 py-4"><h3 className="text-sm font-black uppercase text-tertiary">ACTIVE CONFLICTS ({conflicts.length})</h3></div>
-                      <div className="divide-y divide-white/5">
-                        {conflicts.length === 0 ? <p className="p-4 text-xs text-muted">No hay conflictos activos</p> : null}
-                        {conflicts.map((l) => (
-                          <div key={l.id || l.visitor_id} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
-                            <div>
-                              <div className="mb-1 inline-block rounded bg-tertiary/20 px-2 py-0.5 text-[10px] font-black text-tertiary">CRITICAL</div>
-                              <p className="font-bold">{l.visitor_id}</p>
-                              <p className="text-xs text-muted">{formatSince(l.updated_at)} · Multiple variables active simultaneously - manual intervention required</p>
-                            </div>
-                            <div className="flex gap-2">
-                              <button className="rounded border border-yellow-400/40 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200" onClick={() => runAction("take-" + l.visitor_id, async () => {
-                                const flow = l.telegram_activo ? "3" : l.mgo_directo ? "1" : "2";
-                                const { error } = await client.from("leads").update({ active_flow: flow }).eq("visitor_id", l.visitor_id);
-                                if (error) throw error;
-                                setSelectedLeadId(l.visitor_id);
-                                setActive("profile");
-                              }, "Take control aplicado")}>Take Control</button>
-                              <button className="rounded border border-green-400/40 bg-green-500/10 px-3 py-2 text-xs text-green-200" onClick={() => runAction("resolve-" + l.visitor_id, async () => {
-                                const { error } = await client.from("leads").update({ active_flow: null, cupidbot_activo: false }).eq("visitor_id", l.visitor_id);
-                                if (error) throw error;
-                              }, "Conflict resolved")}>Resolve</button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="rounded-xl border border-white/10 bg-card">
-                      <div className="border-b border-white/10 px-6 py-4"><h3 className="text-sm font-black uppercase">RESOLVED HISTORY</h3></div>
-                      <div className="divide-y divide-white/5">
-                        {resolvedHistory.length === 0 ? <p className="p-4 text-xs text-muted">Sin historial de resolucion</p> : null}
-                        {resolvedHistory.map((e) => (
-                          <div key={e.id} className="p-4 text-sm">
-                            <p className="font-bold">{e.visitor_id || e.request_id || "-"}</p>
-                            <p className="text-xs text-muted">{String(e.boton_clickado || "resuelto")}</p>
-                            <p className="text-[11px] text-muted">{fmtDate(e.created_at)}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </SectionErrorBoundary>
-              )}
-            </main>
-          </div>
-        );
-      }
-
-      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    </script>
-  </body>
-</html>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-40 bg-[#0e0e13] shadow-[0px_24px_48px_rgba(0,0,0,0.5)] flex items-center justify-between px-6 h-16 font-['Inter'] antialiased text-sm tracking-tight border-none">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#f8f5fd]">Admin Panel</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-[#b6a0ff] font-semibold hover:text-[#f8f5fd] transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-[#acaab1] hover:text-[#f8f5fd] transition-colors duration-200" href="#">Analytics</a>
+<a class="text-[#acaab1] hover:text-[#f8f5fd] transition-colors duration-200" href="#">Management</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#acaab1] hover:text-[#f8f5fd] active:scale-95 duration-150 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-[#acaab1] hover:text-[#f8f5fd] active:scale-95 duration-150 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden ml-2 ring-1 ring-outline-variant/20">
+<img alt="User profile avatar" data-alt="close-up portrait of a sharp dressed executive in a dark studio setting with dramatic neon rim lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3O110-KzzPtwdvrL1zZYz7vQ104mNdSzzCon0NbD0o18QD0h2QWq6Lr0i8ACVwuuXAIgW3eS5TK8IyibVDY6no9jqN7n7mIyxtzXwbrgGe4j07-r1AKYB7LXDehYL-_x2YuMPLFcOoDXrvkkvVGD9ElLnCRjhJnheczDZSTInIT29Wy8e67neQ6X-Zf7x_MZmnJHL0k-rOxc-FI4iOfw4B92OtYOlINg30bj7SIg4cNe-b8xgrDRqeBM3wQb67Wqa6zY6zTAZMLQ"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-50 bg-[#131318] flex flex-col py-6 font-['Inter'] text-sm font-medium border-none">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded bg-gradient-to-br from-primary to-primary-dim flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="text-lg font-black text-[#f8f5fd]">Neon Noir</span>
+</div>
+<p class="text-[10px] uppercase tracking-widest text-[#acaab1] opacity-60">Executive Suite</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-[#f8f5fd] bg-gradient-to-r from-[#b6a0ff]/20 to-transparent border-l-2 border-[#b6a0ff] py-3 px-6 hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 text-[#acaab1] py-3 px-6 hover:bg-[#19191f] hover:text-[#00e3fd] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+                Users
+            </a>
+<a class="flex items-center gap-3 text-[#acaab1] py-3 px-6 hover:bg-[#19191f] hover:text-[#00e3fd] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+                Statistics
+            </a>
+<a class="flex items-center gap-3 text-[#acaab1] py-3 px-6 hover:bg-[#19191f] hover:text-[#00e3fd] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">notifications_active</span>
+                Alerts
+            </a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-gradient-to-r from-primary to-primary-dim py-3 px-4 rounded-lg text-on-primary-fixed font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 duration-150">
+<span class="material-symbols-outlined text-sm">smart_toy</span>
+                Activate CupidBot
+            </button>
+<div class="mt-8 space-y-1 border-t border-outline-variant/10 pt-4">
+<a class="flex items-center gap-3 text-[#acaab1] py-2 hover:text-[#f8f5fd] transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 text-[#acaab1] py-2 hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">logout</span>
+                    Logout
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 pt-16 p-8 min-h-screen bg-surface">
+<!-- Header Section -->
+<header class="mb-10 flex justify-between items-end">
+<div>
+<h1 class="text-3xl font-extrabold tracking-tighter text-on-surface mb-1">Executive Dashboard</h1>
+<p class="text-on-surface-variant">Real-time performance metrics and user flow analysis.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-container-high text-xs font-bold text-on-surface-variant hover:text-on-surface border border-outline-variant/20 rounded transition-all">Export Report</button>
+<button class="px-4 py-2 bg-primary text-on-primary-fixed text-xs font-bold rounded shadow-lg shadow-primary/10">Refresh Data</button>
+</div>
+</header>
+<!-- Top Metrics Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-surface-container-high p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-8 -mt-8 group-hover:bg-primary/10 transition-colors"></div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-medium mb-1 flex items-center gap-1 uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">person</span> Total Users
+                    </span>
+<span class="text-2xl font-black text-on-surface tabular-nums">1,284,592</span>
+<div class="mt-4 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">+12.4%</span>
+<span class="text-[10px] text-on-surface-variant">vs last month</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-high p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-secondary/5 rounded-full -mr-8 -mt-8 group-hover:bg-secondary/10 transition-colors"></div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-medium mb-1 flex items-center gap-1 uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">send</span> Active in Telegram
+                    </span>
+<span class="text-2xl font-black text-on-surface tabular-nums">412,083</span>
+<div class="mt-4 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">+8.1%</span>
+<span class="text-[10px] text-on-surface-variant">online now</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-high p-6 relative overflow-hidden group border-l-2 border-tertiary">
+<div class="absolute top-0 right-0 w-24 h-24 bg-tertiary/5 rounded-full -mr-8 -mt-8 group-hover:bg-tertiary/10 transition-colors"></div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-medium mb-1 flex items-center gap-1 uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">payments</span> OF Conversions
+                    </span>
+<span class="text-2xl font-black text-on-surface tabular-nums">$18,294.50</span>
+<div class="mt-4 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container text-[10px] font-bold">Trend Peak</span>
+<span class="text-[10px] text-on-surface-variant">this week</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-high p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-8 -mt-8 group-hover:bg-primary/10 transition-colors"></div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-medium mb-1 flex items-center gap-1 uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">forum</span> CupidBot Active
+                    </span>
+<span class="text-2xl font-black text-on-surface tabular-nums">2,841</span>
+<div class="mt-4 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-bright text-on-surface text-[10px] font-bold">98% Success</span>
+<span class="text-[10px] text-on-surface-variant">live convos</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Section: Traffic and Map -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+<!-- Traffic Chart Card -->
+<div class="lg:col-span-2 bg-surface-container p-6 rounded-lg">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-lg font-bold text-on-surface">Traffic Source Distribution</h2>
+<select class="bg-surface-container-highest border-none text-[10px] text-on-surface-variant rounded uppercase font-bold tracking-widest px-3 py-1 ring-1 ring-outline-variant/20">
+<option>Past 7 Days</option>
+<option>Past 30 Days</option>
+</select>
+</div>
+<div class="flex items-end justify-between h-64 gap-4 px-4">
+<!-- Instagram -->
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full flex flex-col-reverse h-48 rounded-sm overflow-hidden bg-surface-container-low">
+<div class="bg-primary h-[40%] w-full" title="Mobile"></div>
+<div class="bg-primary-dim h-[30%] w-full opacity-60" title="Desktop"></div>
+<div class="bg-secondary h-[20%] w-full" title="Organic"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Insta</span>
+</div>
+<!-- TikTok -->
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full flex flex-col-reverse h-56 rounded-sm overflow-hidden bg-surface-container-low">
+<div class="bg-primary h-[55%] w-full" title="Mobile"></div>
+<div class="bg-primary-dim h-[20%] w-full opacity-60" title="Desktop"></div>
+<div class="bg-secondary h-[15%] w-full" title="Organic"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">TikTok</span>
+</div>
+<!-- X -->
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full flex flex-col-reverse h-40 rounded-sm overflow-hidden bg-surface-container-low">
+<div class="bg-primary h-[30%] w-full" title="Mobile"></div>
+<div class="bg-primary-dim h-[40%] w-full opacity-60" title="Desktop"></div>
+<div class="bg-secondary h-[10%] w-full" title="Organic"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">X</span>
+</div>
+<!-- Reddit -->
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full flex flex-col-reverse h-32 rounded-sm overflow-hidden bg-surface-container-low">
+<div class="bg-primary h-[20%] w-full" title="Mobile"></div>
+<div class="bg-primary-dim h-[30%] w-full opacity-60" title="Desktop"></div>
+<div class="bg-secondary h-[20%] w-full" title="Organic"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Reddit</span>
+</div>
+<!-- MGO -->
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full flex flex-col-reverse h-44 rounded-sm overflow-hidden bg-surface-container-low">
+<div class="bg-primary h-[45%] w-full" title="Mobile"></div>
+<div class="bg-primary-dim h-[25%] w-full opacity-60" title="Desktop"></div>
+<div class="bg-secondary h-[10%] w-full" title="Organic"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">MGO</span>
+</div>
+<!-- Direct -->
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full flex flex-col-reverse h-24 rounded-sm overflow-hidden bg-surface-container-low">
+<div class="bg-primary h-[30%] w-full" title="Mobile"></div>
+<div class="bg-primary-dim h-[20%] w-full opacity-60" title="Desktop"></div>
+<div class="bg-secondary h-[10%] w-full" title="Organic"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Direct</span>
+</div>
+</div>
+<div class="mt-8 flex justify-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-[10px] text-on-surface-variant uppercase font-medium">Mobile Traffic</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-dim opacity-60"></span>
+<span class="text-[10px] text-on-surface-variant uppercase font-medium">Desktop Web</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] text-on-surface-variant uppercase font-medium">Organic Referral</span>
+</div>
+</div>
+</div>
+<!-- World Map Card -->
+<div class="bg-surface-container-low p-6 flex flex-col relative overflow-hidden">
+<h2 class="text-lg font-bold text-on-surface mb-6">User Reach</h2>
+<div class="flex-1 rounded bg-surface-container-highest/20 relative border border-outline-variant/10">
+<img class="w-full h-full object-cover opacity-30 grayscale contrast-125" data-alt="abstract monochromatic world map on dark textured background with subtle digital grid overlay" data-location="Global" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe_tGKktgi8YpuhTZZ-HFndIeEjZAE5oPNDvRksvT8Tc8LKn5eG9wUwDlnj466gxsOvpoD6lSa31V5UC6lO590iwhS304LOufcIGMLgm8Rd7aPkdFo-URV7Snh5r9oaxOGZe_2t_JrhMCTIpp4IFIdsAWQPUCX368NTVI8SVPoDbp9MBdyQxyP2woBTALWkYjG36vDmOAorNd7rtfCZBnsBKBV-66Gzux12gG-PkXL2jgG7bFnKGVqDMfTXNAwMsuE2Eh7yOKjCAY"/>
+<!-- Map Dots Overlay -->
+<div class="absolute top-1/4 left-1/4 w-2 h-2 bg-secondary rounded-full animate-pulse shadow-[0_0_8px_rgba(0,227,253,0.8)]"></div>
+<div class="absolute top-1/3 left-1/2 w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(182,160,255,0.8)]"></div>
+<div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-secondary rounded-full animate-pulse shadow-[0_0_8px_rgba(0,227,253,0.8)]"></div>
+<div class="absolute top-1/2 right-1/4 w-2 h-2 bg-tertiary rounded-full animate-pulse shadow-[0_0_8px_rgba(255,108,149,0.8)]"></div>
+</div>
+<div class="mt-4 space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">North America</span>
+<span class="text-xs font-bold text-secondary">42%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 42%"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Europe</span>
+<span class="text-xs font-bold text-primary">31%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 31%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Flow Summary Table -->
+<section class="bg-surface-container-high overflow-hidden shadow-2xl">
+<div class="px-6 py-4 border-b border-outline-variant/5 flex justify-between items-center">
+<h2 class="text-lg font-bold text-on-surface uppercase tracking-tight">Active User Funnel Status</h2>
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Live Updates Enabled</span>
+<span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest text-on-surface-variant uppercase text-[10px] font-bold tracking-widest">
+<th class="px-6 py-4">Flow Segment</th>
+<th class="px-6 py-4">Total Users</th>
+<th class="px-6 py-4">Avg Completion Time</th>
+<th class="px-6 py-4">Current Load</th>
+<th class="px-6 py-4">Health Status</th>
+<th class="px-6 py-4 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">F1</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Flow 1: Landing Intake</p>
+<p class="text-[10px] text-on-surface-variant">Primary capture point</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">42,901</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">0:45 min</td>
+<td class="px-6 py-4">
+<div class="w-24 bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 65%"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Operational</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">F2</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Flow 2: Telegram Auth</p>
+<p class="text-[10px] text-on-surface-variant">Verification stage</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">31,502</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">1:12 min</td>
+<td class="px-6 py-4">
+<div class="w-24 bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 82%"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Operational</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">F3</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Flow 3: Persona Selection</p>
+<p class="text-[10px] text-on-surface-variant">User preference mapping</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">18,220</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">3:40 min</td>
+<td class="px-6 py-4">
+<div class="w-24 bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full" style="width: 94%"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-error-container/10 text-error text-[10px] font-bold uppercase tracking-widest border border-error-container/20">High Latency</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">F4</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Flow 4: Chat Initialization</p>
+<p class="text-[10px] text-on-surface-variant">Bot connection handshake</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">9,412</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">0:22 min</td>
+<td class="px-6 py-4">
+<div class="w-24 bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 25%"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Operational</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">F5</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Flow 5: Conversion Link</p>
+<p class="text-[10px] text-on-surface-variant">Traffic handover to OF</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">5,103</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">0:12 min</td>
+<td class="px-6 py-4">
+<div class="w-24 bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 15%"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Operational</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">F6</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Flow 6: Post-Conversion</p>
+<p class="text-[10px] text-on-surface-variant">Retention and analytics</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">3,892</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">--</td>
+<td class="px-6 py-4">
+<div class="w-24 bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 10%"></div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Operational</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<script src="./panel-nav.js"></script>
+<script src="./panel-data.js"></script>
+</body></html>
