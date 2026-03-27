@@ -1,0 +1,99 @@
+[
+  {
+    "createdAt": "2026-03-25T18:59:28.417Z",
+    "updatedAt": "2026-03-25T18:59:42.000Z",
+    "id": "6A18pguEefwdO3gt",
+    "name": "alerta_conflicto",
+    "active": true,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "alerta",
+          "responseMode": "responseNode"
+        },
+        "id": "webhook-alerta",
+        "name": "Webhook /alerta",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          260,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{$env.WEBHOOK_URL}}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ { source: 'n8n-alerta-conflicto', received_at: new Date().toISOString(), payload: $json } }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "send-whatsapp-alert",
+        "name": "Send WhatsApp Alert",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          520,
+          300
+        ],
+        "continueOnFail": true
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ { ok: true } }}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "id": "respond-ok",
+        "name": "Respond 200",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          760,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook /alerta": {
+        "main": [
+          [
+            {
+              "node": "Send WhatsApp Alert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send WhatsApp Alert": {
+        "main": [
+          [
+            {
+              "node": "Respond 200",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {},
+    "staticData": null,
+    "meta": null,
+    "pinData": null,
+    "versionId": "1",
+    "triggerCount": 1,
+    "tags": []
+  }
+]

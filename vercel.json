@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/proxy",
+      "destination": "https://krnabtkugfzfinwvfuzm.supabase.co/functions/v1/api-proxy"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "alerta_conflicto_v1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alerta",
+        "responseMode": "onReceived",
+        "responseData": "={{ { ok: true } }}"
+      },
+      "id": "webhook-alerta-v1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        260,
+        300
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

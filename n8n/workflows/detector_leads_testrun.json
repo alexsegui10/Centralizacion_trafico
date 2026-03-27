@@ -1,0 +1,396 @@
+{
+  "name": "detector_leads_testrun",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "sched-5min",
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cutoff = new Date(Date.now() - 5 * 60 * 1000).toISOString();\nreturn [{ json: { cutoff } }];"
+      },
+      "id": "build-cutoff",
+      "name": "Build 5m Cutoff",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "visitor_id,utm_source,telegram_activo,of_activo,updated_at,active_flow,telegram_user_id"
+            },
+            {
+              "name": "telegram_activo",
+              "value": "is.true"
+            },
+            {
+              "name": "of_activo",
+              "value": "is.false"
+            },
+            {
+              "name": "updated_at",
+              "value": "={{'gt.' + $json.cutoff}}"
+            },
+            {
+              "name": "active_flow",
+              "value": "is.null"
+            },
+            {
+              "name": "telegram_user_id",
+              "value": "not.is.null"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "fetch-leads",
+      "name": "Fetch Eligible Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        670,
+        300
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItem = $input.first();\nconst payload = inputItem?.json;\n\nif (Array.isArray(payload)) {\n  return payload.map((lead) => ({ json: lead }));\n}\n\nif (payload && Array.isArray(payload.body)) {\n  return payload.body.map((lead) => ({ json: lead }));\n}\n\nif (payload && typeof payload === 'object') {\n  return [{ json: payload }];\n}\n\nreturn [];"
+      },
+      "id": "to-items",
+      "name": "Array to Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{['instagram','tiktok','twitter','reddit'].includes(($json.utm_source || '').toLowerCase())}}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-cold",
+      "name": "Is Cold Traffic",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1130,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{($json.utm_source || '').toLowerCase()}}",
+              "rightValue": "direct",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-direct",
+      "name": "Is Direct",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1130,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'F3-Flow3 placeholder: bienvenida tráfico frío | visitor_id=' + $json.visitor_id } }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "send-cold",
+      "name": "Send Telegram Flow 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        160
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Array to Items'].json.visitor_id)}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { last_bot_action: new Date().toISOString(), active_flow: '3' } }}"
+      },
+      "id": "update-cold",
+      "name": "Update Lead Flow 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        160
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'F3-Flow2 placeholder: ¿buscas algo? | visitor_id=' + $json.visitor_id } }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "send-direct",
+      "name": "Send Telegram Flow 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        460
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Array to Items'].json.visitor_id)}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { last_bot_action: new Date().toISOString(), active_flow: '2' } }}"
+      },
+      "id": "update-direct",
+      "name": "Update Lead Flow 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        460
+      ],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Build 5m Cutoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build 5m Cutoff": {
+      "main": [
+        [
+          {
+            "node": "Fetch Eligible Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Eligible Leads": {
+      "main": [
+        [
+          {
+            "node": "Array to Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Array to Items": {
+      "main": [
+        [
+          {
+            "node": "Is Cold Traffic",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Direct",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Cold Traffic": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Flow 3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send Telegram Flow 3": {
+      "main": [
+        [
+          {
+            "node": "Update Lead Flow 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Direct": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Flow 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send Telegram Flow 2": {
+      "main": [
+        [
+          {
+            "node": "Update Lead Flow 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

@@ -1,0 +1,216 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --border: #222222;
+  --text-primary: #f5f5f5;
+  --text-secondary: #888888;
+  --accent: #f0e6d3;
+  --accent-hover: #ffffff;
+  --btn-of: #00aff0;
+  --btn-of-hover: #0090cc;
+  --btn-tg: #229ed9;
+  --btn-tg-hover: #1a7fb5;
+  --max-width: 430px;
+  --radius: 12px;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+  background: #2f3250;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.app {
+  width: min(100%, var(--max-width));
+  min-height: 100dvh;
+  background: var(--bg);
+  padding: 0 14px 14px;
+}
+
+.hero {
+  margin: 0 -14px;
+  height: 418px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+  display: block;
+  filter: saturate(0.9) contrast(1.06);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0) 0%,
+    rgba(10, 10, 10, 0.06) 30%,
+    rgba(10, 10, 10, 0.22) 54%,
+    rgba(10, 10, 10, 0.46) 72%,
+    rgba(10, 10, 10, 0.72) 88%,
+    rgba(10, 10, 10, 0.96) 100%
+  );
+  pointer-events: none;
+}
+
+.identity {
+  margin-top: -132px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  padding: 0 8px;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .08s;
+}
+
+.identity h1 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.identity p {
+  margin-top: 8px;
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 500;
+  color: rgba(245, 245, 245, 0.78);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cards {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .16s;
+}
+
+.card {
+  position: relative;
+  display: block;
+  height: 194px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  transition: transform .22s ease, border-color .22s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(9, 10, 14, 0.72) 0%,
+    rgba(9, 10, 14, 0.3) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.badge-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(2, 25, 36, 0.4);
+  flex-shrink: 0;
+}
+
+.badge-icon.of {
+  background: var(--btn-of);
+}
+
+.badge-icon.tg {
+  background: var(--btn-tg);
+}
+
+.badge-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+footer {
+  margin-top: 14px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .24s;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 430px) {
+  .hero { height: 390px; }
+  .identity { margin-top: -122px; }
+  .identity h1 { font-size: 38px; }
+  .identity p { font-size: 15px; }
+  .cards { margin-top: 12px; }
+  .card { height: 182px; }
+  .badge { font-size: 15px; }
+  footer { font-size: 11px; }
+}

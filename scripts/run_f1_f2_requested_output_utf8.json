@@ -1,0 +1,381 @@
+{
+  "prefix": "test-batch-1774473919233",
+  "results": [
+    {
+      "test": "F1.1",
+      "inserted": {
+        "fingerprint": "fp_test-batch-1774473919233_deviceA"
+      },
+      "executed": "GET target=visitor",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "visitor_id": null
+        }
+      }
+    },
+    {
+      "test": "F1.2",
+      "inserted": {
+        "request_id": "f7504fd5-6e3e-42a7-9225-67506043fadc",
+        "visitor_id": "test-batch-1774473919233-f1-user",
+        "fingerprint_hash": "fp_test-batch-1774473919233_deviceA",
+        "utm_source": "tiktok",
+        "idioma": "es",
+        "dispositivo": "mobile",
+        "user_agent": "f1-test",
+        "ip_hash": null,
+        "boton_clickado": "telegram",
+        "modelo_id": "MODEL_ID_PLACEHOLDER",
+        "timestamp": "2026-03-25T21:25:20.373Z"
+      },
+      "executed": "POST target=track telegram",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "ok": true
+        }
+      },
+      "supabase_after": {
+        "eventos": [
+          {
+            "request_id": "f7504fd5-6e3e-42a7-9225-67506043fadc",
+            "visitor_id": "test-batch-1774473919233-f1-user",
+            "boton_clickado": "telegram",
+            "utm_source": "tiktok"
+          }
+        ],
+        "leads": [
+          {
+            "visitor_id": "test-batch-1774473919233-f1-user",
+            "fingerprint_hash": "fp_test-batch-1774473919233_deviceA",
+            "utm_source": "tiktok",
+            "idioma": "es",
+            "dispositivo": "mobile",
+            "telegram_activo": false,
+            "of_activo": false,
+            "updated_at": "2026-03-25T21:25:20.956691+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "test": "F1.3",
+      "inserted": {
+        "request_id": "8ef0a434-0a9d-4621-89d0-2b89ff5351ba",
+        "visitor_id": "test-batch-1774473919233-f1-user",
+        "fingerprint_hash": "fp_test-batch-1774473919233_deviceA",
+        "utm_source": "tiktok",
+        "idioma": "es",
+        "dispositivo": "mobile",
+        "user_agent": "f1-test",
+        "ip_hash": null,
+        "boton_clickado": "onlyfans",
+        "modelo_id": "MODEL_ID_PLACEHOLDER",
+        "timestamp": "2026-03-25T21:25:21.139Z"
+      },
+      "executed": "POST target=track onlyfans",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "ok": true
+        }
+      },
+      "supabase_after": {
+        "eventos": [
+          {
+            "request_id": "f7504fd5-6e3e-42a7-9225-67506043fadc",
+            "boton_clickado": "telegram"
+          },
+          {
+            "request_id": "8ef0a434-0a9d-4621-89d0-2b89ff5351ba",
+            "boton_clickado": "onlyfans"
+          }
+        ]
+      }
+    },
+    {
+      "test": "F1.4",
+      "inserted": {
+        "request_id": "f7504fd5-6e3e-42a7-9225-67506043fadc",
+        "visitor_id": "test-batch-1774473919233-f1-user",
+        "fingerprint_hash": "fp_test-batch-1774473919233_deviceA",
+        "utm_source": "tiktok",
+        "idioma": "es",
+        "dispositivo": "mobile",
+        "user_agent": "f1-test",
+        "ip_hash": null,
+        "boton_clickado": "telegram",
+        "modelo_id": "MODEL_ID_PLACEHOLDER",
+        "timestamp": "2026-03-25T21:25:20.373Z"
+      },
+      "executed": "POST target=track duplicate same request_id",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "ok": true
+        }
+      },
+      "supabase_after": {
+        "request_id_rows": 1
+      }
+    },
+    {
+      "test": "F1.5",
+      "inserted": {
+        "fingerprint": "fp_test-batch-1774473919233_deviceA"
+      },
+      "executed": "GET target=visitor same fingerprint",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "visitor_id": "test-batch-1774473919233-f1-user"
+        }
+      }
+    },
+    {
+      "test": "F1.6",
+      "inserted": {
+        "fingerprint_hash": "fp_test-batch-1774473919233_deviceA"
+      },
+      "executed": "GET target=visitor same fingerprint hash",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "visitor_id": "test-batch-1774473919233-f1-user"
+        }
+      }
+    },
+    {
+      "test": "F2.1",
+      "inserted": {
+        "visitor_id": "test-batch-1774473919233-f2-invite",
+        "modelo_id": "MODEL_ID_PLACEHOLDER"
+      },
+      "executed": "POST target=invite first call",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0",
+          "reused": false
+        }
+      },
+      "supabase_after": [
+        {
+          "visitor_id": "test-batch-1774473919233-f2-invite",
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0",
+          "invite_link_created_at": "2026-03-25T21:25:24.09+00:00"
+        }
+      ]
+    },
+    {
+      "test": "F2.2",
+      "inserted": {
+        "visitor_id": "test-batch-1774473919233-f2-invite",
+        "modelo_id": "MODEL_ID_PLACEHOLDER"
+      },
+      "executed": "POST target=invite x3 total",
+      "system_response": [
+        {
+          "call": 1,
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0",
+          "reused": false
+        },
+        {
+          "call": 2,
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0",
+          "reused": true
+        },
+        {
+          "call": 3,
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0",
+          "reused": true
+        }
+      ]
+    },
+    {
+      "test": "F2.3",
+      "inserted": {
+        "update_id": 1774473924975,
+        "chat_member": {
+          "chat": {
+            "id": -1003698170374,
+            "type": "channel"
+          },
+          "from": {
+            "id": 321,
+            "is_bot": false,
+            "first_name": "Test"
+          },
+          "date": 1774473924,
+          "old_chat_member": {
+            "status": "left",
+            "user": {
+              "id": 999001,
+              "is_bot": false,
+              "first_name": "Lead"
+            }
+          },
+          "new_chat_member": {
+            "status": "member",
+            "user": {
+              "id": 999001,
+              "is_bot": false,
+              "first_name": "Lead"
+            }
+          },
+          "invite_link": {
+            "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0"
+          }
+        }
+      },
+      "executed": "POST target=telegram-webhook known invite",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "visitor_id": "test-batch-1774473919233-f2-invite",
+          "telegram_activo": true,
+          "telegram_user_id": "999001"
+        }
+      },
+      "supabase_after": [
+        {
+          "visitor_id": "test-batch-1774473919233-f2-invite",
+          "telegram_activo": true,
+          "telegram_user_id": "999001",
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0"
+        }
+      ]
+    },
+    {
+      "test": "F2.4",
+      "inserted": {
+        "update_id": 1774473925563,
+        "chat_member": {
+          "new_chat_member": {
+            "status": "member"
+          },
+          "invite_link": {
+            "invite_link": "https://t.me/+unknown_invite_for_test"
+          }
+        }
+      },
+      "executed": "POST target=telegram-webhook unknown invite",
+      "system_response": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "ignored": true,
+          "reason": "invite_not_found"
+        }
+      }
+    },
+    {
+      "test": "F2.5",
+      "inserted": {
+        "visitor_id": "test-batch-1774473919233-f25",
+        "fingerprint": "fp_test-batch-1774473919233_f25",
+        "utm_source": "reddit",
+        "telegram_user_id": 999555
+      },
+      "executed": "visitor(null) -> invite -> track telegram -> telegram webhook -> detector wait",
+      "system_response": {
+        "visitor_lookup": {
+          "visitor_id": null
+        },
+        "invite": {
+          "invite_link": "https://t.me/+UgRE7_W_ookxOGM0",
+          "reused": false
+        },
+        "track": {
+          "ok": true
+        },
+        "webhook": {
+          "ok": true,
+          "visitor_id": "test-batch-1774473919233-f25",
+          "telegram_activo": true,
+          "telegram_user_id": "999555"
+        }
+      },
+      "supabase_after": [
+        {
+          "visitor_id": "test-batch-1774473919233-f25",
+          "utm_source": "reddit",
+          "telegram_activo": true,
+          "telegram_user_id": "999555",
+          "active_flow": null,
+          "last_bot_action": null,
+          "updated_at": "2026-03-25T21:25:28.548679+00:00",
+          "invite_link": "https://t.me/+UgRE7_W_ookxOGM0"
+        }
+      ]
+    }
+  ],
+  "artifacts": {
+    "supabase_before_cleanup": {
+      "leads": [
+        {
+          "visitor_id": "test-batch-1774473919233-f1-user",
+          "utm_source": "tiktok",
+          "telegram_activo": false,
+          "of_activo": false,
+          "active_flow": null,
+          "winback_sent": false,
+          "telegram_user_id": null,
+          "invite_link": null,
+          "updated_at": "2026-03-25T21:25:22.386659+00:00"
+        },
+        {
+          "visitor_id": "test-batch-1774473919233-f2-invite",
+          "utm_source": null,
+          "telegram_activo": true,
+          "of_activo": false,
+          "active_flow": null,
+          "winback_sent": false,
+          "telegram_user_id": "999001",
+          "invite_link": "https://t.me/+s4_knZ4cBz5lOTg0",
+          "updated_at": "2026-03-25T21:25:25.615299+00:00"
+        },
+        {
+          "visitor_id": "test-batch-1774473919233-f25",
+          "utm_source": "reddit",
+          "telegram_activo": true,
+          "of_activo": false,
+          "active_flow": null,
+          "winback_sent": false,
+          "telegram_user_id": "999555",
+          "invite_link": "https://t.me/+UgRE7_W_ookxOGM0",
+          "updated_at": "2026-03-25T21:25:28.548679+00:00"
+        }
+      ],
+      "eventos": [
+        {
+          "request_id": "f7504fd5-6e3e-42a7-9225-67506043fadc",
+          "visitor_id": "test-batch-1774473919233-f1-user",
+          "boton_clickado": "telegram",
+          "utm_source": "tiktok",
+          "created_at": "2026-03-25T21:25:21.052547+00:00"
+        },
+        {
+          "request_id": "8ef0a434-0a9d-4621-89d0-2b89ff5351ba",
+          "visitor_id": "test-batch-1774473919233-f1-user",
+          "boton_clickado": "onlyfans",
+          "utm_source": "tiktok",
+          "created_at": "2026-03-25T21:25:21.839134+00:00"
+        },
+        {
+          "request_id": "524f588e-9b9e-4e24-8b4a-98f62c54dba1",
+          "visitor_id": "test-batch-1774473919233-f25",
+          "boton_clickado": "telegram",
+          "utm_source": "reddit",
+          "created_at": "2026-03-25T21:25:28.606838+00:00"
+        }
+      ]
+    },
+    "cleanup_check": {
+      "leads_rows": 0,
+      "eventos_rows": 0
+    }
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "name": "reactivacion_winback_testrun",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "sched-hourly",
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();\nreturn [{ json: { cutoff } }];"
+      },
+      "id": "build-cutoff-14d",
+      "name": "Build 14d Cutoff",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        430,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "visitor_id,utm_source,updated_at,telegram_activo,of_activo,winback_sent,telegram_user_id"
+            },
+            {
+              "name": "telegram_activo",
+              "value": "is.true"
+            },
+            {
+              "name": "of_activo",
+              "value": "is.false"
+            },
+            {
+              "name": "winback_sent",
+              "value": "is.false"
+            },
+            {
+              "name": "updated_at",
+              "value": "={{'lt.' + $json.cutoff}}"
+            },
+            {
+              "name": "telegram_user_id",
+              "value": "not.is.null"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "fetch-winback-leads",
+      "name": "Fetch Winback Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        690,
+        280
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItem = $input.first();\nconst payload = inputItem?.json;\n\nif (Array.isArray(payload)) {\n  return payload.map((lead) => ({ json: lead }));\n}\n\nif (payload && Array.isArray(payload.body)) {\n  return payload.body.map((lead) => ({ json: lead }));\n}\n\nif (payload && typeof payload === 'object') {\n  return [{ json: payload }];\n}\n\nreturn [];"
+      },
+      "id": "split-winback",
+      "name": "Array to Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        910,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{'https://api.telegram.org/bot' + $env.TELEGRAM_BOT_TOKEN + '/sendMessage'}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { chat_id: $json.telegram_user_id, text: 'F3-Winback placeholder: te extrañamos | visitor_id=' + $json.visitor_id } }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "send-winback",
+      "name": "Send Winback Telegram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        280
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($item(0).$node['Array to Items'].json.visitor_id)}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { winback_sent: true, updated_at: new Date().toISOString() } }}"
+      },
+      "id": "update-winback",
+      "name": "Mark Winback Sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1370,
+        280
+      ],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Every Hour": {
+      "main": [
+        [
+          {
+            "node": "Build 14d Cutoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build 14d Cutoff": {
+      "main": [
+        [
+          {
+            "node": "Fetch Winback Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Winback Leads": {
+      "main": [
+        [
+          {
+            "node": "Array to Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Array to Items": {
+      "main": [
+        [
+          {
+            "node": "Send Winback Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Winback Telegram": {
+      "main": [
+        [
+          {
+            "node": "Mark Winback Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

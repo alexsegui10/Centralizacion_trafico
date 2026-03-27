@@ -1,0 +1,3 @@
+ALTER TABLE leads
+  ADD COLUMN IF NOT EXISTS invite_link TEXT,
+  ADD COLUMN IF NOT EXISTS invite_link_created_at TIMESTAMPTZ;
