@@ -2,14 +2,16 @@
   var runtimeConfig = (typeof window !== "undefined" && window.__ADMIN_CONFIG) ? window.__ADMIN_CONFIG : {};
 
   var SUPABASE_URL = runtimeConfig.SUPABASE_URL || "https://krnabtkugfzfinwvfuzm.supabase.co";
-  var SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "CHANGE_ME_ANON";
-  var SUPABASE_SERVICE_ROLE_KEY = runtimeConfig.SUPABASE_SERVICE_ROLE_KEY || "CHANGE_ME_SERVICE_ROLE";
-  var ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "CHANGE_ME";
+  var SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM";
+  var SUPABASE_SERVICE_ROLE_KEY = runtimeConfig.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDQ1MjM4OCwiZXhwIjoyMDkwMDI4Mzg4fQ.9WZ6RuQ6wpXhVHy2vpDIun9-9xMVDBsysCOGTBuDyEU";
+  var ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "123456";
 
   var page = (location.pathname.split("/").pop() || "admin.html").toLowerCase();
   var cache = { leads: [], events: [], messages: [] };
   var autoRefreshTimer = null;
   var realtimeChannel = null;
+  var CACHE_KEY = "ofm_admin_runtime_cache_v1";
+  var CACHE_MAX_AGE_MS = 90 * 1000;
 
   var FLOW_NAMES = {
     "1": "MGO Directo",
@@ -140,6 +142,38 @@
       s.onerror = reject;
       document.head.appendChild(s);
     });
+  }
+
+  function loadWarmCache() {
+    try {
+      var raw = sessionStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || !parsed.ts || (Date.now() - parsed.ts > CACHE_MAX_AGE_MS)) {
+        return null;
+      }
+      if (!Array.isArray(parsed.leads) || !Array.isArray(parsed.events)) {
+        return null;
+      }
+      return {
+        leads: parsed.leads,
+        events: parsed.events
+      };
+    } catch (_err) {
+      return null;
+    }
+  }
+
+  function saveWarmCache() {
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+        ts: Date.now(),
+        leads: cache.leads || [],
+        events: cache.events || []
+      }));
+    } catch (_err) {
+      // Ignore storage quota/security errors and continue normally.
+    }
   }
 
   function buildClients() {
@@ -925,6 +959,14 @@
     var writeClient = clients.writeClient;
     var charts = { dashboardSource: null, statsUsers: null, statsConv: null };
 
+    function renderCurrentPage() {
+      if (page === "admin.html") renderDashboard(charts, cache.leads);
+      if (page === "users.html") renderUsers(cache.leads, writeClient);
+      if (page === "user_profile.html") renderProfile(cache.leads, cache.events, writeClient, readClient);
+      if (page === "statistics.html") renderStatistics(charts, cache.leads, cache.events);
+      if (page === "alerts.html") renderAlerts(cache.leads, cache.events, writeClient);
+    }
+
     function loadAll() {
       return Promise.all([
         readClient.from("leads").select("*").order("updated_at", { ascending: false }).limit(5000),
@@ -932,24 +974,32 @@
       ]).then(function (res) {
         cache.leads = res[0].data || [];
         cache.events = res[1].data || [];
+        saveWarmCache();
       });
     }
 
-    window.__panelReload = function () {
+    window.__panelReload = function (opts) {
+      opts = opts || {};
+      var silentError = !!opts.silentError;
       loadAll()
         .then(function () {
-          if (page === "admin.html") renderDashboard(charts, cache.leads);
-          if (page === "users.html") renderUsers(cache.leads, writeClient);
-          if (page === "user_profile.html") renderProfile(cache.leads, cache.events, writeClient, readClient);
-          if (page === "statistics.html") renderStatistics(charts, cache.leads, cache.events);
-          if (page === "alerts.html") renderAlerts(cache.leads, cache.events, writeClient);
+          renderCurrentPage();
         })
         .catch(function (e) {
-          toast("Error cargando datos: " + (e && e.message ? e.message : "unknown"), true);
+          if (!silentError) {
+            toast("Error cargando datos: " + (e && e.message ? e.message : "unknown"), true);
+          }
         });
     };
 
-    window.__panelReload();
+    var warm = loadWarmCache();
+    if (warm) {
+      cache.leads = warm.leads;
+      cache.events = warm.events;
+      renderCurrentPage();
+    }
+
+    window.__panelReload({ silentError: !!warm });
     bindRealtime(readClient);
 
     if (autoRefreshTimer) clearInterval(autoRefreshTimer);
