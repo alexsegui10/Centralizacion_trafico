@@ -8,6 +8,7 @@
 
   var page = (location.pathname.split("/").pop() || "admin.html").toLowerCase();
   var cache = { leads: [], events: [], messages: [] };
+  var exactCounts = { cupidActive: null };
   var autoRefreshTimer = null;
   var realtimeChannel = null;
   var CACHE_KEY = "ofm_admin_runtime_cache_v1";
@@ -215,7 +216,8 @@
       }
       return {
         leads: parsed.leads,
-        events: parsed.events
+        events: parsed.events,
+        counts: parsed.counts || null
       };
     } catch (_err) {
       return null;
@@ -227,7 +229,8 @@
       sessionStorage.setItem(CACHE_KEY, JSON.stringify({
         ts: Date.now(),
         leads: cache.leads || [],
-        events: cache.events || []
+        events: cache.events || [],
+        counts: exactCounts || { cupidActive: null }
       }));
     } catch (_err) {
       // Ignore storage quota/security errors and continue normally.
@@ -293,7 +296,7 @@
       cards[0].textContent = String(leads.length);
       cards[1].textContent = String(leads.filter(function (l) { return l.telegram_activo; }).length);
       cards[2].textContent = String(leads.filter(function (l) { return l.of_activo; }).length);
-      cards[3].textContent = String(leads.filter(function (l) { return l.cupidbot_activo; }).length);
+      cards[3].textContent = String(typeof exactCounts.cupidActive === "number" ? exactCounts.cupidActive : leads.filter(function (l) { return l.cupidbot_activo; }).length);
     }
 
     var sourceCard = Array.from(document.querySelectorAll("h2")).find(function (h) {
@@ -312,6 +315,9 @@
         var of = sources.map(function (s) {
           return leads.filter(function (l) { return sourceOf(l) === s && l.of_activo; }).length;
         });
+        var total = sources.map(function (s) {
+          return leads.filter(function (l) { return sourceOf(l) === s; }).length;
+        });
 
         if (charts.dashboardSource) charts.dashboardSource.destroy();
         charts.dashboardSource = new window.Chart(canvas, {
@@ -319,8 +325,9 @@
           data: {
             labels: ["INSTA", "TIKTOK", "X", "REDDIT", "MGO", "DIRECT"],
             datasets: [
-              { label: "Telegram", data: tg, backgroundColor: "#00e3fd" },
-              { label: "OnlyFans", data: of, backgroundColor: "#b6a0ff" }
+              { label: "Telegram Activo", data: tg, backgroundColor: "#00e3fd" },
+              { label: "OF Activo", data: of, backgroundColor: "#b6a0ff" },
+              { label: "Total", data: total, backgroundColor: "#6b7280" }
             ]
           },
           options: {
@@ -854,12 +861,13 @@
     var cupidCard = Array.from(document.querySelectorAll("h4")).find(function (h) { return /cupidbot status/i.test(h.textContent || ""); });
     if (cupidCard) {
       var block = cupidCard.closest("div");
-      var started = leads.filter(function (l) { return l.cupidbot_activo || l.last_bot_action; }).length;
-      var convCount = leads.filter(function (l) { return (l.cupidbot_activo || l.last_bot_action) && l.of_activo; }).length;
+      var started = typeof exactCounts.cupidActive === "number" ? exactCounts.cupidActive : leads.filter(function (l) { return l.cupidbot_activo; }).length;
+      var convCount = leads.filter(function (l) { return l.cupidbot_activo && l.of_activo; }).length;
       var rate = started ? ((convCount / started) * 100).toFixed(1) : "0.0";
-      var avgSec = leads.length ? (leads.reduce(function (acc, l) {
+      var activeLeads = leads.filter(function (l) { return l.cupidbot_activo; });
+      var avgSec = activeLeads.length ? (activeLeads.reduce(function (acc, l) {
         return acc + Math.max(0, (new Date(l.updated_at || Date.now()) - new Date(l.created_at || Date.now())) / 1000);
-      }, 0) / leads.length).toFixed(1) : "0.0";
+      }, 0) / activeLeads.length).toFixed(1) : "0.0";
 
       var big = block.querySelector("h5.text-4xl");
       if (big) big.textContent = String(started);
@@ -948,6 +956,14 @@
             toast("Error: " + r.error.message, true);
             return;
           }
+          return writeClient.from("eventos").insert({
+            visitor_id: l.visitor_id,
+            boton_clickado: "conflict_routed"
+          });
+        }).then(function (evRes) {
+          if (evRes && evRes.error) {
+            toast("Conflict routed (sin log): " + evRes.error.message, true);
+          }
           toast("Conflict routed", false);
           location.href = "user_profile.html?visitor_id=" + encodeURIComponent(l.visitor_id || "");
         });
@@ -958,6 +974,14 @@
           if (r.error) {
             toast("Error: " + r.error.message, true);
             return;
+          }
+          return writeClient.from("eventos").insert({
+            visitor_id: l.visitor_id,
+            boton_clickado: "conflict_resolved"
+          });
+        }).then(function (evRes) {
+          if (evRes && evRes.error) {
+            toast("Conflict resolved (sin log): " + evRes.error.message, true);
           }
           toast("Conflict resolved", false);
           window.__panelReload && window.__panelReload();
@@ -975,10 +999,17 @@
       if (list) {
         var rows = events.filter(function (e) {
           var b = String(e.boton_clickado || "").toLowerCase();
-          return b.indexOf("resolve") >= 0 || b.indexOf("resuelto") >= 0 || b.indexOf("conflict") >= 0;
+          return b === "conflict_resolved" || b.indexOf("conflict resolved") >= 0 || b.indexOf("resuelto") >= 0;
         }).slice(0, 30);
 
         list.innerHTML = "";
+        if (!rows.length) {
+          var empty = document.createElement("div");
+          empty.className = "bg-surface-container px-6 py-8 text-center text-on-surface-variant text-sm";
+          empty.textContent = "No real resolved conflicts yet";
+          list.appendChild(empty);
+          return;
+        }
         rows.forEach(function (e) {
           var row = document.createElement("div");
           row.className = "bg-surface-container hover:bg-surface-container-high transition-colors px-6 py-4 flex items-center group";
@@ -1028,10 +1059,12 @@
     function loadAll() {
       return Promise.all([
         readClient.from("leads").select("*").order("updated_at", { ascending: false }).limit(5000),
-        readClient.from("eventos").select("*").order("created_at", { ascending: false }).limit(5000)
+        readClient.from("eventos").select("*").order("created_at", { ascending: false }).limit(5000),
+        readClient.from("leads").select("visitor_id", { count: "exact", head: true }).eq("cupidbot_activo", true)
       ]).then(function (res) {
         cache.leads = res[0].data || [];
         cache.events = res[1].data || [];
+        exactCounts.cupidActive = (res[2] && typeof res[2].count === "number") ? res[2].count : null;
         saveWarmCache();
       });
     }
@@ -1061,6 +1094,7 @@
     if (warm) {
       cache.leads = warm.leads;
       cache.events = warm.events;
+      exactCounts = warm.counts || exactCounts;
       renderCurrentPage();
       endBootLoading();
     }
