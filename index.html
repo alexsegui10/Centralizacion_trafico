@@ -1,16 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="refresh" content="0; url=login.html" />
-		<title>Redirecting...</title>
-		<script>
-			window.location.replace("login.html");
-		</script>
-	</head>
-	<body>
-		Redirecting to login...
-	</body>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nombre Modelo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <img class="hero-image" id="hero-image" src="veks Special Pp.jfif" alt="Nombre Modelo" />
+    </section>
+
+    <section class="identity">
+      <h1 id="model-name">Nombre Modelo</h1>
+      <p id="tagline">Contenido exclusivo para ti 🖤</p>
+    </section>
+
+    <section class="cards">
+      <a class="card" href="#of-link-placeholder" id="btn-of" data-button="onlyfans">
+        <img class="card-img" src="descarga (51).jfif" alt="Contenido exclusivo" />
+        <span class="badge">
+          <span class="badge-icon of" aria-hidden="true">
+            <img src="onlyfans.png" alt="" style="width:17px;height:17px;object-fit:contain;display:block;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+            <svg viewBox="0 0 24 24" fill="none" style="display:none;">
+              <circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.8"/>
+              <path d="M12 7.7a4.3 4.3 0 0 0 0 8.6 4.3 4.3 0 0 0 4.3-4.3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="15.8" cy="8.5" r="1" fill="white"/>
+            </svg>
+          </span>
+          <span id="label-of">Mi OnlyFans</span>
+        </span>
+      </a>
+
+      <a class="card" href="#tg-link-placeholder" id="btn-tg" data-button="telegram">
+        <img class="card-img" src="descarga (52).jfif" alt="Canal de Telegram" />
+        <span class="badge">
+          <span class="badge-icon tg" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20.8 5.2L3 11.8l5.4 1.7 1.9 5.3 3-3.1 4.9 3.4 2.6-13.9z" stroke="white" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M8.4 13.5l8.7-6.4" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span id="label-tg">Telegram Gratis</span>
+        </span>
+      </a>
+    </section>
+
+    <footer>
+      <p id="footer-text">Contenido solo para adultos +18</p>
+      <p>© <span id="year"></span></p>
+    </footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>
- 
