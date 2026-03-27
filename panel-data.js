@@ -12,6 +12,8 @@
   var realtimeChannel = null;
   var CACHE_KEY = "ofm_admin_runtime_cache_v1";
   var CACHE_MAX_AGE_MS = 90 * 1000;
+  var firstPaintDone = false;
+  var bootOverlay = null;
 
   var FLOW_NAMES = {
     "1": "MGO Directo",
@@ -142,6 +144,54 @@
       s.onerror = reject;
       document.head.appendChild(s);
     });
+  }
+
+  function initBootLoading() {
+    if (!document.body) return;
+    if (bootOverlay) return;
+
+    var style = document.getElementById("panel-boot-style");
+    if (!style) {
+      style = document.createElement("style");
+      style.id = "panel-boot-style";
+      style.textContent = "body[data-panel-booting='1'] > *:not(#panel-boot-overlay){visibility:hidden!important;}";
+      document.head.appendChild(style);
+    }
+
+    document.body.setAttribute("data-panel-booting", "1");
+    bootOverlay = document.createElement("div");
+    bootOverlay.id = "panel-boot-overlay";
+    bootOverlay.style.position = "fixed";
+    bootOverlay.style.inset = "0";
+    bootOverlay.style.zIndex = "99999";
+    bootOverlay.style.background = "#0e0e13";
+    bootOverlay.style.display = "flex";
+    bootOverlay.style.flexDirection = "column";
+    bootOverlay.style.alignItems = "center";
+    bootOverlay.style.justifyContent = "center";
+    bootOverlay.style.color = "#f8f5fd";
+    bootOverlay.innerHTML = "<div style='width:42px;height:42px;border:3px solid rgba(182,160,255,0.25);border-top-color:#b6a0ff;border-radius:9999px;animation:panel-spin .7s linear infinite;'></div><p style='margin-top:14px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#acaab1;'>Loading live data...</p>";
+
+    var spinStyle = document.getElementById("panel-spin-style");
+    if (!spinStyle) {
+      spinStyle = document.createElement("style");
+      spinStyle.id = "panel-spin-style";
+      spinStyle.textContent = "@keyframes panel-spin{to{transform:rotate(360deg)}}";
+      document.head.appendChild(spinStyle);
+    }
+
+    document.body.appendChild(bootOverlay);
+  }
+
+  function endBootLoading() {
+    firstPaintDone = true;
+    if (document.body) {
+      document.body.removeAttribute("data-panel-booting");
+    }
+    if (bootOverlay && bootOverlay.parentNode) {
+      bootOverlay.parentNode.removeChild(bootOverlay);
+    }
+    bootOverlay = null;
   }
 
   function loadWarmCache() {
@@ -984,19 +1034,27 @@
       loadAll()
         .then(function () {
           renderCurrentPage();
+          if (!firstPaintDone) {
+            endBootLoading();
+          }
         })
         .catch(function (e) {
           if (!silentError) {
             toast("Error cargando datos: " + (e && e.message ? e.message : "unknown"), true);
           }
+          if (!firstPaintDone) {
+            endBootLoading();
+          }
         });
     };
 
+    initBootLoading();
     var warm = loadWarmCache();
     if (warm) {
       cache.leads = warm.leads;
       cache.events = warm.events;
       renderCurrentPage();
+      endBootLoading();
     }
 
     window.__panelReload({ silentError: !!warm });
