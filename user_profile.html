@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#a98fff",
+              "on-tertiary-fixed": "#380014",
+              "surface-container-lowest": "#000000",
+              "error-container": "#a70138",
+              "surface-bright": "#2c2b33",
+              "on-error": "#490013",
+              "on-tertiary": "#48001c",
+              "on-primary": "#340090",
+              "on-tertiary-container": "#100003",
+              "primary-fixed": "#a98fff",
+              "tertiary-fixed-dim": "#ff769b",
+              "primary": "#b6a0ff",
+              "inverse-surface": "#fbf8ff",
+              "on-secondary": "#004d57",
+              "secondary-fixed-dim": "#00d7f0",
+              "on-background": "#f8f5fd",
+              "secondary-fixed": "#26e6ff",
+              "inverse-primary": "#6834eb",
+              "on-primary-container": "#280072",
+              "surface-dim": "#0e0e13",
+              "surface-container-highest": "#25252c",
+              "tertiary-fixed": "#ff8fa9",
+              "surface": "#0e0e13",
+              "tertiary-container": "#fd3e80",
+              "surface-variant": "#25252c",
+              "outline-variant": "#48474d",
+              "secondary-dim": "#00d4ec",
+              "surface-container": "#19191f",
+              "on-primary-fixed": "#000000",
+              "on-secondary-fixed-variant": "#005964",
+              "on-tertiary-fixed-variant": "#770033",
+              "on-surface-variant": "#acaab1",
+              "outline": "#76747b",
+              "inverse-on-surface": "#55545a",
+              "surface-container-high": "#1f1f26",
+              "on-primary-fixed-variant": "#32008a",
+              "secondary-container": "#006875",
+              "on-surface": "#f8f5fd",
+              "tertiary": "#ff6c95",
+              "primary-fixed-dim": "#9c7eff",
+              "error": "#ff6e84",
+              "background": "#0e0e13",
+              "tertiary-dim": "#ff6c95",
+              "surface-container-low": "#131318",
+              "on-secondary-container": "#e8fbff",
+              "secondary": "#00e3fd",
+              "error-dim": "#d73357",
+              "primary-dim": "#7e51ff",
+              "on-error-container": "#ffb2b9",
+              "on-secondary-fixed": "#003a42",
+              "surface-tint": "#b6a0ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-panel {
+        background: rgba(31, 31, 38, 0.8);
+        backdrop-filter: blur(20px);
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0e0e13;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #25252c;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b6a0ff;
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 antialiased">
+<!-- TopNavBar -->
+<nav class="bg-[#0e0e13] dark:bg-[#0e0e13] font-['Inter'] antialiased text-sm tracking-tight fixed top-0 w-full z-40 shadow-[0px_24px_48px_rgba(0,0,0,0.5)]">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#f8f5fd]">Admin Panel</span>
+<div class="hidden md:flex items-center bg-[#131318] px-3 py-1.5 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-64 placeholder:text-on-surface-variant" placeholder="Search users or IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#acaab1] hover:text-[#f8f5fd] transition-colors duration-200 active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-[#acaab1] hover:text-[#f8f5fd] transition-colors duration-200 active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-container-highest overflow-hidden border border-primary/20">
+<img alt="User profile avatar" data-alt="close-up portrait of a professional man with a friendly expression in a modern office setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACGdYJXyRPcxhs1IFkdNpKgvTxJDUpMsFIVkmNI9k2F-IOxep6X1esRJG4CeRs0YgAR0nLwrkzcQ9kxdnT00Yffv3ozP9ywhnmP-QOR6TEtNEihWku-OMsxIla58ZO3L1PIh3vqpIu77f0MkdnZN1djwdTq_FOoIg8NF4b85mrSIhQYPCX-ccwBFEM7ITwEXLwFbYxa_VajuTkUvYKTLBVfcuAXi9L0XOtWicmljLQLn4Ge2GIdoTG2Ghc9KJO2rGXdoEp4X8QPZc"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="bg-[#131318] dark:bg-[#131318] font-['Inter'] text-sm font-medium fixed left-0 top-0 h-screen w-64 z-50 flex flex-col h-full py-6 hidden md:flex">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="h-10 w-10 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-2xl" data-icon="token" style="font-variation-settings: 'FILL' 1;">token</span>
+</div>
+<div>
+<div class="text-lg font-black text-[#f8f5fd]">Neon Noir</div>
+<div class="text-[10px] uppercase tracking-widest text-primary font-bold">Executive Suite</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 hover:text-[#00e3fd] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-[#f8f5fd] bg-gradient-to-r from-[#b6a0ff]/20 to-transparent border-l-2 border-[#b6a0ff] py-3 px-6 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+                Users
+            </a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 hover:text-[#00e3fd] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+                Statistics
+            </a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 hover:text-[#00e3fd] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+                Alerts
+            </a>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full bg-gradient-to-br from-primary to-primary-dim text-on-primary-fixed py-3 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                Activate CupidBot
+            </button>
+</div>
+<div class="mt-auto space-y-1">
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 hover:text-[#00e3fd] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 hover:text-[#00e3fd] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Stage -->
+<main class="md:ml-64 pt-16 min-h-screen bg-surface">
+<div class="p-6 lg:p-10 max-w-[1600px] mx-auto">
+<!-- Header Section (Editorial) -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<nav class="flex items-center gap-2 text-on-surface-variant text-xs mb-2">
+<span>Users</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-medium">User Profile</span>
+</nav>
+<h1 class="text-4xl font-extrabold tracking-tighter text-on-surface">Alex_Vanguard_88</h1>
+<p class="text-on-surface-variant mt-1 font-medium">Lead Gen Strategy: <span class="text-secondary">High-Frequency Engagement</span></p>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-high border border-outline-variant/20 px-4 py-2 rounded text-xs font-semibold flex items-center gap-2 hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="history">history</span>
+                        Export Logs
+                    </button>
+<button class="bg-gradient-to-br from-primary to-primary-dim px-6 py-2 rounded font-bold text-xs uppercase tracking-tighter text-on-primary-fixed shadow-xl shadow-primary/10">
+                        Edit Identity
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Section 1: Identity (4 Columns) -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-surface-container-high rounded-xl p-6 border-l-4 border-primary shadow-2xl">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Identity Core</h3>
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded">VERIFIED</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant text-sm">User ID</span>
+<span class="font-mono text-sm text-secondary">#UID-9902-XLF</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant text-sm">Origin</span>
+<div class="flex items-center gap-2">
+<span class="text-sm">United Kingdom</span>
+<span class="material-symbols-outlined text-lg" data-icon="flag">flag</span>
+</div>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant text-sm">Acquisition Source</span>
+<span class="text-sm font-semibold">Organic / Twitter</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant text-sm">Primary Device</span>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-sm" data-icon="smartphone">smartphone</span>
+<span class="text-sm">iPhone 15 Pro (iOS 17.4)</span>
+</div>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant text-sm">Joined Date</span>
+<span class="text-sm">Oct 24, 2023</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-on-surface-variant text-sm">Total Active Time</span>
+<span class="text-lg font-black text-primary">142h 15m</span>
+</div>
+</div>
+</div>
+<!-- Section 3: Actions -->
+<div class="bg-surface-container rounded-xl p-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">Strategic Actions</h3>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-center justify-center p-4 bg-surface-bright rounded border border-outline-variant/10 hover:border-primary/50 transition-all group">
+<span class="material-symbols-outlined text-primary mb-2 transition-transform group-hover:scale-110" data-icon="smart_toy">smart_toy</span>
+<span class="text-[10px] font-bold uppercase">Activate Bot</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-surface-bright rounded border border-outline-variant/10 hover:border-tertiary/50 transition-all group">
+<span class="material-symbols-outlined text-tertiary mb-2 transition-transform group-hover:scale-110" data-icon="pause_circle">pause_circle</span>
+<span class="text-[10px] font-bold uppercase">Pause Session</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-surface-bright rounded border border-outline-variant/10 hover:border-secondary/50 transition-all group">
+<span class="material-symbols-outlined text-secondary mb-2 transition-transform group-hover:scale-110" data-icon="rebase_edit">rebase_edit</span>
+<span class="text-[10px] font-bold uppercase">Change Flow</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-primary text-on-primary-fixed rounded font-bold transition-all hover:brightness-110">
+<span class="material-symbols-outlined mb-2" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] uppercase">Upgrade VIP</span>
+</button>
+</div>
+<button class="w-full mt-3 py-3 border border-error/30 text-error rounded text-[10px] font-bold uppercase tracking-widest hover:bg-error/10 transition-colors">
+                            Flag for Conflict Resolution
+                        </button>
+</div>
+</div>
+<!-- Section 2: Status (Main Stage - 8 Columns) -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<!-- 6 Large Indicators -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="bg-surface-container-high p-4 rounded-xl border-t border-white/5 flex flex-col items-center text-center">
+<div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-blue-400" data-icon="send">send</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">Telegram</span>
+<span class="text-sm font-semibold text-blue-400">@alex_van88</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl border-t border-white/5 flex flex-col items-center text-center">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary" data-icon="lock">lock</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">OF Account</span>
+<span class="text-sm font-semibold text-primary">Connected</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl border-t border-white/5 flex flex-col items-center text-center">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-secondary" data-icon="hub">hub</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">MGO Direct</span>
+<span class="text-sm font-semibold text-secondary">Active Link</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl border-t border-white/5 flex flex-col items-center text-center">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="podcasts">podcasts</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">MGO Channel</span>
+<span class="text-sm font-semibold text-tertiary">#4-Main</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl border-t border-white/5 flex flex-col items-center text-center">
+<div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-green-400" data-icon="cyclone">cyclone</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">Flow Badge</span>
+<span class="text-sm font-semibold text-green-400">High-Flow</span>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl border-t border-white/5 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5 animate-pulse"></div>
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mb-3 relative z-10">
+<span class="material-symbols-outlined text-primary" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase mb-1 relative z-10">CupidBot Status</span>
+<span class="text-sm font-black text-on-surface relative z-10">RUNNING</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Section 4: Timeline -->
+<div class="bg-surface-container rounded-xl p-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-6">Activity Timeline</h3>
+<div class="relative pl-6 space-y-8 border-l border-outline-variant/30">
+<div class="relative">
+<div class="absolute -left-[1.85rem] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant">14:22 PM</span>
+<span class="text-sm font-bold">Arrived on Landing Page</span>
+<span class="text-[11px] text-on-surface-variant">Referral: Direct Input</span>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-[1.85rem] top-1 w-3 h-3 rounded-full bg-blue-400"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant">14:24 PM</span>
+<span class="text-sm font-bold">Telegram Handshake</span>
+<span class="text-[11px] text-on-surface-variant">User initiated command /start</span>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-[1.85rem] top-1 w-3 h-3 rounded-full bg-secondary"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant">14:25 PM</span>
+<span class="text-sm font-bold">CupidBot Triggered</span>
+<span class="text-[11px] text-on-surface-variant">Applied Flow: Conversational_v2</span>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-[1.85rem] top-1 w-3 h-3 rounded-full bg-tertiary"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant">14:48 PM</span>
+<span class="text-sm font-bold">OF Clicks Detected</span>
+<span class="text-[11px] text-on-surface-variant">3 unique profile views</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 5: Bot Chat -->
+<div class="bg-surface-container rounded-xl p-0 flex flex-col h-[400px] overflow-hidden">
+<div class="p-4 border-b border-outline-variant/10 bg-surface-container-high flex justify-between items-center">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Live Bot Session</h3>
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<!-- Bot Message -->
+<div class="flex flex-col items-start max-w-[85%]">
+<span class="text-[9px] uppercase font-bold text-primary mb-1 ml-1">Bot (v4.2)</span>
+<div class="bg-surface-container-high text-on-surface p-3 rounded-lg rounded-tl-none border border-outline-variant/10 text-sm">
+                                        Hey Alex! I see you're looking for something special today. How can I help you navigate the gallery?
+                                    </div>
+<span class="text-[9px] text-on-surface-variant mt-1 ml-1">14:25 PM</span>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end max-w-[85%] ml-auto">
+<span class="text-[9px] uppercase font-bold text-secondary mb-1 mr-1">User</span>
+<div class="bg-secondary-container text-on-secondary-container p-3 rounded-lg rounded-tr-none text-sm">
+                                        I'm looking for the exclusive content from the summer collection. Is that still available?
+                                    </div>
+<span class="text-[9px] text-on-surface-variant mt-1 mr-1">14:26 PM</span>
+</div>
+<!-- Bot Message -->
+<div class="flex flex-col items-start max-w-[85%]">
+<span class="text-[9px] uppercase font-bold text-primary mb-1 ml-1">Bot (v4.2)</span>
+<div class="bg-surface-container-high text-on-surface p-3 rounded-lg rounded-tl-none border border-outline-variant/10 text-sm">
+                                        Absolutely! Most of the Summer Vault is now reserved for VIP members. Would you like me to show you how to upgrade?
+                                    </div>
+<span class="text-[9px] text-on-surface-variant mt-1 ml-1">14:27 PM</span>
+</div>
+</div>
+<div class="p-3 bg-surface-container-highest flex items-center gap-2">
+<input class="bg-surface-container-low border-none focus:ring-1 focus:ring-primary rounded text-xs flex-1 placeholder:text-on-surface-variant" placeholder="Force bot response..." type="text"/>
+<button class="h-8 w-8 bg-primary text-on-primary-fixed flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-lg" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Decoration Elements -->
+<div class="fixed top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+<div class="fixed bottom-0 left-0 w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+<script src="./panel-nav.js"></script>
+</body></html>

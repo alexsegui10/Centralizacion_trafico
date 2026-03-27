@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Statistics - Admin Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#a98fff",
+                        "on-tertiary-fixed": "#380014",
+                        "surface-container-lowest": "#000000",
+                        "error-container": "#a70138",
+                        "surface-bright": "#2c2b33",
+                        "on-error": "#490013",
+                        "on-tertiary": "#48001c",
+                        "on-primary": "#340090",
+                        "on-tertiary-container": "#100003",
+                        "primary-fixed": "#a98fff",
+                        "tertiary-fixed-dim": "#ff769b",
+                        "primary": "#b6a0ff",
+                        "inverse-surface": "#fbf8ff",
+                        "on-secondary": "#004d57",
+                        "secondary-fixed-dim": "#00d7f0",
+                        "on-background": "#f8f5fd",
+                        "secondary-fixed": "#26e6ff",
+                        "inverse-primary": "#6834eb",
+                        "on-primary-container": "#280072",
+                        "surface-dim": "#0e0e13",
+                        "surface-container-highest": "#25252c",
+                        "tertiary-fixed": "#ff8fa9",
+                        "surface": "#0e0e13",
+                        "tertiary-container": "#fd3e80",
+                        "surface-variant": "#25252c",
+                        "outline-variant": "#48474d",
+                        "secondary-dim": "#00d4ec",
+                        "surface-container": "#19191f",
+                        "on-primary-fixed": "#000000",
+                        "on-secondary-fixed-variant": "#005964",
+                        "on-tertiary-fixed-variant": "#770033",
+                        "on-surface-variant": "#acaab1",
+                        "outline": "#76747b",
+                        "inverse-on-surface": "#55545a",
+                        "surface-container-high": "#1f1f26",
+                        "on-primary-fixed-variant": "#32008a",
+                        "secondary-container": "#006875",
+                        "on-surface": "#f8f5fd",
+                        "tertiary": "#ff6c95",
+                        "primary-fixed-dim": "#9c7eff",
+                        "error": "#ff6e84",
+                        "background": "#0e0e13",
+                        "tertiary-dim": "#ff6c95",
+                        "surface-container-low": "#131318",
+                        "on-secondary-container": "#e8fbff",
+                        "secondary": "#00e3fd",
+                        "error-dim": "#d73357",
+                        "primary-dim": "#7e51ff",
+                        "on-error-container": "#ffb2b9",
+                        "on-secondary-fixed": "#003a42",
+                        "surface-tint": "#b6a0ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0e0e13;
+        }
+        .glass-panel {
+            background: rgba(31, 31, 38, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .chart-gradient {
+            background: linear-gradient(180deg, rgba(182, 160, 255, 0.15) 0%, rgba(182, 160, 255, 0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-50 bg-[#131318] flex flex-col py-6">
+<div class="px-6 mb-10 flex items-center space-x-3">
+<div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-dim rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed" data-icon="token">token</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-[#f8f5fd]">Neon Noir</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold">Executive Suite</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center space-x-3 transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined group-hover:text-secondary" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center space-x-3 transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined group-hover:text-secondary" data-icon="group">group</span>
+<span class="font-medium text-sm">Users</span>
+</a>
+<a class="text-[#f8f5fd] bg-gradient-to-r from-[#b6a0ff]/20 to-transparent border-l-2 border-[#b6a0ff] py-3 px-6 flex items-center space-x-3 transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="leaderboard">leaderboard</span>
+<span class="font-medium text-sm">Statistics</span>
+</a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center space-x-3 transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined group-hover:text-secondary" data-icon="notifications_active">notifications_active</span>
+<span class="font-medium text-sm">Alerts</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-gradient-to-r from-primary to-primary-dim text-on-primary-fixed font-bold py-3 rounded-lg text-sm transition-transform active:scale-95">
+                Activate CupidBot
+            </button>
+<div class="mt-8 space-y-1 border-t border-outline-variant/10 pt-6">
+<a class="text-[#acaab1] py-2 flex items-center space-x-3 hover:text-[#f8f5fd] transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span class="text-xs">Settings</span>
+</a>
+<a class="text-[#acaab1] py-2 flex items-center space-x-3 hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+<span class="text-xs">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-64 h-16 z-40 bg-[#0e0e13] flex items-center justify-between px-8 shadow-[0px_24px_48px_rgba(0,0,0,0.5)]">
+<div class="flex items-center space-x-4">
+<h2 class="text-xl font-bold tracking-tighter text-[#f8f5fd]">Statistics Dashboard</h2>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<p class="text-xs text-on-surface-variant font-medium tracking-tight">Real-time Performance Metrics</p>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-[#acaab1] hover:text-[#f8f5fd] cursor-pointer transition-colors" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-tertiary rounded-full border-2 border-background"></span>
+</div>
+<span class="material-symbols-outlined text-[#acaab1] hover:text-[#f8f5fd] cursor-pointer transition-colors" data-icon="settings">settings</span>
+<div class="flex items-center space-x-3 border-l border-outline-variant/20 pl-6">
+<div class="text-right">
+<p class="text-xs font-bold text-[#f8f5fd]">Admin User</p>
+<p class="text-[10px] text-primary">Super Admin</p>
+</div>
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-primary/20" data-alt="close-up portrait of professional male executive in a sleek dark environment with cinematic neon purple backlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzQmYBPXWhQsbotlbIaKBzzGogaAYvfhBpYsAsX9wBs4SEkrmaJ8l56Ol0c2bs_jalL9jzZQY3UCRfliu4zqAvrvHFMTh31d6nvkG5jm2NySyS14kaQ3HW2yCvYqvyyVDcawtHBfWzQK8Gj7M87MY4MUWVYln8-bUPtOHnWbwHIHoTNPw1OJdMm1AWWuwRhNWxxRFVu4jjr-n3icDxje4V2ev0Ga7UIxv-mGF5bZGYQiA3XoVZC8yeTAGYFoJcVFHhELm8FZ9o-xI"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-24 px-8 pb-12 min-h-screen bg-background">
+<!-- Header Section -->
+<div class="flex items-end justify-between mb-10">
+<div>
+<span class="text-primary font-bold tracking-widest text-[10px] uppercase">Analytical Engine</span>
+<h3 class="text-4xl font-extrabold tracking-tighter mt-1 text-on-surface">System Performance</h3>
+</div>
+<div class="flex space-x-3">
+<div class="bg-surface-container-high px-4 py-2 rounded-lg flex items-center space-x-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-xs font-medium text-on-surface-variant">Last 30 Days</span>
+</div>
+<button class="bg-surface-bright text-on-surface px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary-container hover:text-on-primary-fixed transition-colors">
+                    Export Report
+                </button>
+</div>
+</div>
+<!-- Metric Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="bg-surface-container-high p-6 rounded-xl border-l-2 border-primary shadow-lg">
+<p class="text-xs font-semibold text-on-surface-variant mb-1">Total Conversions</p>
+<div class="flex items-baseline space-x-2">
+<h4 class="text-2xl font-black text-on-surface">24,512</h4>
+<span class="text-xs font-bold text-secondary flex items-center">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> 12%
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-high p-6 rounded-xl border-l-2 border-secondary shadow-lg">
+<p class="text-xs font-semibold text-on-surface-variant mb-1">Telegram Reach</p>
+<div class="flex items-baseline space-x-2">
+<h4 class="text-2xl font-black text-on-surface">18,903</h4>
+<span class="text-xs font-bold text-secondary flex items-center">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> 8.4%
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-high p-6 rounded-xl border-l-2 border-tertiary shadow-lg">
+<p class="text-xs font-semibold text-on-surface-variant mb-1">OF Click-through</p>
+<div class="flex items-baseline space-x-2">
+<h4 class="text-2xl font-black text-on-surface">4,209</h4>
+<span class="text-xs font-bold text-error flex items-center">
+<span class="material-symbols-outlined text-xs" data-icon="trending_down">trending_down</span> 2.1%
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-high p-6 rounded-xl border-l-2 border-primary-container shadow-lg">
+<p class="text-xs font-semibold text-on-surface-variant mb-1">Avg. Conversion Time</p>
+<div class="flex items-baseline space-x-2">
+<h4 class="text-2xl font-black text-on-surface">4m 12s</h4>
+<span class="text-xs font-bold text-secondary flex items-center">
+<span class="material-symbols-outlined text-xs" data-icon="speed">speed</span> 14% fast
+                    </span>
+</div>
+</div>
+</div>
+<!-- Charts Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+<!-- New Users Chart -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative overflow-hidden">
+<div class="flex items-center justify-between mb-8">
+<h4 class="text-lg font-bold tracking-tight">New Users Velocity</h4>
+<div class="flex space-x-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Daily Signups</span>
+</div>
+</div>
+<div class="h-48 flex items-end justify-between relative">
+<!-- Fake Chart Visuals -->
+<div class="absolute inset-0 chart-gradient rounded-lg"></div>
+<div class="flex-1 h-24 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-16 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-32 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-28 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-40 bg-primary/30 mx-1 rounded-t-sm relative">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-surface-bright px-2 py-1 rounded text-[10px] font-bold border border-primary/40">1,240</div>
+</div>
+<div class="flex-1 h-36 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-44 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-32 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-20 bg-primary/20 mx-1 rounded-t-sm"></div>
+<div class="flex-1 h-28 bg-primary/20 mx-1 rounded-t-sm"></div>
+</div>
+<div class="mt-4 flex justify-between text-[10px] font-bold text-on-surface-variant uppercase tracking-widest px-1">
+<span>Oct 01</span>
+<span>Oct 15</span>
+<span>Oct 30</span>
+</div>
+</div>
+<!-- Conversion Chart -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative overflow-hidden">
+<div class="flex items-center justify-between mb-8">
+<h4 class="text-lg font-bold tracking-tight">Channel Conversions</h4>
+<div class="flex space-x-4">
+<div class="flex items-center space-x-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Telegram</span>
+</div>
+<div class="flex items-center space-x-1">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">OnlyFans</span>
+</div>
+</div>
+</div>
+<div class="h-48 flex items-end justify-around space-x-4 px-4">
+<div class="w-full flex flex-col justify-end h-full">
+<div class="flex space-x-1 h-full items-end">
+<div class="w-4 h-3/4 bg-secondary/40 rounded-t-sm"></div>
+<div class="w-4 h-1/4 bg-tertiary/40 rounded-t-sm"></div>
+</div>
+</div>
+<div class="w-full flex flex-col justify-end h-full">
+<div class="flex space-x-1 h-full items-end">
+<div class="w-4 h-1/2 bg-secondary/40 rounded-t-sm"></div>
+<div class="w-4 h-2/5 bg-tertiary/40 rounded-t-sm"></div>
+</div>
+</div>
+<div class="w-full flex flex-col justify-end h-full">
+<div class="flex space-x-1 h-full items-end">
+<div class="w-4 h-4/5 bg-secondary/60 rounded-t-sm border-t-2 border-secondary"></div>
+<div class="w-4 h-1/3 bg-tertiary/60 rounded-t-sm border-t-2 border-tertiary"></div>
+</div>
+</div>
+<div class="w-full flex flex-col justify-end h-full">
+<div class="flex space-x-1 h-full items-end">
+<div class="w-4 h-2/3 bg-secondary/40 rounded-t-sm"></div>
+<div class="w-4 h-1/2 bg-tertiary/40 rounded-t-sm"></div>
+</div>
+</div>
+<div class="w-full flex flex-col justify-end h-full">
+<div class="flex space-x-1 h-full items-end">
+<div class="w-4 h-full bg-secondary/40 rounded-t-sm"></div>
+<div class="w-4 h-1/4 bg-tertiary/40 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Performance Matrix & Bot Section -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+<!-- Source Performance Table -->
+<div class="xl:col-span-2 bg-surface-container rounded-2xl p-6 shadow-2xl border border-outline-variant/10">
+<h4 class="text-lg font-bold mb-6 flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary" data-icon="dataset">dataset</span>
+<span>Performance by Source</span>
+</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-outline-variant/20">
+<th class="pb-4 font-bold text-xs text-on-surface-variant uppercase tracking-widest">Source Name</th>
+<th class="pb-4 font-bold text-xs text-on-surface-variant uppercase tracking-widest">Captured</th>
+<th class="pb-4 font-bold text-xs text-on-surface-variant uppercase tracking-widest">% Telegram</th>
+<th class="pb-4 font-bold text-xs text-on-surface-variant uppercase tracking-widest">% OF</th>
+<th class="pb-4 font-bold text-xs text-on-surface-variant uppercase tracking-widest text-right">Avg Time</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group hover:bg-surface-bright/30 transition-colors">
+<td class="py-4 text-sm font-bold flex items-center space-x-3">
+<div class="w-8 h-8 rounded bg-surface-bright flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="rocket">rocket</span>
+</div>
+<span>Instagram Influencer A</span>
+</td>
+<td class="py-4 text-sm">12,400</td>
+<td class="py-4 text-sm">
+<div class="flex items-center space-x-2">
+<div class="w-16 h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="w-[85%] h-full bg-secondary"></div>
+</div>
+<span class="font-bold">85%</span>
+</div>
+</td>
+<td class="py-4 text-sm">
+<div class="flex items-center space-x-2">
+<div class="w-16 h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="w-[32%] h-full bg-tertiary"></div>
+</div>
+<span class="font-bold">32%</span>
+</div>
+</td>
+<td class="py-4 text-sm font-bold text-right text-on-surface-variant">3m 45s</td>
+</tr>
+<tr class="group hover:bg-surface-bright/30 transition-colors">
+<td class="py-4 text-sm font-bold flex items-center space-x-3">
+<div class="w-8 h-8 rounded bg-surface-bright flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="movie">movie</span>
+</div>
+<span>TikTok Trending Video</span>
+</td>
+<td class="py-4 text-sm">8,920</td>
+<td class="py-4 text-sm">
+<div class="flex items-center space-x-2">
+<div class="w-16 h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-secondary"></div>
+</div>
+<span class="font-bold">92%</span>
+</div>
+</td>
+<td class="py-4 text-sm">
+<div class="flex items-center space-x-2">
+<div class="w-16 h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="w-[12%] h-full bg-tertiary"></div>
+</div>
+<span class="font-bold">12%</span>
+</div>
+</td>
+<td class="py-4 text-sm font-bold text-right text-on-surface-variant">1m 12s</td>
+</tr>
+<tr class="group hover:bg-surface-bright/30 transition-colors">
+<td class="py-4 text-sm font-bold flex items-center space-x-3">
+<div class="w-8 h-8 rounded bg-surface-bright flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="search">search</span>
+</div>
+<span>Google Search Ads</span>
+</td>
+<td class="py-4 text-sm">3,120</td>
+<td class="py-4 text-sm">
+<div class="flex items-center space-x-2">
+<div class="w-16 h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="w-[45%] h-full bg-secondary"></div>
+</div>
+<span class="font-bold">45%</span>
+</div>
+</td>
+<td class="py-4 text-sm">
+<div class="flex items-center space-x-2">
+<div class="w-16 h-1.5 bg-surface-bright rounded-full overflow-hidden">
+<div class="w-[58%] h-full bg-tertiary"></div>
+</div>
+<span class="font-bold">58%</span>
+</div>
+</td>
+<td class="py-4 text-sm font-bold text-right text-on-surface-variant">5m 20s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- CupidBot Performance -->
+<div class="bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/20 blur-3xl rounded-full"></div>
+<div>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary" data-icon="smart_toy">smart_toy</span>
+<h4 class="text-lg font-bold">CupidBot Status</h4>
+</div>
+<span class="px-2 py-1 bg-secondary/10 text-secondary text-[10px] font-black uppercase rounded">Active</span>
+</div>
+<div class="space-y-6">
+<div>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mb-2">Sessions Started</p>
+<div class="flex items-baseline space-x-2">
+<h5 class="text-4xl font-black text-on-surface">15,842</h5>
+<span class="text-xs font-bold text-secondary">+12.4%</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-bright/50 p-4 rounded-xl border border-outline-variant/10">
+<p class="text-[9px] text-on-surface-variant font-bold uppercase mb-1">Conv Rate</p>
+<p class="text-xl font-bold text-on-surface">68.2%</p>
+</div>
+<div class="bg-surface-bright/50 p-4 rounded-xl border border-outline-variant/10">
+<p class="text-[9px] text-on-surface-variant font-bold uppercase mb-1">Avg Interaction</p>
+<p class="text-xl font-bold text-on-surface">12.5s</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/10">
+<p class="text-[10px] text-on-surface-variant italic mb-4">Bot logic optimized 2h ago</p>
+<button class="w-full py-3 bg-primary text-on-primary-fixed font-bold rounded-lg text-sm hover:shadow-[0_0_20px_rgba(182,160,255,0.4)] transition-all">
+                        Adjust Conversation Logic
+                    </button>
+</div>
+</div>
+</div>
+<!-- Geographic Analysis -->
+<div class="bg-surface-container-high rounded-2xl p-8 border border-outline-variant/5">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h4 class="text-xl font-black tracking-tight">Geographic Hubs</h4>
+<p class="text-xs text-on-surface-variant">Top countries and primary urban conversion nodes</p>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="location_on">location_on</span>
+<span class="text-xs font-bold">52 Countries</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Country Table -->
+<div>
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-outline-variant/20">
+<th class="pb-3 text-[10px] font-black uppercase text-on-surface-variant tracking-[0.2em]">Rank</th>
+<th class="pb-3 text-[10px] font-black uppercase text-on-surface-variant tracking-[0.2em]">Country</th>
+<th class="pb-3 text-[10px] font-black uppercase text-on-surface-variant tracking-[0.2em] text-right">Volume</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr>
+<td class="py-4 text-xs font-bold text-primary">01</td>
+<td class="py-4">
+<div class="flex items-center space-x-3">
+<span class="text-xl">🇺🇸</span>
+<span class="text-sm font-bold">United States</span>
+</div>
+</td>
+<td class="py-4 text-sm font-black text-right">45.2k</td>
+</tr>
+<tr>
+<td class="py-4 text-xs font-bold text-primary">02</td>
+<td class="py-4">
+<div class="flex items-center space-x-3">
+<span class="text-xl">🇬🇧</span>
+<span class="text-sm font-bold">United Kingdom</span>
+</div>
+</td>
+<td class="py-4 text-sm font-black text-right">18.1k</td>
+</tr>
+<tr>
+<td class="py-4 text-xs font-bold text-primary">03</td>
+<td class="py-4">
+<div class="flex items-center space-x-3">
+<span class="text-xl">🇨🇦</span>
+<span class="text-sm font-bold">Canada</span>
+</div>
+</td>
+<td class="py-4 text-sm font-black text-right">12.4k</td>
+</tr>
+<tr>
+<td class="py-4 text-xs font-bold text-primary">04</td>
+<td class="py-4">
+<div class="flex items-center space-x-3">
+<span class="text-xl">🇦🇺</span>
+<span class="text-sm font-bold">Australia</span>
+</div>
+</td>
+<td class="py-4 text-sm font-black text-right">9.8k</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- World Map Visualization Mockup -->
+<div class="relative group cursor-crosshair">
+<div class="aspect-video bg-surface-container rounded-xl overflow-hidden border border-outline-variant/20 relative">
+<img alt="World Map" class="w-full h-full object-cover opacity-30 grayscale" data-alt="stylized night world map with glowing purple data points on major global cities and neon cyan networking lines connecting continents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjlKNxHBZ4jIgIZVxuJuhfHKhjuubg93rjgpJkLGXOlt2bgsqxH27di85g_yj2vTeJvDujeII7rWOwBmmV01t1CNv92-pCNk7NnRsbuDLREpVYm3c5_W4jhKCwjFWiW-92e45-O2U_0Ul4JqtNXuNWNg5KpTHgu99MdEEZxH-rKQrVwSuWEPMVA9hyEWfcuqkM5TkfarikE1csI7eg7V1PWCBcmiWr5D8oegnyXgUhecQo6zPw5z1EAEH9HaKv9UkTQNFofLOyBws"/>
+<!-- Pulse Points -->
+<div class="absolute top-[35%] left-[20%] w-4 h-4 bg-secondary rounded-full animate-pulse shadow-[0_0_15px_#00e3fd]"></div>
+<div class="absolute top-[30%] left-[45%] w-3 h-3 bg-primary rounded-full animate-pulse shadow-[0_0_15px_#b6a0ff]"></div>
+<div class="absolute top-[60%] left-[80%] w-3 h-3 bg-tertiary rounded-full animate-pulse shadow-[0_0_15px_#ff6c95]"></div>
+<div class="absolute bottom-4 left-4 right-4 p-4 bg-surface-container-highest/90 backdrop-blur-md rounded-lg border border-outline-variant/20">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Active Region Hotspot</p>
+<h5 class="text-sm font-bold">North America - Eastern Seaboard</h5>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="near_me">near_me</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script src="./panel-nav.js"></script>
+</body></html>
