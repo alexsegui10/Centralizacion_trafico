@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OFM Admin Panel</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    />
+
+    <script>
+      window.__ADMIN_CONFIG = {
+        SUPABASE_URL: "https://krnabtkugfzfinwvfuzm.supabase.co",
+        SUPABASE_ANON_KEY:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM",
+        ADMIN_PASSWORD: "YOUR_PASSWORD"
+      };
+    </script>
+
+    <script async src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.49.8",
+          "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom"
+        }
+      }
+    </script>
+
+    <script src="https://unpkg.com/@babel/standalone@7.26.10/babel.min.js"></script>
+
+    <style>
+      html,
+      body,
+      #admin-root {
+        margin: 0;
+        width: 100%;
+        min-height: 100%;
+        background: #080808;
+        color: #f0f0f0;
+        font-family: "Inter", sans-serif;
+      }
+
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="admin-root"></div>
+
+    <script type="text/babel" data-type="module" data-presets="react">
+      import React from "react";
+      import { createRoot } from "react-dom/client";
+      import AdminPanel from "./admin.jsx";
+
+      const root = createRoot(document.getElementById("admin-root"));
+      root.render(<AdminPanel />);
+    </script>
+  </body>
+</html>

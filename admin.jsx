@@ -13,9 +13,11 @@ import {
   YAxis
 } from "recharts";
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
-const ADMIN_PASSWORD = "YOUR_PASSWORD";
+const runtimeConfig = typeof window !== "undefined" && window.__ADMIN_CONFIG ? window.__ADMIN_CONFIG : {};
+
+const SUPABASE_URL = runtimeConfig.SUPABASE_URL || "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = runtimeConfig.SUPABASE_ANON_KEY || "YOUR_ANON_KEY";
+const ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "YOUR_PASSWORD";
 
 const SESSION_KEY = "ofm_admin_session_v1";
 
