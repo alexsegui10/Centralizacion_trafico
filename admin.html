@@ -4,25 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OFM Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
+      :root {
+        --bg: #0e0e13;
+        --bg-alt: #131318;
+        --surface: #19191f;
+        --surface-hi: #1f1f26;
+        --surface-top: #25252c;
+        --primary: #b6a0ff;
+        --primary-dim: #7e51ff;
+        --secondary: #00e3fd;
+        --tertiary: #ff6c95;
+        --text: #f8f5fd;
+        --text-dim: #acaab1;
+        --outline: #48474d;
+      }
+
       html,
       body,
       #root {
         margin: 0;
         width: 100%;
         min-height: 100%;
-        background: #080808;
-        color: #f0f0f0;
-        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, sans-serif;
       }
 
       * {
         box-sizing: border-box;
+      }
+
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+
+      .stitch-shell {
+        background: radial-gradient(circle at 0% 0%, rgba(182, 160, 255, 0.12), transparent 35%), radial-gradient(circle at 100% 100%, rgba(0, 227, 253, 0.1), transparent 32%), var(--bg);
+      }
+
+      .glass {
+        backdrop-filter: blur(20px);
+        background-color: rgba(31, 31, 38, 0.8);
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid rgba(72, 71, 77, 0.35);
+        border-radius: 12px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .btn-primary {
+        border: 0;
+        color: #000;
+        font-weight: 800;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+        cursor: pointer;
+      }
+
+      .btn-secondary {
+        border: 1px solid rgba(72, 71, 77, 0.6);
+        color: var(--text);
+        border-radius: 8px;
+        background: var(--surface-hi);
+        cursor: pointer;
+      }
+
+      .btn-telegram {
+        border: 1px solid rgba(0, 227, 253, 0.4);
+        color: var(--secondary);
+        border-radius: 8px;
+        background: rgba(0, 227, 253, 0.08);
+        cursor: pointer;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-alt);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--surface-top);
       }
     </style>
   </head>
@@ -275,11 +361,15 @@
           display: "block",
           width: "100%",
           textAlign: "left",
-          padding: "10px 16px",
+          padding: "12px 24px",
           border: "none",
           cursor: "pointer",
-          color: on ? "#fff" : "#bbb",
-          background: on ? "#25252c" : "transparent"
+          color: on ? "#f8f5fd" : "#acaab1",
+          background: on ? "linear-gradient(90deg, rgba(182,160,255,0.18), transparent)" : "transparent",
+          borderLeft: on ? "2px solid #b6a0ff" : "2px solid transparent",
+          fontWeight: on ? 700 : 500,
+          fontSize: 13,
+          letterSpacing: "0.01em"
         });
 
         return (
@@ -297,7 +387,15 @@
               padding: "18px 0"
             }}
           >
-            <div style={{ padding: "0 16px", marginBottom: "20px", fontWeight: 700 }}>Neon Noir - Executive Suite</div>
+            <div style={{ padding: "0 20px", marginBottom: "20px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg, #b6a0ff, #7e51ff)", display: "grid", placeItems: "center" }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18, color: "#000", fontVariationSettings: "'FILL' 1" }}>bolt</span>
+                </div>
+                <strong style={{ letterSpacing: "-0.02em" }}>Neon Noir</strong>
+              </div>
+              <div style={{ fontSize: 10, color: "#acaab1", textTransform: "uppercase", letterSpacing: "0.16em", fontWeight: 700 }}>Executive Suite</div>
+            </div>
             <nav style={{ flex: 1 }}>
               <button style={btnStyle(active === "dashboard")} onClick={() => setActive("dashboard")}>Dashboard</button>
               <button style={btnStyle(active === "kanban")} onClick={() => setActive("kanban")}>Users</button>
@@ -305,6 +403,9 @@
               <button style={btnStyle(active === "alerts")} onClick={() => setActive("alerts")}>Alerts</button>
               {openProfile ? <button style={btnStyle(active === "profile")} onClick={() => setActive("profile")}>Profile</button> : null}
             </nav>
+            <div style={{ padding: "0 20px 8px" }}>
+              <button className="btn-primary" style={{ width: "100%", padding: "10px 12px", fontSize: 11 }}>Activate CupidBot</button>
+            </div>
           </aside>
         );
       }
@@ -328,26 +429,33 @@
         };
 
         return (
-          <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div className="stitch-shell" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "fixed", top: "-8%", left: "-8%", width: "38%", height: "38%", borderRadius: "50%", background: "rgba(182,160,255,0.12)", filter: "blur(90px)", pointerEvents: "none" }} />
+            <div style={{ position: "fixed", bottom: "-8%", right: "-8%", width: "38%", height: "38%", borderRadius: "50%", background: "rgba(0,227,253,0.1)", filter: "blur(90px)", pointerEvents: "none" }} />
             <main style={{ width: "100%", maxWidth: 420 }}>
-              <h1 style={{ marginTop: 0 }}>Admin Panel</h1>
-              <p style={{ opacity: 0.7, fontSize: 12 }}>System Access Protocol</p>
+              <div style={{ textAlign: "center", marginBottom: 24 }}>
+                <div style={{ width: 48, height: 48, margin: "0 auto 14px", borderRadius: 12, background: "linear-gradient(135deg,#b6a0ff,#7e51ff)", display: "grid", placeItems: "center", boxShadow: "0 0 20px rgba(182,160,255,0.3)" }}>
+                  <span className="material-symbols-outlined" style={{ color: "#000", fontVariationSettings: "'FILL' 1", fontSize: 22 }}>lock</span>
+                </div>
+                <h1 style={{ margin: 0, textTransform: "uppercase", fontSize: 22, letterSpacing: "-0.02em" }}>Admin Panel</h1>
+                <p style={{ margin: "6px 0 0 0", opacity: 0.7, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em" }}>System Access Protocol</p>
+              </div>
 
-              <div style={{ border: "1px solid #2b2b32", borderRadius: 12, padding: 20, background: "#15151a" }}>
+              <div className="glass" style={{ border: "1px solid rgba(72,71,77,0.4)", borderRadius: 14, padding: 22 }}>
                 <form onSubmit={submit}>
                   <div style={{ marginBottom: 12 }}>
-                    <label style={{ display: "block", marginBottom: 6, fontSize: 12 }}>Administrator Identifier</label>
-                    <input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="EXECUTIVE_ID_001" style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #333", background: "#0f0f14", color: "#f0f0f0" }} />
+                    <label style={{ display: "block", marginBottom: 6, fontSize: 10, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#acaab1" }}>Administrator Identifier</label>
+                    <input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="EXECUTIVE_ID_001" style={{ width: "100%", padding: 12, borderRadius: 10, border: "1px solid rgba(72,71,77,0.5)", background: "#25252c", color: "#f8f5fd" }} />
                   </div>
 
                   <div style={{ marginBottom: 12 }}>
-                    <label style={{ display: "block", marginBottom: 6, fontSize: 12 }}>Cryptographic Key</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="********" style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #333", background: "#0f0f14", color: "#f0f0f0" }} />
+                    <label style={{ display: "block", marginBottom: 6, fontSize: 10, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#acaab1" }}>Cryptographic Key</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="********" style={{ width: "100%", padding: 12, borderRadius: 10, border: "1px solid rgba(72,71,77,0.5)", background: "#25252c", color: "#f8f5fd" }} />
                   </div>
 
                   {err ? <p style={{ color: "#ff7a7a", fontSize: 12 }}>{err}</p> : null}
 
-                  <button type="submit" style={{ width: "100%", padding: 12, border: "none", borderRadius: 8, background: "#b6a0ff", color: "#080808", fontWeight: 700, cursor: "pointer" }}>
+                  <button type="submit" className="btn-primary" style={{ width: "100%", padding: 12, fontSize: 13 }}>
                     AUTHORIZE ACCESS
                   </button>
                 </form>
@@ -608,7 +716,7 @@
         ).sort();
 
         return (
-          <div style={{ background: "#080808", color: "#f0f0f0", minHeight: "100vh" }}>
+          <div className="stitch-shell" style={{ color: "#f8f5fd", minHeight: "100vh" }}>
             <Sidebar active={active} setActive={setActive} openProfile={!!selectedLead} />
 
             <header
@@ -619,21 +727,26 @@
                 right: 0,
                 zIndex: 40,
                 background: "#0e0e13",
-                boxShadow: "0 12px 24px rgba(0,0,0,0.3)",
-                height: 56,
+                boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
+                borderBottom: "1px solid rgba(72,71,77,0.25)",
+                height: 64,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "0 16px"
+                padding: "0 20px"
               }}
             >
-              <div style={{ fontSize: 12, opacity: 0.7 }}>Realtime Admin</div>
+              <div>
+                <div style={{ fontWeight: 800, letterSpacing: "-0.01em" }}>Admin Panel</div>
+                <div style={{ fontSize: 11, opacity: 0.7 }}>Realtime Executive Control</div>
+              </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <button style={{ padding: "8px 10px", background: "#1a1a22", border: "1px solid #2d2d38", color: "#f0f0f0", borderRadius: 8, cursor: "pointer" }} onClick={reloadAll}>
+                <button className="btn-secondary" style={{ padding: "8px 10px" }} onClick={reloadAll}>
                   {loading ? "Refreshing..." : "Refresh"}
                 </button>
                 <button
-                  style={{ padding: "8px 10px", background: "#25252c", border: "1px solid #3a3a44", color: "#f0f0f0", borderRadius: 8, cursor: "pointer" }}
+                  className="btn-secondary"
+                  style={{ padding: "8px 10px" }}
                   onClick={() => {
                     sessionStorage.removeItem(SESSION_KEY);
                     setAuthed(false);
@@ -644,9 +757,9 @@
               </div>
             </header>
 
-            <main style={{ marginLeft: 230, paddingTop: 72, padding: 20, minHeight: "100vh" }}>
+            <main style={{ marginLeft: 230, paddingTop: 80, padding: 20, minHeight: "100vh" }}>
               {feedback ? (
-                <div style={{ marginBottom: 10, fontSize: 12, padding: "8px 10px", background: "#111111", border: "1px solid #1e1e1e", borderRadius: 8 }}>
+                <div style={{ marginBottom: 10, fontSize: 12, padding: "8px 10px", background: "#19191f", border: "1px solid rgba(72,71,77,0.35)", borderRadius: 8 }}>
                   {feedback}
                 </div>
               ) : null}
@@ -664,15 +777,15 @@
 
                   <SectionErrorBoundary>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
-                      <div style={{ background: "#191920", padding: 14, borderRadius: 8 }}><p style={{ margin: "0 0 8px 0", fontSize: 12, opacity: 0.7 }}>Total Leads</p><h3 style={{ margin: 0 }}>{metrics.total}</h3></div>
-                      <div style={{ background: "#191920", padding: 14, borderRadius: 8 }}><p style={{ margin: "0 0 8px 0", fontSize: 12, opacity: 0.7 }}>Active in Telegram</p><h3 style={{ margin: 0 }}>{metrics.telegram}</h3></div>
-                      <div style={{ background: "#191920", padding: 14, borderRadius: 8 }}><p style={{ margin: "0 0 8px 0", fontSize: 12, opacity: 0.7 }}>OF Conversions</p><h3 style={{ margin: 0 }}>{metrics.ofConv}</h3></div>
-                      <div style={{ background: "#191920", padding: 14, borderRadius: 8 }}><p style={{ margin: "0 0 8px 0", fontSize: 12, opacity: 0.7 }}>CupidBot Active Now</p><h3 style={{ margin: 0 }}>{metrics.cupid}</h3></div>
+                      <div className="panel" style={{ padding: 14 }}><p style={{ margin: "0 0 8px 0", fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Leads</p><h3 style={{ margin: 0 }}>{metrics.total}</h3></div>
+                      <div className="panel" style={{ padding: 14 }}><p style={{ margin: "0 0 8px 0", fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.08em" }}>Active in Telegram</p><h3 style={{ margin: 0 }}>{metrics.telegram}</h3></div>
+                      <div className="panel" style={{ padding: 14 }}><p style={{ margin: "0 0 8px 0", fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.08em" }}>OF Conversions</p><h3 style={{ margin: 0 }}>{metrics.ofConv}</h3></div>
+                      <div className="panel" style={{ padding: 14 }}><p style={{ margin: "0 0 8px 0", fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.08em" }}>CupidBot Active Now</p><h3 style={{ margin: 0 }}>{metrics.cupid}</h3></div>
                     </div>
                   </SectionErrorBoundary>
 
                   <SectionErrorBoundary>
-                    <div style={{ background: "#15151a", padding: 16, borderRadius: 10 }}>
+                    <div className="panel" style={{ padding: 16 }}>
                       <h2 style={{ marginTop: 0, marginBottom: 10 }}>Traffic Source Distribution</h2>
                       <div style={{ width: "100%", height: 320 }}>
                         <SourceBarChart data={sourceChart} />
@@ -817,12 +930,26 @@
                         <div style={{ background: "#15151a", border: "1px solid #2c2c36", borderRadius: 12, padding: 14 }}>
                           <h3 style={{ marginTop: 0 }}>Strategic Actions</h3>
                           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-                            <button disabled={saving.activate} style={{ padding: 10, borderRadius: 8, border: "1px solid #2e2e37", background: "#1d1d25", color: "#f0f0f0", cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { cupidbot_activo: true, cupidbot_pausado: false }, "activate")}>{saving.activate ? "..." : "Activate CupidBot"}</button>
-                            <button disabled={saving.pause} style={{ padding: 10, borderRadius: 8, border: "1px solid #2e2e37", background: "#1d1d25", color: "#f0f0f0", cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { cupidbot_pausado: true, cupidbot_activo: false }, "pause")}>{saving.pause ? "..." : "Pause CupidBot"}</button>
-                            <button disabled={saving.flow1} style={{ padding: 10, borderRadius: 8, border: "1px solid #2e2e37", background: "#1d1d25", color: "#f0f0f0", cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { active_flow: "1" }, "flow1")}>Set Flow 1</button>
-                            <button disabled={saving.flow2} style={{ padding: 10, borderRadius: 8, border: "1px solid #2e2e37", background: "#1d1d25", color: "#f0f0f0", cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { active_flow: "2" }, "flow2")}>Set Flow 2</button>
-                            <button disabled={saving.vip} style={{ padding: 10, borderRadius: 8, border: "1px solid #2e2e37", background: "#b6a0ff", color: "#080808", fontWeight: 700, cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { of_activo: true, cupidbot_activo: false, cupidbot_pausado: false, active_flow: "4" }, "vip")}>{saving.vip ? "..." : "Mark VIP"}</button>
+                            <button className="btn-secondary" disabled={saving.activate} style={{ padding: 10 }} onClick={() => updateLead(selectedLead.visitor_id, { cupidbot_activo: true, cupidbot_pausado: false }, "activate")}>{saving.activate ? "..." : "Activate CupidBot"}</button>
+                            <button className="btn-secondary" disabled={saving.pause} style={{ padding: 10 }} onClick={() => updateLead(selectedLead.visitor_id, { cupidbot_pausado: true, cupidbot_activo: false }, "pause")}>{saving.pause ? "..." : "Pause CupidBot"}</button>
+                            <button className="btn-secondary" disabled={saving.flow1} style={{ padding: 10 }} onClick={() => updateLead(selectedLead.visitor_id, { active_flow: "1" }, "flow1")}>Set Flow 1</button>
+                            <button className="btn-secondary" disabled={saving.flow2} style={{ padding: 10 }} onClick={() => updateLead(selectedLead.visitor_id, { active_flow: "2" }, "flow2")}>Set Flow 2</button>
+                            <button className="btn-primary" disabled={saving.vip} style={{ padding: 10 }} onClick={() => updateLead(selectedLead.visitor_id, { of_activo: true, cupidbot_activo: false, cupidbot_pausado: false, active_flow: "4" }, "vip")}>{saving.vip ? "..." : "Mark VIP"}</button>
                             <button disabled={saving.conflict} style={{ padding: 10, borderRadius: 8, border: "1px solid #5d2525", background: "#261212", color: "#ff9999", cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { active_flow: "6" }, "conflict")}>Mark Conflict</button>
+                            <button
+                              className="btn-telegram"
+                              style={{ padding: 10, gridColumn: "span 2" }}
+                              onClick={() => {
+                                const tg = String(selectedLead.telegram_username || selectedLead.telegram_user || "").trim().replace(/^@/, "");
+                                if (tg) {
+                                  window.open("https://t.me/" + tg, "_blank", "noopener,noreferrer");
+                                } else {
+                                  window.open("https://web.telegram.org/", "_blank", "noopener,noreferrer");
+                                }
+                              }}
+                            >
+                              Open Telegram
+                            </button>
                           </div>
                           <button disabled={saving.resolve} style={{ width: "100%", marginTop: 8, padding: 10, borderRadius: 8, border: "1px solid #25535d", background: "#0f1e22", color: "#91e6ff", cursor: "pointer" }} onClick={() => updateLead(selectedLead.visitor_id, { active_flow: inferFlow(selectedLead, false) }, "resolve")}>{saving.resolve ? "Resolving..." : "Resolve Conflict"}</button>
                         </div>
