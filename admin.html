@@ -35,8 +35,6 @@
       }
     </script>
 
-    <script src="https://unpkg.com/@babel/standalone@7.26.10/babel.min.js"></script>
-
     <style>
       html,
       body,
@@ -57,13 +55,13 @@
   <body>
     <div id="admin-root"></div>
 
-    <script type="text/babel" data-type="module" data-presets="react">
+    <script type="module">
       import React from "react";
       import { createRoot } from "react-dom/client";
-      import AdminPanel from "./admin.jsx";
+      import AdminPanel from "./admin.app.mjs";
 
       const root = createRoot(document.getElementById("admin-root"));
-      root.render(<AdminPanel />);
+      root.render(React.createElement(AdminPanel));
     </script>
   </body>
 </html>
