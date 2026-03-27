@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Panel - Secure Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#a98fff",
+              "on-tertiary-fixed": "#380014",
+              "surface-container-lowest": "#000000",
+              "error-container": "#a70138",
+              "surface-bright": "#2c2b33",
+              "on-error": "#490013",
+              "on-tertiary": "#48001c",
+              "on-primary": "#340090",
+              "on-tertiary-container": "#100003",
+              "primary-fixed": "#a98fff",
+              "tertiary-fixed-dim": "#ff769b",
+              "primary": "#b6a0ff",
+              "inverse-surface": "#fbf8ff",
+              "on-secondary": "#004d57",
+              "secondary-fixed-dim": "#00d7f0",
+              "on-background": "#f8f5fd",
+              "secondary-fixed": "#26e6ff",
+              "inverse-primary": "#6834eb",
+              "on-primary-container": "#280072",
+              "surface-dim": "#0e0e13",
+              "surface-container-highest": "#25252c",
+              "tertiary-fixed": "#ff8fa9",
+              "surface": "#0e0e13",
+              "tertiary-container": "#fd3e80",
+              "surface-variant": "#25252c",
+              "outline-variant": "#48474d",
+              "secondary-dim": "#00d4ec",
+              "surface-container": "#19191f",
+              "on-primary-fixed": "#000000",
+              "on-secondary-fixed-variant": "#005964",
+              "on-tertiary-fixed-variant": "#770033",
+              "on-surface-variant": "#acaab1",
+              "outline": "#76747b",
+              "inverse-on-surface": "#55545a",
+              "surface-container-high": "#1f1f26",
+              "on-primary-fixed-variant": "#32008a",
+              "secondary-container": "#006875",
+              "on-surface": "#f8f5fd",
+              "tertiary": "#ff6c95",
+              "primary-fixed-dim": "#9c7eff",
+              "error": "#ff6e84",
+              "background": "#0e0e13",
+              "tertiary-dim": "#ff6c95",
+              "surface-container-low": "#131318",
+              "on-secondary-container": "#e8fbff",
+              "secondary": "#00e3fd",
+              "error-dim": "#d73357",
+              "primary-dim": "#7e51ff",
+              "on-error-container": "#ffb2b9",
+              "on-secondary-fixed": "#003a42",
+              "surface-tint": "#b6a0ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #0e0e13;
+            color: #f8f5fd;
+            font-family: 'Inter', sans-serif;
+        }
+        .neon-glow:focus-within {
+            box-shadow: 0 0 15px rgba(0, 227, 253, 0.15);
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background-color: rgba(31, 31, 38, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body antialiased flex items-center justify-center min-h-screen selection:bg-primary selection:text-on-primary-fixed overflow-hidden">
+<!-- Suppressed Nav Shell: Login is a focused journey -->
+<!-- Background Atmosphere -->
+<div class="fixed inset-0 pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[120px]"></div>
+</div>
+<!-- Login Container -->
+<main class="relative z-10 w-full max-w-[420px] px-6">
+<!-- Identity Anchor -->
+<div class="flex flex-col items-center mb-10">
+<div class="w-12 h-12 bg-gradient-to-br from-primary to-primary-dim rounded-lg flex items-center justify-center mb-6 shadow-[0px_0px_20px_rgba(182,160,255,0.3)]">
+<span class="material-symbols-outlined text-on-primary-fixed text-2xl" data-icon="lock">lock</span>
+</div>
+<h1 class="text-on-surface text-xl font-bold tracking-tighter uppercase mb-1">Admin Panel</h1>
+<p class="text-on-surface-variant text-xs font-medium tracking-widest uppercase opacity-60">System Access Protocol</p>
+</div>
+<!-- Login Card -->
+<div class="glass-panel border border-outline-variant/10 rounded-xl p-8 shadow-[0px_24px_48px_rgba(0,0,0,0.5)]">
+<form class="space-y-6">
+<!-- User ID Field -->
+<div class="space-y-2">
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em] ml-1" for="user-id">
+                        Administrator Identifier
+                    </label>
+<div class="relative flex items-center group">
+<span class="absolute left-4 material-symbols-outlined text-on-surface-variant text-lg group-focus-within:text-secondary transition-colors" data-icon="shield_person">shield_person</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg py-4 pl-12 pr-4 text-sm text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-secondary transition-all neon-glow" id="user-id" placeholder="EXECUTIVE_ID_001" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]" for="password">
+                            Cryptographic Key
+                        </label>
+<a class="text-[10px] font-bold text-secondary-dim uppercase tracking-wider hover:text-secondary transition-colors" href="#">Emergency Reset</a>
+</div>
+<div class="relative flex items-center group">
+<span class="absolute left-4 material-symbols-outlined text-on-surface-variant text-lg group-focus-within:text-secondary transition-colors" data-icon="key">key</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg py-4 pl-12 pr-4 text-sm text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-secondary transition-all neon-glow" id="password" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<!-- Submit Action -->
+<div class="pt-2">
+<button class="w-full bg-gradient-to-r from-primary to-primary-dim hover:from-primary-fixed-dim hover:to-primary py-4 rounded-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-primary/10 group" type="submit">
+<span class="text-on-primary-fixed text-sm font-bold tracking-tight">AUTHORIZE ACCESS</span>
+<span class="material-symbols-outlined text-on-primary-fixed text-lg group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footer / Metadata -->
+<div class="mt-8 flex flex-col items-center gap-4">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div>
+<span class="text-[10px] text-on-surface-variant font-medium tracking-wider">SECURE LINK ESTABLISHED</span>
+</div>
+<div class="w-[1px] h-3 bg-outline-variant/30"></div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-on-surface-variant font-medium tracking-wider uppercase">Node: DX-92</span>
+</div>
+</div>
+<p class="text-[10px] text-on-surface-variant/40 text-center leading-relaxed max-w-[280px]">
+                Unauthorized access to this terminal is strictly prohibited under Digital Protocol 42-B. All session data is being monitored.
+            </p>
+</div>
+</main>
+<!-- Decorative Corner Accents -->
+<div class="fixed top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-primary/20 pointer-events-none"></div>
+<div class="fixed bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-secondary/20 pointer-events-none"></div>
+<script src="./login-gate.js"></script>
+</body></html>
+</body></html>

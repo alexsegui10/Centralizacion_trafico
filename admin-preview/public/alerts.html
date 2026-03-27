@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#a98fff",
+              "on-tertiary-fixed": "#380014",
+              "surface-container-lowest": "#000000",
+              "error-container": "#a70138",
+              "surface-bright": "#2c2b33",
+              "on-error": "#490013",
+              "on-tertiary": "#48001c",
+              "on-primary": "#340090",
+              "on-tertiary-container": "#100003",
+              "primary-fixed": "#a98fff",
+              "tertiary-fixed-dim": "#ff769b",
+              "primary": "#b6a0ff",
+              "inverse-surface": "#fbf8ff",
+              "on-secondary": "#004d57",
+              "secondary-fixed-dim": "#00d7f0",
+              "on-background": "#f8f5fd",
+              "secondary-fixed": "#26e6ff",
+              "inverse-primary": "#6834eb",
+              "on-primary-container": "#280072",
+              "surface-dim": "#0e0e13",
+              "surface-container-highest": "#25252c",
+              "tertiary-fixed": "#ff8fa9",
+              "surface": "#0e0e13",
+              "tertiary-container": "#fd3e80",
+              "surface-variant": "#25252c",
+              "outline-variant": "#48474d",
+              "secondary-dim": "#00d4ec",
+              "surface-container": "#19191f",
+              "on-primary-fixed": "#000000",
+              "on-secondary-fixed-variant": "#005964",
+              "on-tertiary-fixed-variant": "#770033",
+              "on-surface-variant": "#acaab1",
+              "outline": "#76747b",
+              "inverse-on-surface": "#55545a",
+              "surface-container-high": "#1f1f26",
+              "on-primary-fixed-variant": "#32008a",
+              "secondary-container": "#006875",
+              "on-surface": "#f8f5fd",
+              "tertiary": "#ff6c95",
+              "primary-fixed-dim": "#9c7eff",
+              "error": "#ff6e84",
+              "background": "#0e0e13",
+              "tertiary-dim": "#ff6c95",
+              "surface-container-low": "#131318",
+              "on-secondary-container": "#e8fbff",
+              "secondary": "#00e3fd",
+              "error-dim": "#d73357",
+              "primary-dim": "#7e51ff",
+              "on-error-container": "#ffb2b9",
+              "on-secondary-fixed": "#003a42",
+              "surface-tint": "#b6a0ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: #0e0e13; }
+      ::-webkit-scrollbar-thumb { background: #25252c; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-40 bg-[#0e0e13] shadow-[0px_24px_48px_rgba(0,0,0,0.5)]">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#f8f5fd]">Admin Panel</span>
+<div class="hidden md:flex items-center bg-surface-container-high px-3 py-1.5 rounded-lg border border-outline-variant/20">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 text-on-surface" placeholder="Search system..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#acaab1] hover:text-[#f8f5fd] transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-[#acaab1] hover:text-[#f8f5fd] transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-primary/20">
+<img class="h-full w-full object-cover" data-alt="Portrait of a modern executive in a dark tech environment with neon rim lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBil6EuqXJdqNL8AZA-Zy0N8C38VKDbBfkUgBcFXzgCJB5pBwbQ59k2uYAmUYDxzecRWODiLCGg-Y0EjzP4uxlrJ_ohrNPz9d9TESYRvy0DRAg6vXvIBrbI-_Lfih88M1xlile4CT5p7PWZfWzxLKLQcRXrrGNuDQBHT2kOJqrEAAEprrq5BvKimeNE6athhKmJOK45IXGMxD-LFP1cVFwEoH8r9OT54HhQEDDbekVviZ9JNPNEEEoj6vdLTsWJJAIbr9H9nU5Q7BY"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-50 bg-[#131318] flex flex-col py-6">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 bg-gradient-to-br from-primary to-primary-dim rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="text-lg font-black text-[#f8f5fd]">Neon Noir</span>
+</div>
+<span class="text-xs text-on-surface-variant font-medium tracking-widest uppercase opacity-50">Executive Suite</span>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 font-medium text-sm transition-all duration-300 hover:text-[#00e3fd] hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 font-medium text-sm transition-all duration-300 hover:text-[#00e3fd] hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">group</span>
+                Users
+            </a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 font-medium text-sm transition-all duration-300 hover:text-[#00e3fd] hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+                Statistics
+            </a>
+<a class="text-[#f8f5fd] bg-gradient-to-r from-[#b6a0ff]/20 to-transparent border-l-2 border-[#b6a0ff] py-3 px-6 flex items-center gap-3 font-medium text-sm transition-all duration-300 hover:text-[#00e3fd] hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+                Alerts
+            </a>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-dim text-on-primary-fixed text-xs font-bold rounded-lg transition-transform active:scale-95 shadow-[0px_0px_20px_rgba(182,160,255,0.3)]">
+                Activate CupidBot
+            </button>
+</div>
+<div class="border-t border-outline-variant/10 pt-4">
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 font-medium text-sm transition-all duration-300 hover:text-[#00e3fd] hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="text-[#acaab1] py-3 px-6 hover:bg-[#19191f] flex items-center gap-3 font-medium text-sm transition-all duration-300 hover:text-[#00e3fd] hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pl-64 pt-16 min-h-screen bg-surface">
+<div class="p-10 max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col gap-2 mb-10">
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface">System Alerts</h1>
+<p class="text-on-surface-variant max-w-2xl">Manage critical system conflicts and audit historical resolutions in real-time. Neon-priority events require immediate executive intervention.</p>
+</div>
+<!-- Active Conflicts Section (Bento Grid Style) -->
+<div class="mb-14">
+<div class="flex items-center gap-3 mb-6">
+<span class="flex h-2 w-2 rounded-full bg-tertiary animate-pulse"></span>
+<h2 class="text-lg font-bold tracking-tight text-tertiary uppercase text-sm">Active Conflicts</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Major Conflict Card -->
+<div class="lg:col-span-8 bg-surface-container border-l-4 border-tertiary p-8 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-9xl">warning</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-4">
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary text-[10px] font-bold rounded uppercase tracking-widest border border-tertiary/20">CRITICAL_01</span>
+<span class="text-on-surface-variant text-xs font-medium">Detected 4 minutes ago</span>
+</div>
+<h3 class="text-2xl font-bold text-on-surface mb-4">Multiple Identity Overlap: 'Model_Vance' &amp; 'Model_Vance_X'</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed max-w-xl">System detected two high-revenue accounts attempting to authenticate with the same biometric hash in the Tokyo sector. Automated locking engaged. Requires manual override to prevent session hijacking.</p>
+<div class="flex gap-4">
+<button class="px-6 py-3 bg-gradient-to-r from-tertiary to-tertiary-container text-on-tertiary-fixed font-bold text-sm rounded shadow-[0px_0px_20px_rgba(255,108,149,0.3)] hover:scale-[1.02] active:scale-95 transition-all">
+                                    Take Control
+                                </button>
+<button class="px-6 py-3 bg-surface-container-highest border border-outline-variant/30 text-on-surface font-bold text-sm rounded hover:bg-surface-bright transition-all">
+                                    Resolve
+                                </button>
+</div>
+</div>
+</div>
+<!-- Secondary Conflict -->
+<div class="lg:col-span-4 bg-surface-container-high border-l-4 border-secondary p-6 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] font-bold rounded uppercase tracking-widest border border-secondary/20">PAYMENT_LAG</span>
+<span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-2">API Gateway Timeout</h3>
+<p class="text-on-surface-variant text-sm">Crypto-settlement engine is experiencing 400ms lag. 12 transactions pending manual verification.</p>
+</div>
+<div class="mt-6">
+<button class="w-full py-2.5 bg-secondary text-on-secondary-fixed font-bold text-xs rounded hover:shadow-[0px_0px_15px_rgba(0,227,253,0.4)] transition-all">
+                                Take Control
+                            </button>
+</div>
+</div>
+<!-- Tertiary Conflict -->
+<div class="lg:col-span-6 bg-surface-container-high border-l-4 border-primary p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-widest border border-primary/20">LOG_SPIKE</span>
+<span class="text-on-surface-variant text-xs">2 hours ago</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-2">Unauthorized Scraper Detected</h3>
+<p class="text-on-surface-variant text-sm mb-6">Persistent IP from Frankfurt is querying protected profile endpoints. Rate limiting applied.</p>
+<div class="flex gap-3">
+<button class="flex-1 py-2 text-primary font-bold text-xs border border-primary/30 rounded hover:bg-primary/10 transition-all">Resolve</button>
+<button class="flex-1 py-2 text-on-surface-variant font-bold text-xs bg-surface-container-highest rounded hover:text-on-surface transition-all">Ignore</button>
+</div>
+</div>
+<!-- Quadrant Conflict -->
+<div class="lg:col-span-6 bg-surface-container-high border-l-4 border-outline p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="px-2 py-0.5 bg-on-surface-variant/10 text-on-surface-variant text-[10px] font-bold rounded uppercase tracking-widest border border-outline-variant/30 text-on-surface">DATA_SYNC</span>
+<span class="material-symbols-outlined text-on-surface-variant text-lg">sync_problem</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-2">Cache Inconsistency</h3>
+<p class="text-on-surface-variant text-sm mb-6">Master database and edge-node 'Lambda-7' report mismatched revenue counts for user @neon_executive.</p>
+<div class="flex gap-3">
+<button class="flex-1 py-2 text-primary font-bold text-xs border border-primary/30 rounded hover:bg-primary/10 transition-all">Force Sync</button>
+<button class="flex-1 py-2 text-on-surface-variant font-bold text-xs bg-surface-container-highest rounded hover:text-on-surface transition-all">Resolve</button>
+</div>
+</div>
+</div>
+</div>
+<!-- History Section -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+<h2 class="text-lg font-bold tracking-tight text-on-surface uppercase text-sm">Resolved History</h2>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">Download Audit Log</button>
+</div>
+<div class="space-y-0.5 rounded-xl overflow-hidden">
+<!-- History Row 1 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors px-6 py-4 flex items-center group">
+<div class="w-10">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 grid grid-cols-4 items-center">
+<div class="col-span-2">
+<h4 class="text-sm font-semibold text-on-surface">Bot Farm Suppression</h4>
+<p class="text-[11px] text-on-surface-variant">Automatic filtering of 1,240 suspicious registrations.</p>
+</div>
+<div class="text-center">
+<span class="text-xs font-mono text-on-surface-variant">ID: 99421-B</span>
+</div>
+<div class="text-right">
+<span class="text-xs font-medium text-on-surface-variant">Today, 12:45 PM</span>
+</div>
+</div>
+</div>
+<!-- History Row 2 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors px-6 py-4 flex items-center group">
+<div class="w-10">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 grid grid-cols-4 items-center">
+<div class="col-span-2">
+<h4 class="text-sm font-semibold text-on-surface">SSO Handshake Fixed</h4>
+<p class="text-[11px] text-on-surface-variant">Resolved conflict between Google Auth and Local DB.</p>
+</div>
+<div class="text-center">
+<span class="text-xs font-mono text-on-surface-variant">ID: 99310-A</span>
+</div>
+<div class="text-right">
+<span class="text-xs font-medium text-on-surface-variant">Yesterday, 11:20 PM</span>
+</div>
+</div>
+</div>
+<!-- History Row 3 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors px-6 py-4 flex items-center group">
+<div class="w-10">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 grid grid-cols-4 items-center">
+<div class="col-span-2">
+<h4 class="text-sm font-semibold text-on-surface">Global CDN Purge</h4>
+<p class="text-[11px] text-on-surface-variant">Manual cache invalidation for static assets.</p>
+</div>
+<div class="text-center">
+<span class="text-xs font-mono text-on-surface-variant">ID: 99288-X</span>
+</div>
+<div class="text-right">
+<span class="text-xs font-medium text-on-surface-variant">Yesterday, 06:15 PM</span>
+</div>
+</div>
+</div>
+<!-- History Row 4 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors px-6 py-4 flex items-center group">
+<div class="w-10">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1 grid grid-cols-4 items-center">
+<div class="col-span-2">
+<h4 class="text-sm font-semibold text-on-surface">Revenue Discrepancy Auto-Fixed</h4>
+<p class="text-[11px] text-on-surface-variant">Smart-contract re-validation successful.</p>
+</div>
+<div class="text-center">
+<span class="text-xs font-mono text-on-surface-variant">ID: 99102-S</span>
+</div>
+<div class="text-right">
+<span class="text-xs font-medium text-on-surface-variant">Oct 24, 02:30 AM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script src="./panel-nav.js"></script>
+<!-- Bottom Mobile Nav (Fallback) -->
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-[#131318] flex justify-around py-3 border-t border-outline-variant/10 z-50">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px]">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px]">Users</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+<span class="text-[10px]">Alerts</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px]">Settings</span>
+</button>
+</div>
+<script src="./panel-nav.js"></script>
+</body></html>
