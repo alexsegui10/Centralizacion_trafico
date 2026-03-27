@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import {
+const { useCallback, useEffect, useMemo, useState } = React;
+const { createClient } = window.supabase;
+const {
   Bar,
   BarChart,
   CartesianGrid,
@@ -11,7 +11,7 @@ import {
   Tooltip,
   XAxis,
   YAxis
-} from "recharts";
+} = Recharts;
 
 const runtimeConfig = typeof window !== "undefined" && window.__ADMIN_CONFIG ? window.__ADMIN_CONFIG : {};
 
@@ -225,7 +225,7 @@ function LoginScreen({ onAuth }) {
   );
 }
 
-export default function AdminPanel() {
+function AdminApp() {
   const [authed, setAuthed] = useState(sessionStorage.getItem(SESSION_KEY) === "1");
   const [active, setActive] = useState("dashboard");
   const [leads, setLeads] = useState([]);
@@ -817,3 +817,5 @@ export default function AdminPanel() {
     </div>
   );
 }
+
+window.AdminApp = AdminApp;

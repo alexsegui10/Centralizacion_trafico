@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
@@ -23,22 +23,16 @@
       };
     </script>
 
-    <script async src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "react": "https://esm.sh/react@18.3.1",
-          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.49.8",
-          "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom"
-        }
-      }
-    </script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <style>
       html,
       body,
-      #admin-root {
+      #root {
         margin: 0;
         width: 100%;
         min-height: 100%;
@@ -53,15 +47,12 @@
     </style>
   </head>
   <body>
-    <div id="admin-root"></div>
+    <div id="root"></div>
 
-    <script type="module">
-      import React from "react";
-      import { createRoot } from "react-dom/client";
-      import AdminPanel from "./admin.app.mjs";
-
-      const root = createRoot(document.getElementById("admin-root"));
-      root.render(React.createElement(AdminPanel));
+    <script type="text/babel" src="admin.jsx"></script>
+    <script type="text/babel">
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(React.createElement(window.AdminApp));
     </script>
   </body>
 </html>
