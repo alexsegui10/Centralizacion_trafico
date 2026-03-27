@@ -11,9 +11,9 @@ import {
   YAxis
 } from "recharts";
 
-const SUPABASE_URL = "TU_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "TU_ANON_KEY";
-const ADMIN_PASSWORD = "TU_PASSWORD";
+const SUPABASE_URL = "https://krnabtkugfzfinwvfuzm.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM";
+const ADMIN_PASSWORD = "123456";
 
 const PAGE_SIZE = 20;
 const REFRESH_INTERVAL_MS = 30000;
