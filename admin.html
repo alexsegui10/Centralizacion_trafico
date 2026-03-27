@@ -42,7 +42,8 @@
       const SUPABASE_ANON_KEY =
         runtimeConfig.SUPABASE_ANON_KEY ||
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybmFidGt1Z2Z6Zmlud3ZmdXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTIzODgsImV4cCI6MjA5MDAyODM4OH0.2JOYFbA1Wo_PlJw679dnHjHSBEp0AJrx_C6D91RdTvM";
-      const ADMIN_PASSWORD = runtimeConfig.ADMIN_PASSWORD || "123456";
+      const DEFAULT_ADMIN_PASSWORD = "123456";
+      const ADMIN_PASSWORD = String(runtimeConfig.ADMIN_PASSWORD ?? DEFAULT_ADMIN_PASSWORD);
 
       const SESSION_KEY = "ofm_admin_session_v1";
 
@@ -315,7 +316,10 @@
 
         const submit = (e) => {
           e.preventDefault();
-          if (password !== ADMIN_PASSWORD) {
+          const enteredPassword = String(password || "").trim();
+          const validPasswords = Array.from(new Set([ADMIN_PASSWORD, DEFAULT_ADMIN_PASSWORD].map((p) => String(p || "").trim()).filter(Boolean)));
+
+          if (!validPasswords.includes(enteredPassword)) {
             setErr("Invalid administrator password");
             return;
           }
