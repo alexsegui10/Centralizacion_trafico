@@ -7,21 +7,32 @@
     return;
   }
 
-  var mapByText = {
-    Dashboard: "admin.html",
-    Users: "users.html",
-    Statistics: "statistics.html",
-    Alerts: "alerts.html",
-    Profile: "user_profile.html",
-    Logout: "login.html"
+  var routeByToken = {
+    dashboard: "admin.html",
+    users: "users.html",
+    management: "users.html",
+    statistics: "statistics.html",
+    analytics: "statistics.html",
+    alerts: "alerts.html",
+    profile: "user_profile.html",
+    logout: "login.html",
+    home: "admin.html"
   };
 
   var links = document.querySelectorAll("a[href]");
   links.forEach(function (a) {
-    var text = (a.textContent || "").replace(/\s+/g, " ").trim();
-    if (mapByText[text]) {
-      a.setAttribute("href", mapByText[text]);
-      if (text === "Logout") {
+    var text = (a.textContent || "").toLowerCase().replace(/\s+/g, " ").trim();
+    var token = null;
+    Object.keys(routeByToken).some(function (key) {
+      if (text.indexOf(key) !== -1) {
+        token = key;
+        return true;
+      }
+      return false;
+    });
+    if (token) {
+      a.setAttribute("href", routeByToken[token]);
+      if (token === "logout") {
         a.addEventListener("click", function () {
           sessionStorage.removeItem(SESSION_KEY);
         });
@@ -33,7 +44,11 @@
   cards.forEach(function (el) {
     el.addEventListener("click", function () {
       if (page === "users.html") {
-        location.href = "user_profile.html";
+        var idNode = el.querySelector('[class*="font-mono"], [class*="ID:"]');
+        var txt = idNode ? idNode.textContent || "" : "";
+        var shortId = txt.replace(/[^A-Za-z0-9_-]/g, "");
+        var visitorId = shortId.length ? shortId : "";
+        location.href = "user_profile.html" + (visitorId ? "?visitor_id=" + encodeURIComponent(visitorId) : "");
       }
     });
   });

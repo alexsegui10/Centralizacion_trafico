@@ -10,7 +10,9 @@
   var routeByToken = {
     dashboard: "admin.html",
     users: "users.html",
+    management: "users.html",
     statistics: "statistics.html",
+    analytics: "statistics.html",
     alerts: "alerts.html",
     profile: "user_profile.html",
     logout: "login.html",
