@@ -103,7 +103,7 @@ async function lookupGeo(ip: string): Promise<GeoLookup> {
   const timeout = setTimeout(() => controller.abort(), 1000);
 
   try {
-    const url = `http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,city,countryCode`;
+    const url = `https://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,city,countryCode`;
     const response = await fetch(url, {
       method: "GET",
       signal: controller.signal,
