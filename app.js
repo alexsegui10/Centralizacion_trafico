@@ -11,8 +11,8 @@ const i18n = {
   }
 };
 
-const VISITOR_COOKIE_DAYS = 30;
-const UTM_COOKIE_DAYS = 30;
+const VISITOR_COOKIE_DAYS = 400;
+const UTM_COOKIE_DAYS = 400;
 const TRACKING_TIMEOUT_MS = 300;
 const PENDING_EVENTS_KEY = "pending_track_events";
 const MAX_PENDING_EVENTS = 20;

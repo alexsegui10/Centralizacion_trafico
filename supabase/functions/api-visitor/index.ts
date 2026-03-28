@@ -50,6 +50,7 @@ Deno.serve(async (req: Request) => {
       auth: { persistSession: false }
     });
 
+    // 1. Buscar por fingerprint hash
     const { data, error } = await supabase
       .from("leads")
       .select("visitor_id")
@@ -62,9 +63,36 @@ Deno.serve(async (req: Request) => {
       return jsonResponse(500, { ok: false, error: "lookup_failed", details: error.message });
     }
 
-    return jsonResponse(200, {
-      visitor_id: data && data.length > 0 ? data[0].visitor_id : null
-    });
+    if (data && data.length > 0) {
+      return jsonResponse(200, { visitor_id: data[0].visitor_id, recovered_by: "fingerprint" });
+    }
+
+    // 2. Fallback: buscar por IP hash (si el dispositivo cambió o borró cookies)
+    const rawIp = (
+      url.searchParams.get("client_ip") ||
+      req.headers.get("x-forwarded-for")?.split(",")[0] ||
+      req.headers.get("x-real-ip") ||
+      ""
+    ).trim();
+
+    if (rawIp && rawIp !== "127.0.0.1" && rawIp !== "::1" && rawIp !== "0.0.0.0") {
+      const ipBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(rawIp));
+      const ipHash = Array.from(new Uint8Array(ipBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+
+      const { data: ipData, error: ipError } = await supabase
+        .from("leads")
+        .select("visitor_id")
+        .eq("ip_hash", ipHash)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .returns<LeadsLookupRow[]>();
+
+      if (!ipError && ipData && ipData.length > 0) {
+        return jsonResponse(200, { visitor_id: ipData[0].visitor_id, recovered_by: "ip" });
+      }
+    }
+
+    return jsonResponse(200, { visitor_id: null });
   } catch (error) {
     return jsonResponse(500, {
       ok: false,

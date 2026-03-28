@@ -13,16 +13,18 @@
       "typeVersion": 1.2,
       "position": [200, 300]
     },
+
     {
       "parameters": {
-        "jsCode": "const cutoff = new Date(Date.now() - 5 * 60 * 1000).toISOString();\nreturn [{ json: { cutoff } }];"
+        "jsCode": "const cutoff = new Date(Date.now() - 5 * 60 * 1000).toISOString();\nconst cutoff3d = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();\nreturn [{ json: { cutoff, cutoff3d } }];"
       },
-      "id": "build-cutoff",
-      "name": "Build 5m Cutoff",
+      "id": "build-cutoffs",
+      "name": "Build Cutoffs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [420, 300]
     },
+
     {
       "parameters": {
         "method": "GET",
@@ -44,23 +46,70 @@
         },
         "options": { "response": { "response": { "responseFormat": "json" } } }
       },
-      "id": "fetch-leads",
+      "id": "fetch-recent",
       "name": "Fetch Recent Leads",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [670, 300],
+      "position": [670, 160],
       "continueOnFail": true
     },
+
     {
       "parameters": {
-        "jsCode": "const all = $input.all().map((item) => item.json);\n\nconst rows = all.flatMap((payload) => {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.body)) return payload.body;\n  if (payload && typeof payload === 'object') return [payload];\n  return [];\n});\n\nreturn rows.map((lead) => {\n  const source = String(lead.utm_source || '').toLowerCase();\n  const of = !!lead.of_activo;\n  const tg = !!lead.telegram_activo;\n  const mgoDirect = !!lead.mgo_directo;\n  const mgoCanal = !!lead.mgo_en_canal;\n\n  let route = 'ignore';\n\n  if (tg && mgoDirect) {\n    route = 'flow6_conflict';\n  } else if (!of && tg && !mgoDirect && !mgoCanal) {\n    route = 'flow3';\n  }\n\n  return {\n    json: {\n      ...lead,\n      source,\n      route,\n      conflict_flags: { telegram_activo: tg, mgo_directo: mgoDirect, mgo_en_canal: mgoCanal }\n    }\n  };\n});"
+        "method": "GET",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}" },
+            { "name": "Authorization", "value": "={{'Bearer ' + $env.SUPABASE_SERVICE_ROLE_KEY}}" }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "select", "value": "visitor_id,utm_source,telegram_activo,of_activo,mgo_directo,mgo_en_canal,updated_at,active_flow,telegram_user_id,pais,ciudad,idioma,dispositivo,created_at,cupidbot_activo,winback_sent,telegram_joined_at" },
+            { "name": "active_flow", "value": "is.null" },
+            { "name": "telegram_activo", "value": "is.true" },
+            { "name": "of_activo", "value": "is.false" },
+            { "name": "mgo_directo", "value": "is.false" },
+            { "name": "mgo_en_canal", "value": "is.false" },
+            { "name": "telegram_joined_at", "value": "={{'not.is.null'}}" },
+            { "name": "telegram_joined_at", "value": "={{'lt.' + $json.cutoff3d}}" }
+          ]
+        },
+        "options": { "response": { "response": { "responseFormat": "json" } } }
+      },
+      "id": "fetch-cupid",
+      "name": "Fetch Flow 3 Ready",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [670, 440],
+      "continueOnFail": true
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const all = $input.all().map((item) => item.json);\n\nconst rows = all.flatMap((payload) => {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.body)) return payload.body;\n  if (payload && typeof payload === 'object') return [payload];\n  return [];\n});\n\nreturn rows.map((lead) => {\n  const tg = !!lead.telegram_activo;\n  const mgoDirect = !!lead.mgo_directo;\n\n  let route = 'ignore';\n  if (tg && mgoDirect) {\n    route = 'flow6_conflict';\n  }\n\n  return {\n    json: {\n      ...lead,\n      route,\n      conflict_flags: { telegram_activo: tg, mgo_directo: mgoDirect }\n    }\n  };\n});"
       },
       "id": "classify",
-      "name": "Classify Leads",
+      "name": "Classify Conflicts",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [900, 300]
+      "position": [920, 160]
     },
+
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst arr = Array.isArray(input) ? input\n  : Array.isArray(input?.body) ? input.body\n  : input && typeof input === 'object' ? [input]\n  : [];\nreturn arr.map(item => ({ json: item }));"
+      },
+      "id": "split-cupid",
+      "name": "Array to Items Flow 3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 440]
+    },
+
     {
       "parameters": {
         "conditions": {
@@ -79,8 +128,9 @@
       "name": "Is Flow 6 Conflict",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [1130, 80]
+      "position": [1150, 160]
     },
+
     {
       "parameters": {
         "method": "POST",
@@ -94,9 +144,10 @@
       "name": "Trigger Conflict Alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1360, 80],
+      "position": [1380, 160],
       "continueOnFail": true
     },
+
     {
       "parameters": {
         "method": "PATCH",
@@ -117,29 +168,10 @@
       "name": "Update Lead Flow 6",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1590, 80],
+      "position": [1610, 160],
       "continueOnFail": true
     },
-    {
-      "parameters": {
-        "conditions": {
-          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
-          "conditions": [
-            {
-              "leftValue": "={{$json.route}}",
-              "rightValue": "flow3",
-              "operator": { "type": "string", "operation": "equals" }
-            }
-          ],
-          "combinator": "and"
-        }
-      },
-      "id": "if-flow3",
-      "name": "Is Flow 3",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [1130, 300]
-    },
+
     {
       "parameters": {
         "method": "PATCH",
@@ -160,39 +192,44 @@
       "name": "Update Lead Flow 3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1360, 300],
+      "position": [1150, 440],
       "continueOnFail": true
     },
+
     {
       "parameters": {
         "method": "POST",
         "url": "={{$env.CUPIDBOT_WEBHOOK_URL}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  action: 'iniciar_seduccion',\n  flow: '3',\n  bot_type: 'cupidbot',\n  context: 'trafico_frio',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
+        "jsonBody": "={{ {\n  action: 'iniciar_seduccion',\n  flow: '3',\n  bot_type: 'cupidbot',\n  context: 'trafico_frio',\n  lead: {\n    visitor_id: $json.visitor_id,\n    telegram_user_id: $json.telegram_user_id,\n    utm_source: $json.utm_source,\n    pais: $json.pais,\n    ciudad: $json.ciudad,\n    idioma: $json.idioma,\n    dispositivo: $json.dispositivo,\n    mgo_directo: $json.mgo_directo,\n    mgo_en_canal: $json.mgo_en_canal,\n    telegram_activo: $json.telegram_activo,\n    of_activo: $json.of_activo,\n    created_at: $json.created_at,\n    updated_at: $json.updated_at,\n    telegram_joined_at: $json.telegram_joined_at\n  },\n  triggered_at: new Date().toISOString()\n} }}"
       },
       "id": "webhook-flow3",
       "name": "Webhook CupidBot Flow 3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1590, 300],
+      "position": [1380, 440],
       "continueOnFail": true
     }
   ],
   "connections": {
-    "Every 5 Minutes": { "main": [[{ "node": "Build 5m Cutoff", "type": "main", "index": 0 }]] },
-    "Build 5m Cutoff": { "main": [[{ "node": "Fetch Recent Leads", "type": "main", "index": 0 }]] },
-    "Fetch Recent Leads": { "main": [[{ "node": "Classify Leads", "type": "main", "index": 0 }]] },
-    "Classify Leads": { "main": [[
-      { "node": "Is Flow 6 Conflict", "type": "main", "index": 0 },
-      { "node": "Is Flow 3", "type": "main", "index": 0 }
+    "Every 5 Minutes": { "main": [[{ "node": "Build Cutoffs", "type": "main", "index": 0 }]] },
+    "Build Cutoffs": { "main": [[
+      { "node": "Fetch Recent Leads", "type": "main", "index": 0 },
+      { "node": "Fetch Flow 3 Ready", "type": "main", "index": 0 }
     ]] },
-    "Is Flow 6 Conflict": { "main": [[{ "node": "Trigger Conflict Alert", "type": "main", "index": 0 }], []] },
+    "Fetch Recent Leads": { "main": [[{ "node": "Classify Conflicts", "type": "main", "index": 0 }]] },
+    "Classify Conflicts": { "main": [[{ "node": "Is Flow 6 Conflict", "type": "main", "index": 0 }]] },
+    "Is Flow 6 Conflict": { "main": [
+      [{ "node": "Trigger Conflict Alert", "type": "main", "index": 0 }],
+      []
+    ]},
     "Trigger Conflict Alert": { "main": [[{ "node": "Update Lead Flow 6", "type": "main", "index": 0 }]] },
-    "Is Flow 3": { "main": [[{ "node": "Update Lead Flow 3", "type": "main", "index": 0 }], []] },
+    "Fetch Flow 3 Ready": { "main": [[{ "node": "Array to Items Flow 3", "type": "main", "index": 0 }]] },
+    "Array to Items Flow 3": { "main": [[{ "node": "Update Lead Flow 3", "type": "main", "index": 0 }]] },
     "Update Lead Flow 3": { "main": [[{ "node": "Webhook CupidBot Flow 3", "type": "main", "index": 0 }]] }
   },
   "active": false,
   "settings": {},
-  "versionId": "3"
+  "versionId": "4"
 }

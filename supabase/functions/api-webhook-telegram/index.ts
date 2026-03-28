@@ -4,13 +4,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { handleOptions, jsonResponse, getRequiredEnv } from "../_shared/security.ts";
 
 type TelegramUpdate = {
-  // Canal: alguien entra via invite link
   chat_member?: {
     new_chat_member?: { status?: string; user?: { id?: number | string } };
     old_chat_member?: { user?: { id?: number | string } };
     invite_link?: { invite_link?: string };
   };
-  // DM directo al bot
   message?: {
     from?: { id?: number | string };
     text?: string;
@@ -29,14 +27,10 @@ function normalizeTelegramUserId(input: unknown): string | null {
 
 function extractMembershipData(update: TelegramUpdate): { inviteLink: string; telegramUserId: string | null } | null {
   const status = update?.chat_member?.new_chat_member?.status;
-  if (status !== "member") {
-    return null;
-  }
+  if (status !== "member") return null;
 
   const inviteLink = update?.chat_member?.invite_link?.invite_link;
-  if (!inviteLink || typeof inviteLink !== "string") {
-    return null;
-  }
+  if (!inviteLink || typeof inviteLink !== "string") return null;
 
   const telegramUserId =
     normalizeTelegramUserId(update?.chat_member?.new_chat_member?.user?.id) ||
@@ -74,6 +68,8 @@ Deno.serve(async (req: Request) => {
       auth: { persistSession: false }
     });
 
+    const now = new Date().toISOString();
+
     // ══════════════════════════════════════════════════════════════════════
     // RAMA A: DM directo al bot (update.message)
     // ══════════════════════════════════════════════════════════════════════
@@ -84,7 +80,6 @@ Deno.serve(async (req: Request) => {
         return jsonResponse(200, { ok: true, ignored: true, reason: "no_user_id" });
       }
 
-      // Buscar lead existente por telegram_user_id
       const { data: existing } = await supabase
         .from("leads")
         .select("visitor_id, telegram_activo, mgo_directo")
@@ -95,7 +90,7 @@ Deno.serve(async (req: Request) => {
         const lead = existing[0];
 
         if (lead.telegram_activo) {
-          // Ya está en el canal de Telegram → vino de redes sociales → CupidBot lo gestiona
+          // Ya está en el canal → vino de redes → CupidBot lo gestiona
           return jsonResponse(200, {
             ok: true,
             visitor_id: lead.visitor_id,
@@ -110,7 +105,8 @@ Deno.serve(async (req: Request) => {
           .update({
             mgo_directo: true,
             telegram_activo: true,
-            updated_at: new Date().toISOString()
+            telegram_joined_at: now,
+            updated_at: now
           })
           .eq("visitor_id", lead.visitor_id);
 
@@ -122,15 +118,16 @@ Deno.serve(async (req: Request) => {
         });
 
       } else {
-        // Lead totalmente nuevo: nos escribe directo sin haber pasado por la landing
+        // Lead nuevo: escribe directo sin pasar por la landing
         const visitorId = crypto.randomUUID();
         await supabase.from("leads").insert({
           visitor_id: visitorId,
           mgo_directo: true,
           telegram_activo: true,
+          telegram_joined_at: now,
           telegram_user_id: telegramUserId,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          created_at: now,
+          updated_at: now
         });
 
         return jsonResponse(200, {
@@ -152,7 +149,7 @@ Deno.serve(async (req: Request) => {
 
     const { inviteLink, telegramUserId } = membershipData;
 
-    // ── MGO CANAL: link permanente puesto en el perfil de Telegram ────────
+    // ── MGO CANAL: link permanente del perfil de Telegram ─────────────────
     const mgoLinkRaw = Deno.env.get("MGO_CANAL_INVITE_LINK") ?? "";
     const isMgoCanal = mgoLinkRaw.length > 0 && inviteLink === mgoLinkRaw.trim();
 
@@ -166,9 +163,7 @@ Deno.serve(async (req: Request) => {
           .eq("telegram_user_id", telegramUserId)
           .limit(1);
 
-        if (existing && existing.length > 0) {
-          visitorId = existing[0].visitor_id;
-        }
+        if (existing && existing.length > 0) visitorId = existing[0].visitor_id;
       }
 
       if (visitorId) {
@@ -177,7 +172,8 @@ Deno.serve(async (req: Request) => {
           .update({
             mgo_en_canal: true,
             telegram_activo: true,
-            updated_at: new Date().toISOString()
+            telegram_joined_at: now,
+            updated_at: now
           })
           .eq("visitor_id", visitorId);
       } else {
@@ -186,9 +182,10 @@ Deno.serve(async (req: Request) => {
           visitor_id: visitorId,
           mgo_en_canal: true,
           telegram_activo: true,
+          telegram_joined_at: now,
           telegram_user_id: telegramUserId,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          created_at: now,
+          updated_at: now
         });
       }
 
@@ -202,7 +199,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // ── FLUJO NORMAL: invite link personalizado desde la landing ──────────
+    // ── Invite link personalizado desde la landing ─────────────────────────
     const { data: leadRows, error: leadLookupError } = await supabase
       .from("leads")
       .select("visitor_id")
@@ -223,8 +220,9 @@ Deno.serve(async (req: Request) => {
       .from("leads")
       .update({
         telegram_activo: true,
+        telegram_joined_at: now,
         telegram_user_id: telegramUserId,
-        updated_at: new Date().toISOString()
+        updated_at: now
       })
       .eq("visitor_id", visitorId);
 
