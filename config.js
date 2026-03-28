@@ -1,7 +1,7 @@
 // CONFIGURACION DE LA MODELO — editar este archivo para cada modelo
 const MODEL_CONFIG = {
-  modelo_id: "MODEL_ID_PLACEHOLDER",
-  nombre: "Nombre Modelo",
+  modelo_id: "sofia",
+  nombre: "Sofia",
   tagline: {
     es: "Contenido exclusivo para ti 🖤",
     en: "Exclusive content just for you 🖤"
