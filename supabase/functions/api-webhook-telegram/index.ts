@@ -87,40 +87,32 @@ Deno.serve(async (req: Request) => {
       // Buscar lead existente por telegram_user_id
       const { data: existing } = await supabase
         .from("leads")
-        .select("visitor_id, mgo_en_canal, mgo_directo, telegram_activo")
+        .select("visitor_id, telegram_activo, mgo_directo")
         .eq("telegram_user_id", telegramUserId)
         .limit(1);
 
       if (existing && existing.length > 0) {
         const lead = existing[0];
 
-        if (lead.mgo_en_canal) {
-          // Tiene mgo_en_canal=true → vino de redes sociales → CupidBot lo gestionará
-          // Solo aseguramos telegram_activo
-          await supabase
-            .from("leads")
-            .update({ telegram_activo: true, updated_at: new Date().toISOString() })
-            .eq("visitor_id", lead.visitor_id);
-
+        if (lead.telegram_activo) {
+          // Ya está en el canal de Telegram → vino de redes sociales → CupidBot lo gestiona
           return jsonResponse(200, {
             ok: true,
             visitor_id: lead.visitor_id,
-            source: "direct_message_mgo_canal",
+            source: "direct_message_in_canal",
             flow: "cupidbot"
           });
         }
 
-        if (!lead.mgo_directo) {
-          // No viene del canal → fan directo → mgo_directo=true → bot_ventas
-          await supabase
-            .from("leads")
-            .update({
-              mgo_directo: true,
-              telegram_activo: true,
-              updated_at: new Date().toISOString()
-            })
-            .eq("visitor_id", lead.visitor_id);
-        }
+        // No está en el canal → fan directo → mgo_directo=true → bot_ventas
+        await supabase
+          .from("leads")
+          .update({
+            mgo_directo: true,
+            telegram_activo: true,
+            updated_at: new Date().toISOString()
+          })
+          .eq("visitor_id", lead.visitor_id);
 
         return jsonResponse(200, {
           ok: true,
