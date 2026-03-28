@@ -1,587 +1,216 @@
-/* ============================================================
-   BASE RESET & DESIGN TOKENS
-   ============================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:           #080808;
-  --surface:      #111111;
-  --surface-hi:   #181818;
-  --border:       rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(255, 255, 255, 0.16);
-  --text:         #f0f0f0;
-  --text-2:       rgba(240, 240, 240, 0.55);
-  --text-3:       rgba(240, 240, 240, 0.26);
-  --accent:       #c9a96e;       /* gold — overridable via JS */
-  --of:           #00aaf0;
-  --tg:           #29b6f6;
-  --green:        #4ade80;
-  --max-w:        430px;
-  --r:            14px;
-  --r-sm:         10px;
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --border: #222222;
+  --text-primary: #f5f5f5;
+  --text-secondary: #888888;
+  --accent: #f0e6d3;
+  --accent-hover: #ffffff;
+  --btn-of: #00aff0;
+  --btn-of-hover: #0090cc;
+  --btn-tg: #229ed9;
+  --btn-tg-hover: #1a7fb5;
+  --max-width: 430px;
+  --radius: 12px;
 }
 
-/* ============================================================
-   LAYOUT SHELL
-   ============================================================ */
 html, body {
   width: 100%;
   min-height: 100%;
   font-family: "DM Sans", system-ui, -apple-system, sans-serif;
-  background: #100f14;
-  color: var(--text);
+  background: #2f3250;
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-body { display: flex; justify-content: center; }
+body {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
 
 .app {
-  width: min(100%, var(--max-w));
+  width: min(100%, var(--max-width));
   min-height: 100dvh;
   background: var(--bg);
-  overflow: hidden;
-  padding-bottom: 28px;
-  position: relative;
+  padding: 0 14px 14px;
 }
 
-/* Ambient purple glow — gives a premium depth behind the hero */
-.app::before {
-  content: '';
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 380px;
-  height: 380px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(130, 60, 200, 0.10) 0%, transparent 68%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ============================================================
-   HERO
-   ============================================================ */
 .hero {
+  margin: 0 -14px;
+  height: 418px;
   position: relative;
-  height: 480px;
   overflow: hidden;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards;
 }
 
 .hero-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center 28%;
   display: block;
-  filter: saturate(0.88) contrast(1.05);
-  animation: heroZoom 14s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  filter: saturate(0.9) contrast(1.06);
 }
 
-/* Slow Ken-Burns pull-back */
-@keyframes heroZoom {
-  from { transform: scale(1.06); }
-  to   { transform: scale(1);    }
-}
-
-/* Multi-layer vignette: fade to black at bottom + subtle warm tint at top */
-.hero-vignette {
+.hero::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(8, 8, 8, 0.0)  0%,
-      rgba(8, 8, 8, 0.03) 22%,
-      rgba(8, 8, 8, 0.20) 48%,
-      rgba(8, 8, 8, 0.60) 66%,
-      rgba(8, 8, 8, 0.88) 80%,
-      rgba(8, 8, 8, 1.00) 93%
-    ),
-    radial-gradient(ellipse at 50% 0%, rgba(190, 130, 240, 0.07) 0%, transparent 55%);
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0) 0%,
+    rgba(10, 10, 10, 0.06) 30%,
+    rgba(10, 10, 10, 0.22) 54%,
+    rgba(10, 10, 10, 0.46) 72%,
+    rgba(10, 10, 10, 0.72) 88%,
+    rgba(10, 10, 10, 0.96) 100%
+  );
   pointer-events: none;
 }
 
-/* ── Live pill badge ─────────────────────────────────────── */
-.live-pill {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(8, 8, 8, 0.52);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--text);
-  animation: fadeIn 0.5s ease 0.1s both;
-}
-
-.live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: blink 2s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1;   box-shadow: 0 0 8px var(--green); }
-  50%       { opacity: 0.5; box-shadow: 0 0 2px var(--green); }
-}
-
-/* ============================================================
-   IDENTITY
-   ============================================================ */
 .identity {
+  margin-top: -132px;
+  text-align: center;
   position: relative;
   z-index: 2;
-  margin-top: -170px;
-  text-align: center;
-  padding: 0 16px;
+  padding: 0 8px;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .08s;
 }
 
-/* ── Avatar with gold conic-gradient ring ────────────────── */
-.avatar-ring {
-  display: inline-block;
-  padding: 2.5px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #c9a96e   0deg,
-    #f5e0a0  60deg,
-    #c9a96e 120deg,
-    #f5e0a0 180deg,
-    #c9a96e 240deg,
-    #f5e0a0 300deg,
-    #c9a96e 360deg
-  );
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.75);
-  animation: fadeUp 0.45s ease 0s both;
-}
-
-.avatar {
-  display: block;
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center 12%;
-  border: 2.5px solid var(--bg);
-}
-
-/* ── Name & tagline ──────────────────────────────────────── */
-.model-name {
+.identity h1 {
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 46px;
-  font-weight: 700;
+  font-size: 42px;
   line-height: 1;
-  letter-spacing: -0.5px;
-  color: var(--text);
-  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.55);
-  margin-top: 12px;
-  animation: fadeUp 0.45s ease 0.06s both;
-}
-
-.tagline {
-  margin-top: 7px;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-2);
-  animation: fadeUp 0.45s ease 0.12s both;
-}
-
-/* ── Stats row ───────────────────────────────────────────── */
-.stats-row {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 18px;
-  animation: fadeUp 0.45s ease 0.18s both;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 0 22px;
-}
-
-.stat-num {
-  font-size: 18px;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
-.stat-lbl {
-  font-size: 10.5px;
+.identity p {
+  margin-top: 8px;
+  font-size: 17px;
+  line-height: 1.25;
   font-weight: 500;
-  color: var(--text-3);
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
+  color: rgba(245, 245, 245, 0.78);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
 }
 
-.stat-sep {
-  width: 1px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.08);
-  flex-shrink: 0;
-}
-
-/* ============================================================
-   CONTENT PREVIEW TEASE
-   ============================================================ */
-.preview {
-  margin: 20px 16px 0;
-  animation: fadeUp 0.45s ease 0.22s both;
-}
-
-.section-label {
-  font-size: 10.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: var(--text-3);
-  margin-bottom: 10px;
-}
-
-.preview-grid {
+.cards {
+  margin-top: 14px;
   display: grid;
-  grid-template-columns: 1fr 1.26fr 1fr;
-  gap: 6px;
-  align-items: end;
-}
-
-.preview-cell {
+  gap: 10px;
   position: relative;
-  border-radius: var(--r-sm);
+  z-index: 2;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .16s;
+}
+
+.card {
+  position: relative;
+  display: block;
+  height: 194px;
+  border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--border);
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  transition: transform .22s ease, border-color .22s ease;
 }
 
-.preview-cell.side   { aspect-ratio: 3 / 4;   }
-.preview-cell.center {
-  aspect-ratio: 3 / 4.6;
-  border-color: rgba(201, 169, 110, 0.22);
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55);
+.card:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-.preview-img {
+.card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 10%;
   display: block;
-  filter: blur(10px) saturate(0.45);
-  transform: scale(1.12);
 }
 
-.lock-veil {
+.card::after {
+  content: "";
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(8, 8, 8, 0.40);
-}
-
-.featured-veil { background: rgba(8, 8, 8, 0.34); }
-
-/* Pure-CSS padlock icon */
-.lock-icon {
-  display: block;
-  width: 22px;
-  height: 22px;
-  position: relative;
-  opacity: 0.72;
-}
-
-.lock-icon::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 15px;
-  height: 11px;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 3px;
-}
-
-.lock-icon::after {
-  content: '';
-  position: absolute;
-  bottom: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 10px;
-  height: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.92);
-  border-radius: 10px 10px 0 0;
-  border-bottom: none;
-}
-
-/* "Exclusivo" label on center preview */
-.exclusive-tag {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-size: 9.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-  color: #000;
-  background: var(--accent);
-  border-radius: 20px;
-  padding: 3px 9px;
-}
-
-/* ============================================================
-   PERKS ROW
-   ============================================================ */
-.perks {
-  list-style: none;
-  display: flex;
-  gap: 8px;
-  margin: 14px 16px 0;
-  animation: fadeUp 0.45s ease 0.27s both;
-}
-
-.perk {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  text-align: center;
-}
-
-.perk-em {
-  font-size: 20px;
-  line-height: 1;
-}
-
-.perk-txt {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.3;
-}
-
-.perk-txt small {
-  display: block;
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--text-3);
-  margin-top: 1px;
-}
-
-/* ============================================================
-   CTA BUTTONS
-   ============================================================ */
-.ctas {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 12px 16px 0;
-  animation: fadeUp 0.45s ease 0.32s both;
-}
-
-.cta-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 0 16px;
-  height: 68px;
-  border-radius: var(--r);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  text-decoration: none;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.cta-btn:active { transform: scale(0.975); }
-
-/* OnlyFans button */
-.cta-of {
-  background: linear-gradient(118deg, #07182b 0%, #041220 100%);
-  border-color: rgba(0, 170, 240, 0.18);
-}
-
-.cta-of:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 34px rgba(0, 155, 225, 0.22), 0 2px 8px rgba(0, 0, 0, 0.55);
-  border-color: rgba(0, 170, 240, 0.42);
-}
-
-/* Telegram button */
-.cta-tg {
-  background: linear-gradient(118deg, #071a28 0%, #04121e 100%);
-  border-color: rgba(41, 182, 246, 0.16);
-}
-
-.cta-tg:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 34px rgba(30, 160, 225, 0.20), 0 2px 8px rgba(0, 0, 0, 0.55);
-  border-color: rgba(41, 182, 246, 0.40);
-}
-
-/* ── Icon circle ─────────────────────────────────────────── */
-.cta-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
-}
-
-.of-icon { background: #0099cc; }
-.tg-icon { background: #229ed9; }
-
-.of-logo, .of-fallback, .cta-icon-wrap svg {
-  width: 19px;
-  height: 19px;
-  object-fit: contain;
-}
-
-.of-logo { filter: brightness(0) invert(1); }
-
-/* ── Text block ──────────────────────────────────────────── */
-.cta-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.cta-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.1;
-}
-
-.cta-sub {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--text-2);
-  line-height: 1;
-}
-
-/* ── Arrow ───────────────────────────────────────────────── */
-.cta-arrow {
-  width: 20px;
-  height: 20px;
-  color: var(--text-3);
-  flex-shrink: 0;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.cta-btn:hover .cta-arrow {
-  transform: translateX(3px);
-  color: var(--text-2);
-}
-
-/* ── Shine sweep on hover ────────────────────────────────── */
-.cta-shine {
-  position: absolute;
-  top: 0;
-  left: -80%;
-  width: 55%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.044), transparent);
-  transform: skewX(-15deg);
-  transition: left 0.58s ease;
+  background: linear-gradient(
+    to top,
+    rgba(9, 10, 14, 0.72) 0%,
+    rgba(9, 10, 14, 0.3) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
   pointer-events: none;
 }
 
-.cta-btn:hover .cta-shine { left: 120%; }
-
-/* ============================================================
-   TRUST ROW
-   ============================================================ */
-.trust {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  margin: 14px 16px 0;
-  animation: fadeUp 0.45s ease 0.37s both;
-}
-
-.trust-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+.badge {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--text-3);
-  text-align: center;
+  gap: 8px;
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.trust-item > :first-child { font-size: 15px; }
+.badge-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(2, 25, 36, 0.4);
+  flex-shrink: 0;
+}
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
+.badge-icon.of {
+  background: var(--btn-of);
+}
+
+.badge-icon.tg {
+  background: var(--btn-tg);
+}
+
+.badge-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
 footer {
-  margin-top: 22px;
+  margin-top: 14px;
   text-align: center;
-  color: var(--text-3);
-  font-size: 11px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
   font-weight: 500;
-  line-height: 1.7;
-  padding: 0 16px;
-  animation: fadeUp 0.45s ease 0.42s both;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .24s;
 }
 
-/* ============================================================
-   ANIMATIONS
-   ============================================================ */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0);    }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* ============================================================
-   RESPONSIVE — small phones (≤380px)
-   ============================================================ */
-@media (max-width: 380px) {
-  .hero        { height: 430px; }
-  .identity    { margin-top: -148px; }
-  .model-name  { font-size: 40px; }
-  .tagline     { font-size: 14px; }
-  .stat        { padding: 0 16px; }
-  .stat-num    { font-size: 16px; }
-  .cta-btn     { height: 62px; }
-  .cta-title   { font-size: 15px; }
-  .cta-sub     { font-size: 10.5px; }
-  .avatar      { width: 80px; height: 80px; }
+@media (max-width: 430px) {
+  .hero { height: 390px; }
+  .identity { margin-top: -122px; }
+  .identity h1 { font-size: 38px; }
+  .identity p { font-size: 15px; }
+  .cards { margin-top: 12px; }
+  .card { height: 182px; }
+  .badge { font-size: 15px; }
+  footer { font-size: 11px; }
 }

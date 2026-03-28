@@ -3,186 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="page-title">Nombre Modelo</title>
-  <meta name="robots" content="noindex, nofollow" />
+  <title>Nombre Modelo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="app">
-
-    <!-- ═══ HERO ═══ -->
-    <section class="hero" aria-label="Hero">
-      <img class="hero-image" id="hero-image" src="veks Special Pp.jfif" alt="" />
-      <div class="hero-vignette"></div>
-      <span class="live-pill" id="live-badge">
-        <span class="live-dot"></span>
-        <span>Online ahora</span>
-      </span>
+    <section class="hero">
+      <img class="hero-image" id="hero-image" src="veks Special Pp.jfif" alt="Nombre Modelo" />
     </section>
 
-    <!-- ═══ IDENTITY ═══ -->
-    <section class="identity" aria-label="Perfil">
-      <div class="avatar-ring">
-        <img class="avatar" id="avatar-img" src="veks Special Pp.jfif" alt="" />
-      </div>
-      <h1 class="model-name" id="model-name">Nombre Modelo</h1>
-      <p class="tagline" id="tagline">Contenido exclusivo para ti 🖤</p>
-
-      <ul class="stats-row" role="list" aria-label="Estadísticas del perfil">
-        <li class="stat">
-          <span class="stat-num" id="stat-posts">240+</span>
-          <span class="stat-lbl">Posts</span>
-        </li>
-        <li class="stat-sep" aria-hidden="true"></li>
-        <li class="stat">
-          <span class="stat-num" id="stat-fans">4.8k</span>
-          <span class="stat-lbl">Fans</span>
-        </li>
-        <li class="stat-sep" aria-hidden="true"></li>
-        <li class="stat">
-          <span class="stat-num" id="stat-rating">★ 4.9</span>
-          <span class="stat-lbl">Rating</span>
-        </li>
-      </ul>
+    <section class="identity">
+      <h1 id="model-name">Nombre Modelo</h1>
+      <p id="tagline">Contenido exclusivo para ti 🖤</p>
     </section>
 
-    <!-- ═══ CONTENT PREVIEW TEASE ═══ -->
-    <section class="preview" aria-label="Vista previa de contenido">
-      <p class="section-label" aria-hidden="true">Vista previa</p>
-      <div class="preview-grid" role="img" aria-label="Contenido bloqueado — suscríbete para ver">
-        <div class="preview-cell side">
-          <img class="preview-img" src="descarga (51).jfif" alt="" />
-          <div class="lock-veil"><span class="lock-icon" aria-hidden="true"></span></div>
-        </div>
-        <div class="preview-cell center">
-          <img class="preview-img" src="veks Special Pp.jfif" alt="" />
-          <div class="lock-veil featured-veil"><span class="lock-icon" aria-hidden="true"></span></div>
-          <span class="exclusive-tag">Exclusivo</span>
-        </div>
-        <div class="preview-cell side">
-          <img class="preview-img" src="descarga (52).jfif" alt="" />
-          <div class="lock-veil"><span class="lock-icon" aria-hidden="true"></span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ PERKS ═══ -->
-    <ul class="perks" role="list" aria-label="Qué incluye la suscripción">
-      <li class="perk">
-        <span class="perk-em" aria-hidden="true">📸</span>
-        <span class="perk-txt">Fotos HD<br/><small>Álbumes exclusivos</small></span>
-      </li>
-      <li class="perk">
-        <span class="perk-em" aria-hidden="true">🎬</span>
-        <span class="perk-txt">Videos<br/><small>Contenido privado</small></span>
-      </li>
-      <li class="perk">
-        <span class="perk-em" aria-hidden="true">💬</span>
-        <span class="perk-txt">DMs<br/><small>Mensajes directos</small></span>
-      </li>
-    </ul>
-
-    <!-- ═══ CTA BUTTONS ═══ -->
-    <section class="ctas" aria-label="Plataformas">
-
-      <a class="cta-btn cta-of" href="#of-link-placeholder" id="btn-of"
-         data-button="onlyfans" aria-label="Suscribirse en OnlyFans">
-        <span class="cta-icon-wrap of-icon">
-          <img src="onlyfans.png" class="of-logo" alt=""
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-          <svg class="of-fallback" viewBox="0 0 24 24" fill="none" style="display:none" aria-hidden="true">
-            <circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.8"/>
-            <path d="M12 7.7a4.3 4.3 0 0 0 0 8.6 4.3 4.3 0 0 0 4.3-4.3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-            <circle cx="15.8" cy="8.5" r="1" fill="white"/>
-          </svg>
+    <section class="cards">
+      <a class="card" href="#of-link-placeholder" id="btn-of" data-button="onlyfans">
+        <img class="card-img" src="descarga (51).jfif" alt="Contenido exclusivo" />
+        <span class="badge">
+          <span class="badge-icon of" aria-hidden="true">
+            <img src="onlyfans.png" alt="" style="width:17px;height:17px;object-fit:contain;display:block;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+            <svg viewBox="0 0 24 24" fill="none" style="display:none;">
+              <circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.8"/>
+              <path d="M12 7.7a4.3 4.3 0 0 0 0 8.6 4.3 4.3 0 0 0 4.3-4.3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="15.8" cy="8.5" r="1" fill="white"/>
+            </svg>
+          </span>
+          <span id="label-of">Mi OnlyFans</span>
         </span>
-        <span class="cta-text">
-          <span class="cta-title" id="label-of">Mi OnlyFans</span>
-          <span class="cta-sub">Acceso completo · Suscríbete ahora</span>
-        </span>
-        <svg class="cta-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 10h10M11 6l4 4-4 4" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="cta-shine" aria-hidden="true"></span>
       </a>
 
-      <a class="cta-btn cta-tg" href="#tg-link-placeholder" id="btn-tg"
-         data-button="telegram" aria-label="Unirse al canal de Telegram">
-        <span class="cta-icon-wrap tg-icon">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M20.8 5.2L3 11.8l5.4 1.7 1.9 5.3 3-3.1 4.9 3.4 2.6-13.9z"
-                  stroke="white" stroke-width="1.7" stroke-linejoin="round"/>
-            <path d="M8.4 13.5l8.7-6.4" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
-          </svg>
+      <a class="card" href="#tg-link-placeholder" id="btn-tg" data-button="telegram">
+        <img class="card-img" src="descarga (52).jfif" alt="Canal de Telegram" />
+        <span class="badge">
+          <span class="badge-icon tg" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20.8 5.2L3 11.8l5.4 1.7 1.9 5.3 3-3.1 4.9 3.4 2.6-13.9z" stroke="white" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M8.4 13.5l8.7-6.4" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span id="label-tg">Telegram Gratis</span>
         </span>
-        <span class="cta-text">
-          <span class="cta-title" id="label-tg">Telegram Gratis</span>
-          <span class="cta-sub">Canal exclusivo · Únete ahora</span>
-        </span>
-        <svg class="cta-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 10h10M11 6l4 4-4 4" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="cta-shine" aria-hidden="true"></span>
       </a>
-
     </section>
-
-    <!-- ═══ TRUST ROW ═══ -->
-    <ul class="trust" role="list" aria-label="Garantías">
-      <li class="trust-item">
-        <span aria-hidden="true">🔒</span>
-        <span>Pago seguro</span>
-      </li>
-      <li class="trust-item">
-        <span aria-hidden="true">👤</span>
-        <span>100% privado</span>
-      </li>
-      <li class="trust-item">
-        <span aria-hidden="true">⚡</span>
-        <span>Acceso inmediato</span>
-      </li>
-    </ul>
 
     <footer>
       <p id="footer-text">Contenido solo para adultos +18</p>
       <p>© <span id="year"></span></p>
     </footer>
-
   </main>
 
   <script src="config.js"></script>
   <script src="app.js"></script>
-
-  <!-- Populate stat / avatar overrides from MODEL_CONFIG if provided -->
-  <script>
-  (function () {
-    try {
-      var cfg = window.MODEL_CONFIG || {};
-      var st  = cfg.stats || {};
-      if (st.posts)  document.getElementById('stat-posts').textContent  = st.posts;
-      if (st.fans)   document.getElementById('stat-fans').textContent   = st.fans;
-      if (st.rating) document.getElementById('stat-rating').textContent = '\u2605 ' + st.rating;
-
-      // Avatar: prefer foto_avatar, else mirror the (possibly updated) hero src
-      var heroEl   = document.getElementById('hero-image');
-      var avatarEl = document.getElementById('avatar-img');
-      if (cfg.foto_avatar) {
-        avatarEl.src = cfg.foto_avatar;
-      } else if (heroEl && heroEl.src) {
-        avatarEl.src = heroEl.src;
-      }
-
-      // Accent colour from config
-      if (cfg.colores && cfg.colores.accent) {
-        document.documentElement.style.setProperty('--accent', cfg.colores.accent);
-      }
-    } catch (e) { /* silent */ }
-  })();
-  </script>
 </body>
 </html>
