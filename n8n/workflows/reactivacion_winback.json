@@ -43,6 +43,7 @@
             { "name": "mgo_directo", "value": "is.false" },
             { "name": "mgo_en_canal", "value": "is.false" },
             { "name": "winback_sent", "value": "is.false" },
+            { "name": "active_flow", "value": "is.null" },
             { "name": "updated_at", "value": "={{'lt.' + $json.cutoff}}" },
             { "name": "telegram_user_id", "value": "not.is.null" }
           ]
@@ -69,7 +70,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=is.null'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -121,6 +122,7 @@
             { "name": "select", "value": "visitor_id,utm_source,updated_at,created_at,telegram_user_id,active_flow,pais,ciudad,idioma,dispositivo,mgo_directo,mgo_en_canal,telegram_activo,of_activo,cupidbot_activo,winback_sent" },
             { "name": "of_activo", "value": "is.false" },
             { "name": "winback_sent", "value": "is.false" },
+            { "name": "active_flow", "value": "is.null" },
             { "name": "updated_at", "value": "={{'lt.' + $json.cutoff}}" },
             { "name": "telegram_user_id", "value": "not.is.null" },
             { "name": "or", "value": "(mgo_directo.is.true,mgo_en_canal.is.true)" }
@@ -148,7 +150,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=is.null'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

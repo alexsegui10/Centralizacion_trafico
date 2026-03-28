@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 import { createServerClient } from '@/lib/supabase-server';
 
 export async function POST(req: NextRequest) {
+  // Auth check — same as middleware
+  const cookie = req.cookies.get('ofm_admin_session')?.value;
+  if (!cookie) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const secret = new TextEncoder().encode(process.env.SESSION_SECRET!);
+    await jwtVerify(cookie, secret);
+  } catch {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const supabase = createServerClient();
   const { visitor_id, contenido, tipo, bot_tipo } = await req.json();
 

@@ -56,7 +56,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=is.null'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -135,7 +135,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=is.null'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -186,7 +186,7 @@
           "parameters": [
             { "name": "select", "value": "visitor_id,of_activo,active_flow,utm_source,pais,ciudad,idioma,dispositivo,telegram_user_id,created_at,updated_at" },
             { "name": "of_activo", "value": "is.true" },
-            { "name": "or", "value": "(active_flow.is.null,active_flow.neq.4)" },
+            { "name": "or", "value": "(active_flow.is.null,active_flow.not.in.(4,6))" },
             { "name": "updated_at", "value": "={{'gt.' + new Date(Date.now() - 5 * 60 * 1000).toISOString()}}" }
           ]
         },

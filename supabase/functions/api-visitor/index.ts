@@ -37,7 +37,7 @@ Deno.serve(async (req: Request) => {
       req,
       canonicalPayload: canonical,
       secret: hmacSecret,
-      maxAgeSeconds: 60 * 60 * 24
+      maxAgeSeconds: 300
     });
 
     if (!hmacResult.ok) {

@@ -19,6 +19,11 @@ export function inferFlow(lead: Lead): FlowId {
   const updated = new Date(lead.updated_at ?? lead.created_at ?? Date.now()).getTime();
   const days = (Date.now() - updated) / (1000 * 60 * 60 * 24);
   if (!lead.winback_sent && (lead.mgo_directo || lead.mgo_en_canal) && days > 14) return '5';
+  // Only show as F3 if they've actually joined Telegram — not unqualified cold leads
+  if (lead.telegram_activo) return '3';
+  // Unclassified lead with active_flow set — use that
+  if (lead.active_flow) return lead.active_flow as FlowId;
+  // Truly unclassified — return '3' as holding column but only if telegram is set
   return '3';
 }
 

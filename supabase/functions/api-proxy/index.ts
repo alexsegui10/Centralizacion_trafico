@@ -175,12 +175,6 @@ Deno.serve(async (req: Request) => {
     const url = new URL(req.url);
     const target = url.searchParams.get("target")?.trim();
 
-  if (target === 'debug') {
-    const headers: Record<string, string> = {};
-    req.headers.forEach((value, key) => { headers[key] = value; });
-    return jsonResponse(200, { headers });
-  }
-
     const hmacSecret = getRequiredEnv("EDGE_HMAC_SECRET");
 
     if (req.method === "GET" && target === "visitor") {

@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 import { createServerClient } from '@/lib/supabase-server';
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function PATCH(req: NextRequest, { params }: Params) {
+  // Auth check
+  const cookie = req.cookies.get('ofm_admin_session')?.value;
+  if (!cookie) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const secret = new TextEncoder().encode(process.env.SESSION_SECRET!);
+    await jwtVerify(cookie, secret);
+  } catch {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { id: visitorId } = await params;
   const body = await req.json();
   const { action, flow } = body as { action: string; flow?: string };

@@ -83,7 +83,7 @@ function AlertRow({ item }: { item: AlertLead }) {
 
 export default async function AlertsPage() {
   const supabase = createServerClient();
-  const { data: leads } = await supabase.from('leads').select('*');
+  const { data: leads } = await supabase.from('leads').select('*').limit(1000);
   const all: Lead[] = (leads ?? []) as Lead[];
 
   const alerts: AlertLead[] = [];

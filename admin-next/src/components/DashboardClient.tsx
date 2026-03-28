@@ -35,7 +35,7 @@ export default function DashboardClient({ initial }: Props) {
     let leads: Lead[] = [];
 
     // Initial fetch
-    supabase.from('leads').select('*').then(({ data }) => {
+    supabase.from('leads').select('*').limit(1000).then(({ data }) => {
       if (data) { leads = data as Lead[]; recompute(leads); }
     });
 

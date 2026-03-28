@@ -11,7 +11,7 @@ function pct(n: number, total: number) {
 
 export default async function StatisticsPage() {
   const supabase = createServerClient();
-  const { data: leads } = await supabase.from('leads').select('*');
+  const { data: leads } = await supabase.from('leads').select('*').limit(1000);
   const all: Lead[] = (leads ?? []) as Lead[];
 
   const total = all.length;

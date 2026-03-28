@@ -53,7 +53,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const all = $input.all().map((item) => item.json);\n\nconst rows = all.flatMap((payload) => {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.body)) return payload.body;\n  if (payload && typeof payload === 'object') return [payload];\n  return [];\n});\n\nreturn rows.map((lead) => {\n  const source = String(lead.utm_source || '').toLowerCase();\n  const of = !!lead.of_activo;\n  const tg = !!lead.telegram_activo;\n  const mgoDirect = !!lead.mgo_directo;\n  const mgoCanal = !!lead.mgo_en_canal;\n\n  let route = 'ignore';\n\n  if (tg && mgoDirect) {\n    route = 'flow6_conflict';\n  } else if (!of && tg && !mgoDirect && !mgoCanal && lead.telegram_user_id) {\n    route = 'flow3';\n  }\n\n  return {\n    json: {\n      ...lead,\n      source,\n      route,\n      conflict_flags: { telegram_activo: tg, mgo_directo: mgoDirect, mgo_en_canal: mgoCanal }\n    }\n  };\n});"
+        "jsCode": "const all = $input.all().map((item) => item.json);\n\nconst rows = all.flatMap((payload) => {\n  if (Array.isArray(payload)) return payload;\n  if (Array.isArray(payload?.body)) return payload.body;\n  if (payload && typeof payload === 'object') return [payload];\n  return [];\n});\n\nreturn rows.map((lead) => {\n  const source = String(lead.utm_source || '').toLowerCase();\n  const of = !!lead.of_activo;\n  const tg = !!lead.telegram_activo;\n  const mgoDirect = !!lead.mgo_directo;\n  const mgoCanal = !!lead.mgo_en_canal;\n\n  let route = 'ignore';\n\n  if (tg && mgoDirect) {\n    route = 'flow6_conflict';\n  } else if (!of && tg && !mgoDirect && !mgoCanal) {\n    route = 'flow3';\n  }\n\n  return {\n    json: {\n      ...lead,\n      source,\n      route,\n      conflict_flags: { telegram_activo: tg, mgo_directo: mgoDirect, mgo_en_canal: mgoCanal }\n    }\n  };\n});"
       },
       "id": "classify",
       "name": "Classify Leads",
@@ -100,7 +100,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=is.null'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -143,7 +143,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=is.null'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

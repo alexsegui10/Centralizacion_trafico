@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async function DashboardPage() {
   const supabase = createServerClient();
 
-  const { data: leads } = await supabase.from('leads').select('*');
+  const { data: leads } = await supabase.from('leads').select('*').limit(1000);
   const allLeads: Lead[] = (leads ?? []) as Lead[];
 
   const flowGroups = groupByFlow(allLeads);

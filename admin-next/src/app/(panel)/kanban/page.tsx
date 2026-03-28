@@ -9,7 +9,8 @@ export default async function KanbanPage() {
   const { data } = await supabase
     .from('leads')
     .select('*')
-    .order('updated_at', { ascending: false });
+    .order('updated_at', { ascending: false })
+    .limit(1000);
 
   return <KanbanBoard initialLeads={(data ?? []) as Lead[]} />;
 }
