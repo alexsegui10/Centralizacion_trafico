@@ -82,15 +82,25 @@ Deno.serve(async (req: Request) => {
 
       const { data: existing } = await supabase
         .from("leads")
-        .select("visitor_id, telegram_activo, mgo_directo")
+        .select("visitor_id, telegram_activo, mgo_directo, of_activo, active_flow")
         .eq("telegram_user_id", telegramUserId)
         .limit(1);
 
       if (existing && existing.length > 0) {
         const lead = existing[0];
 
+        // Guard: VIP (ya compró OF) → nunca tocar
+        if (lead.of_activo) {
+          return jsonResponse(200, {
+            ok: true,
+            visitor_id: lead.visitor_id,
+            source: "direct_message_vip",
+            flow: "none"
+          });
+        }
+
+        // Ya está en el canal (telegram_activo=true) → vino de redes → CupidBot lo gestiona
         if (lead.telegram_activo) {
-          // Ya está en el canal → vino de redes → CupidBot lo gestiona
           return jsonResponse(200, {
             ok: true,
             visitor_id: lead.visitor_id,
@@ -99,16 +109,18 @@ Deno.serve(async (req: Request) => {
           });
         }
 
-        // No está en el canal → fan directo → mgo_directo=true → bot_ventas
-        await supabase
-          .from("leads")
-          .update({
-            mgo_directo: true,
-            telegram_activo: true,
-            telegram_joined_at: now,
-            updated_at: now
-          })
-          .eq("visitor_id", lead.visitor_id);
+        // No está en el canal, no ha comprado, y no tiene flujo activo → mgo_directo → bot_ventas
+        if (!lead.active_flow) {
+          await supabase
+            .from("leads")
+            .update({
+              mgo_directo: true,
+              telegram_activo: true,
+              telegram_joined_at: now,
+              updated_at: now
+            })
+            .eq("visitor_id", lead.visitor_id);
+        }
 
         return jsonResponse(200, {
           ok: true,
@@ -149,21 +161,35 @@ Deno.serve(async (req: Request) => {
 
     const { inviteLink, telegramUserId } = membershipData;
 
-    // ── MGO CANAL: link permanente del perfil de Telegram ─────────────────
+    // ── MGO CANAL: link permanente → mgo_en_canal=true → bot_ventas ──────
     const mgoLinkRaw = Deno.env.get("MGO_CANAL_INVITE_LINK") ?? "";
     const isMgoCanal = mgoLinkRaw.length > 0 && inviteLink === mgoLinkRaw.trim();
 
     if (isMgoCanal) {
       let visitorId: string | null = null;
+      let existingOfActivo = false;
 
       if (telegramUserId) {
         const { data: existing } = await supabase
           .from("leads")
-          .select("visitor_id")
+          .select("visitor_id, of_activo")
           .eq("telegram_user_id", telegramUserId)
           .limit(1);
 
-        if (existing && existing.length > 0) visitorId = existing[0].visitor_id;
+        if (existing && existing.length > 0) {
+          visitorId = existing[0].visitor_id;
+          existingOfActivo = !!existing[0].of_activo;
+        }
+      }
+
+      // Guard: VIP → no tocar
+      if (existingOfActivo) {
+        return jsonResponse(200, {
+          ok: true,
+          visitor_id: visitorId,
+          source: "mgo_canal_vip",
+          flow: "none"
+        });
       }
 
       if (visitorId) {
@@ -199,10 +225,74 @@ Deno.serve(async (req: Request) => {
       });
     }
 
+    // ── SOCIAL CANAL: link fijo para socios/redes → telegram_activo=true → CupidBot ──
+    // No pone mgo_en_canal=true, así que va al Flow 3 (CupidBot) tras 3 días
+    const socialLinkRaw = Deno.env.get("SOCIAL_CANAL_INVITE_LINK") ?? "";
+    const isSocialCanal = socialLinkRaw.length > 0 && inviteLink === socialLinkRaw.trim();
+
+    if (isSocialCanal) {
+      let visitorId: string | null = null;
+      let existingOfActivo = false;
+
+      if (telegramUserId) {
+        const { data: existing } = await supabase
+          .from("leads")
+          .select("visitor_id, of_activo")
+          .eq("telegram_user_id", telegramUserId)
+          .limit(1);
+
+        if (existing && existing.length > 0) {
+          visitorId = existing[0].visitor_id;
+          existingOfActivo = !!existing[0].of_activo;
+        }
+      }
+
+      // Guard: VIP → no tocar
+      if (existingOfActivo) {
+        return jsonResponse(200, {
+          ok: true,
+          visitor_id: visitorId,
+          source: "social_canal_vip",
+          flow: "none"
+        });
+      }
+
+      if (visitorId) {
+        await supabase
+          .from("leads")
+          .update({
+            telegram_activo: true,
+            telegram_joined_at: now,
+            updated_at: now
+          })
+          .eq("visitor_id", visitorId);
+      } else {
+        visitorId = crypto.randomUUID();
+        await supabase.from("leads").insert({
+          visitor_id: visitorId,
+          telegram_activo: true,
+          mgo_directo: false,
+          mgo_en_canal: false,
+          telegram_joined_at: now,
+          telegram_user_id: telegramUserId,
+          created_at: now,
+          updated_at: now
+        });
+      }
+
+      return jsonResponse(200, {
+        ok: true,
+        visitor_id: visitorId,
+        telegram_activo: true,
+        telegram_user_id: telegramUserId,
+        source: "social_canal"
+      });
+    }
+
     // ── Invite link personalizado desde la landing ─────────────────────────
     const { data: leadRows, error: leadLookupError } = await supabase
       .from("leads")
-      .select("visitor_id")
+      .select("visitor_id, of_activo")
       .eq("invite_link", inviteLink)
       .limit(1);
 
@@ -214,7 +304,17 @@ Deno.serve(async (req: Request) => {
       return jsonResponse(200, { ok: true, ignored: true, reason: "invite_not_found" });
     }
 
-    const visitorId = leadRows[0].visitor_id;
+    const { visitor_id: visitorId, of_activo: leadOfActivo } = leadRows[0];
+
+    // Guard: VIP → no tocar
+    if (leadOfActivo) {
+      return jsonResponse(200, {
+        ok: true,
+        visitor_id: visitorId,
+        source: "personalized_link_vip",
+        flow: "none"
+      });
+    }
 
     const { error: updateError } = await supabase
       .from("leads")
