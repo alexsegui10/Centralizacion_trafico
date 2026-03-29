@@ -27,7 +27,7 @@ function normalizeTelegramUserId(input: unknown): string | null {
 
 function extractMembershipData(update: TelegramUpdate): { inviteLink: string; telegramUserId: string | null } | null {
   const status = update?.chat_member?.new_chat_member?.status;
-  if (status !== "member") return null;
+  if (status !== "member") return null; // left/kicked/banned handled separately below
 
   const inviteLink = update?.chat_member?.invite_link?.invite_link;
   if (!inviteLink || typeof inviteLink !== "string") return null;
@@ -152,8 +152,40 @@ Deno.serve(async (req: Request) => {
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // RAMA B: Alguien entra al canal via invite link (update.chat_member)
+    // RAMA B: Eventos del canal (update.chat_member)
     // ══════════════════════════════════════════════════════════════════════
+
+    // ── Sub-rama: Alguien SALE o es EXPULSADO del canal ───────────────────
+    const leaveStatus = update?.chat_member?.new_chat_member?.status;
+    if (leaveStatus === "left" || leaveStatus === "kicked" || leaveStatus === "banned") {
+      const leavingUserId =
+        normalizeTelegramUserId(update?.chat_member?.new_chat_member?.user?.id) ||
+        normalizeTelegramUserId(update?.chat_member?.old_chat_member?.user?.id);
+
+      if (leavingUserId) {
+        // Solo resetear si no está en flujo activo (si está en F3/F1/F2, el bot lo gestiona)
+        const { data: leavingLead } = await supabase
+          .from("leads")
+          .select("visitor_id, active_flow, of_activo")
+          .eq("telegram_user_id", leavingUserId)
+          .limit(1);
+
+        if (leavingLead && leavingLead.length > 0) {
+          const lead = leavingLead[0];
+          // Si no hay flujo activo y no es VIP, marcar como inactivo en Telegram
+          if (!lead.active_flow && !lead.of_activo) {
+            await supabase
+              .from("leads")
+              .update({ telegram_activo: false, updated_at: now })
+              .eq("visitor_id", lead.visitor_id);
+          }
+        }
+      }
+
+      return jsonResponse(200, { ok: true, event: "member_left" });
+    }
+
+    // ── Sub-rama: Alguien ENTRA al canal via invite link ──────────────────
     const membershipData = extractMembershipData(update);
     if (!membershipData) {
       return jsonResponse(200, { ok: true, ignored: true });

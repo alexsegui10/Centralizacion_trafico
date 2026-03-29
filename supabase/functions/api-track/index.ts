@@ -43,6 +43,10 @@ function validateTrackPayload(input: unknown): { ok: true; payload: TrackPayload
   const requestId = typeof payload.request_id === "string" ? payload.request_id.trim() : "";
   const visitorId = typeof payload.visitor_id === "string" ? payload.visitor_id.trim() : "";
   const modeloId = typeof payload.modelo_id === "string" ? payload.modelo_id.trim() : "";
+  // visitor_id must be a valid UUID to prevent injection
+  if (visitorId && !isValidUuid(visitorId)) {
+    return { ok: false, error: "invalid_visitor_id_format" };
+  }
   const button = payload.boton_clickado;
   const timestamp = typeof payload.timestamp === "string" ? payload.timestamp.trim() : "";
   const clientIp = typeof payload.client_ip === "string" ? payload.client_ip.split(",")[0].trim() : "0.0.0.0";
@@ -181,11 +185,11 @@ Deno.serve(async (req: Request) => {
     const ipHash = await sha256Hex(clientIp);
     const geo = await lookupGeo(clientIp);
 
+    // Upsert without utm_source to preserve first-touch attribution
     const leadUpsertRow = {
       visitor_id: payload.visitor_id,
       fingerprint_hash: payload.fingerprint_hash,
       modelo_id: payload.modelo_id,
-      utm_source: payload.utm_source,
       idioma: payload.idioma,
       dispositivo: payload.dispositivo,
       user_agent: payload.user_agent,
@@ -200,6 +204,15 @@ Deno.serve(async (req: Request) => {
 
     if (leadError) {
       return jsonResponse(500, { ok: false, error: "lead_upsert_failed", details: leadError.message });
+    }
+
+    // Set utm_source only if currently null (first-touch attribution — never overwrite)
+    if (payload.utm_source) {
+      await supabase
+        .from("leads")
+        .update({ utm_source: payload.utm_source })
+        .eq("visitor_id", payload.visitor_id)
+        .is("utm_source", null);
     }
 
     const eventInsertRow = {

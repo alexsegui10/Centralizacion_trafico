@@ -41,7 +41,8 @@
           "parameters": [
             { "name": "select", "value": "visitor_id,utm_source,telegram_activo,of_activo,mgo_directo,mgo_en_canal,updated_at,active_flow,telegram_user_id,pais,ciudad,idioma,dispositivo,created_at,cupidbot_activo,winback_sent" },
             { "name": "updated_at", "value": "={{'gt.' + $json.cutoff}}" },
-            { "name": "active_flow", "value": "is.null" }
+            { "name": "active_flow", "value": "is.null" },
+            { "name": "mgo_directo", "value": "is.false" }
           ]
         },
         "options": { "response": { "response": { "responseFormat": "json" } } }

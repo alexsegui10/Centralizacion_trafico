@@ -212,7 +212,7 @@
     {
       "parameters": {
         "method": "PATCH",
-        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id)}}",
+        "url": "={{$env.SUPABASE_URL + '/rest/v1/leads?visitor_id=eq.' + encodeURIComponent($json.visitor_id) + '&active_flow=not.eq.4'}}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
